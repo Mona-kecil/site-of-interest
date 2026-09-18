@@ -3,4 +3,10 @@
 !.env.example
 node_modules/
 .cache/
+.convex/
+dist/
+*.tsbuildinfo
+playwright-report/
+test-results/
+.audit/*.png
 .DS_Store

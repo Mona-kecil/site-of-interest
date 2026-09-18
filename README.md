@@ -1,8 +1,35 @@
 # Site of Interest
 
-Site of Interest is a market-intelligence interface for exploring Indonesian conglomerate relationships. `Empire` is its ownership-graph view. The current demo maps the Sectors-backed Prajogo network and compares listed companies through a valuation-cycle screen.
+Site of Interest maps evidence-backed relationships across Indonesian conglomerates. `Empire` is the first production route. It currently maps the Sectors-backed Prajogo Pangestu network through React and Convex.
 
-The hackathon build uses the Sectors REST API as its only data provider. The repository validator rejects every other source host.
+The application uses the Sectors REST API as its only market-data provider. The repository validator rejects every other source host.
+
+## Run the application
+
+Install the dependencies and start Convex with the Vite+ development server:
+
+```sh
+npm install
+npm run dev:full
+```
+
+Open `http://127.0.0.1:5173/empire/prajogo`.
+
+Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment:
+
+```sh
+npm run convex:seed
+```
+
+Run the verification suite:
+
+```sh
+npm run check
+npm test
+npm run build
+npm run validate
+npm run validate:flow
+```
 
 ## Sync the data
 
@@ -22,13 +49,7 @@ The sync starts from Sectors' Barito affiliations and conglomerate-group labels,
 
 ## Collect market flow
 
-Start the prototype and open **Flow** to collect broker data for the focused ticker:
-
-```sh
-npm start
-```
-
-The browser calls `/api/flow/<ticker>`. The server checks the persisted Sectors response, fetches only the latest 14-day broker-summary window when needed, and stores each returned trading day under `data/market-flow/brokers/`. Reopening the same ticker on the same day uses zero credits.
+The retained collector fetches the latest 14-day broker-summary window and stores each returned trading day under `data/market-flow/brokers/`. The Flow interface has not moved to React and Convex yet.
 
 Open a ticker's Flow view at least once every 14 days to retain continuous broker history. The loader records gaps instead of spending extra credits on an automatic backfill.
 
@@ -54,32 +75,19 @@ Validate the retained observations without making API calls:
 npm run validate:flow
 ```
 
-## Run the prototype
-
-```sh
-npm start
-```
-
-Open `http://127.0.0.1:4174`.
-
-Run the boundary and derivation tests:
-
-```sh
-npm test
-npm run validate
-```
-
 ## Repository map
 
 ```text
+convex/schema.ts                 Convex tables and indexes
+convex/empires.ts                Public Empire read model
+convex/seed.ts                   Idempotent Prajogo corpus import
+src/features/empire/             React graph and interaction model
 scripts/sync-sectors.mjs       Sectors API client and corpus generator
 scripts/sync-market-flow.mjs   Daily OHLCV and broker-flow collector
 data/empires/prajogo/         Generated Sectors-backed corpus
 data/market-flow/              Immutable ticker-date market observations
 src/empire-corpus.mjs         Boundary validation and corpus queries
 src/market-flow.mjs           Market-flow boundary and storage contract
-src/empire-view.mjs           Pure view derivations
-app.js                        Graph and company-profile interactions
 docs/                         Product and architecture decisions
 ```
 

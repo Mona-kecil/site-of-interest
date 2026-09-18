@@ -3,66 +3,20 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Site of Interest maps evidence-backed relationships across Indonesian conglomerates." />
-    <title>Site of Interest / Empire / Prajogo Pangestu</title>
+    <meta
+      name="description"
+      content="Site of Interest maps evidence-backed relationships across Indonesian conglomerates."
+    />
+    <title>Site of Interest</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="styles.css" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700&display=swap"
+      rel="stylesheet"
+    />
   </head>
   <body>
-    <header class="topbar">
-      <div class="brand"><i></i> SITE OF INTEREST</div>
-      <nav aria-label="Product section">
-        <button class="nav-item is-active" id="empire-nav" type="button">Empire</button>
-        <span class="nav-item">Asset map</span>
-        <button class="nav-item" id="flow-board" type="button">Flow</button>
-        <button class="nav-item" id="cycle-board" type="button">Cycle board</button>
-      </nav>
-      <div class="as-of" id="as-of">Loading corpus</div>
-    </header>
-
-    <main class="workspace">
-      <section class="graph-workspace" aria-label="Prajogo Pangestu Empire network">
-        <header class="graph-header">
-          <div>
-            <p id="empire-kicker">Empire 01 / research network</p>
-            <h1 id="empire-title">Prajogo Pangestu</h1>
-          </div>
-          <div class="graph-controls">
-            <div class="view-controls" role="group" aria-label="Relationship filter">
-              <button class="view-filter is-active" data-view="empire" type="button">Empire</button>
-              <button class="view-filter" data-view="all" type="button">All owners</button>
-              <button class="view-filter" data-view="control" type="button">Control</button>
-              <button class="view-filter" data-view="minority" type="button">Minority</button>
-            </div>
-            <div class="layout-controls" role="group" aria-label="Graph actions">
-              <button class="trace-button" id="trace-target" type="button">Trace SINI</button>
-              <button class="layout-mode is-active" data-layout="network" type="button">Empire view</button>
-              <button class="layout-mode" data-layout="orbit" type="button">Focus orbit</button>
-              <button class="reflow-button" id="reflow-button" type="button" aria-label="Reflow graph">↻ Reflow</button>
-            </div>
-          </div>
-        </header>
-
-        <div class="graph-stage" id="graph-stage">
-          <svg id="relationship-layer" viewBox="0 0 1000 620" preserveAspectRatio="none" aria-hidden="true"></svg>
-          <div id="node-layer"></div>
-          <div class="layout-readout"><i></i><span id="layout-readout">Sectors company profile / CUAN</span></div>
-          <div class="graph-legend">
-            <span><i class="line line--control"></i>Control / ownership</span>
-            <span><i class="line line--passive"></i>Minority position</span>
-            <span><i class="line line--event"></i>Group link / membership</span>
-          </div>
-          <p class="graph-note">Drag to pin · reflow to release · select any signal</p>
-        </div>
-      </section>
-
-      <aside class="intel-panel" id="intel-panel" aria-live="polite">
-        <p class="panel-loading">Loading the Prajogo corpus…</p>
-      </aside>
-    </main>
-
-    <script type="module" src="app.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
   </body>
 </html>

@@ -3,12 +3,40 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "start": "node scripts/serve.mjs",
+    "dev": "vp dev",
+    "dev:full": "convex dev --start 'vp dev --host 0.0.0.0'",
+    "build": "tsc -b && vp build",
+    "check": "vp check 'src/**/*.{ts,tsx}' convex vite.config.ts",
+    "typecheck": "tsc -b",
+    "lint": "vp lint 'src/**/*.{ts,tsx}' convex vite.config.ts",
+    "format:check": "vp fmt 'src/**/*.{ts,tsx}' convex vite.config.ts --check",
+    "test": "vp test run && npm run test:legacy",
+    "test:e2e": "playwright test",
+    "test:legacy": "node --test 'src/**/*.test.mjs'",
+    "convex:dev": "convex dev",
+    "convex:seed": "convex run seed:replacePrajogo",
     "sync:sectors": "node scripts/sync-sectors.mjs",
     "sync:flow": "node scripts/sync-market-flow.mjs",
     "analyze:empire": "node scripts/analyze-empire.mjs data/empires/prajogo",
     "validate": "node scripts/validate-corpus.mjs data/empires/prajogo",
-    "validate:flow": "node scripts/validate-market-flow.mjs",
-    "test": "node --test"
+    "validate:flow": "node scripts/validate-market-flow.mjs"
+  },
+  "dependencies": {
+    "@tanstack/react-router": "^1.170.38",
+    "convex": "^1.46.0",
+    "motion": "^13.4.0",
+    "react": "^19.3.0",
+    "react-dom": "^19.3.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.3",
+    "@types/react": "^19.2.14",
+    "@types/react-dom": "^19.2.3",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^27.0.0",
+    "typescript": "^5.9.3",
+    "vite-plus": "^0.3.3"
   }
 }
