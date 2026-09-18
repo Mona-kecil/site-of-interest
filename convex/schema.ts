@@ -12,6 +12,53 @@ const sourceRef = v.object({
   locator: v.string(),
 });
 
+const factBase = v.object({
+  id: v.string(),
+  entityId: v.string(),
+  asOf: v.string(),
+  context: v.string(),
+  sourceRefs: v.array(sourceRef),
+});
+
+export const companyFact = v.union(
+  factBase.extend({
+    kind: v.literal("profile_metric"),
+    label: v.string(),
+    value: v.number(),
+    unit: v.string(),
+  }),
+  factBase.extend({
+    kind: v.literal("financial_year"),
+    year: v.number(),
+    revenue: v.number(),
+    earnings: v.number(),
+    operatingCashFlow: v.number(),
+    freeCashFlow: v.number(),
+    totalAssets: v.optional(v.number()),
+    totalDebt: v.optional(v.number()),
+    capitalExpenditure: v.optional(v.number()),
+    unit: v.string(),
+  }),
+  factBase.extend({
+    kind: v.literal("valuation_period"),
+    year: v.number(),
+    pe: v.union(v.number(), v.null()),
+    peerPe: v.union(v.number(), v.null()),
+  }),
+  factBase.extend({
+    kind: v.literal("signal"),
+    metric: v.string(),
+    label: v.string(),
+    value: v.number(),
+    unit: v.string(),
+    tone: v.string(),
+  }),
+  factBase.extend({
+    kind: v.literal("data_gap"),
+    label: v.string(),
+  }),
+);
+
 export default defineSchema({
   empires: defineTable({
     slug: v.string(),
@@ -39,6 +86,7 @@ export default defineSchema({
   })
     .index("by_empire", ["empireSlug"])
     .index("by_empire_and_stable_id", ["empireSlug", "stableId"])
+    .index("by_empire_and_ticker", ["empireSlug", "ticker"])
     .index("by_ticker", ["ticker"]),
 
   relationships: defineTable({
@@ -83,4 +131,34 @@ export default defineSchema({
     retrievedAt: v.string(),
     url: v.string(),
   }).index("by_empire", ["empireSlug"]),
+
+  companyFacts: defineTable({
+    empireSlug: v.string(),
+    entityId: v.string(),
+    stableId: v.string(),
+    fact: companyFact,
+  })
+    .index("by_empire", ["empireSlug"])
+    .index("by_empire_and_entity_id", ["empireSlug", "entityId"]),
+
+  companyCoverage: defineTable({
+    empireSlug: v.string(),
+    entityId: v.string(),
+    frontier: v.object({
+      status: v.string(),
+      priority: v.string(),
+      nextAction: v.string(),
+    }),
+    checks: v.array(
+      v.object({
+        area: v.string(),
+        status: v.string(),
+        checkedAt: v.string(),
+        sourceIds: v.array(v.string()),
+        notes: v.string(),
+      }),
+    ),
+  })
+    .index("by_empire", ["empireSlug"])
+    .index("by_empire_and_entity_id", ["empireSlug", "entityId"]),
 });

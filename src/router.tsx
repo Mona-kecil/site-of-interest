@@ -7,6 +7,7 @@ import {
   redirect,
 } from "@tanstack/react-router";
 import { EmpirePage } from "./features/empire/EmpirePage";
+import { CompanyPage } from "./features/company/CompanyPage";
 
 function RootLayout() {
   return (
@@ -52,7 +53,13 @@ const empireRoute = createRoute({
   component: EmpirePage,
 });
 
-const routeTree = rootRoute.addChildren([indexRoute, empireRoute]);
+const companyRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/company/$ticker",
+  component: CompanyPage,
+});
+
+const routeTree = rootRoute.addChildren([indexRoute, empireRoute, companyRoute]);
 
 export const router = createRouter({
   routeTree,

@@ -13,7 +13,9 @@ npm install
 npm run dev:full
 ```
 
-Open `http://127.0.0.1:5173/empire/prajogo`.
+Open `http://127.0.0.1:5173/empire/prajogo`. Select any listed company and use
+**Open company intelligence** to inspect its Sectors-backed financial history,
+valuation record, current signals, coverage gaps, sources, and Empire context.
 
 Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment:
 
@@ -79,16 +81,18 @@ npm run validate:flow
 
 ```text
 convex/schema.ts                 Convex tables and indexes
-convex/empires.ts                Public Empire read model
+convex/empires.ts                Public Empire graph read model
+convex/companies.ts              Public company-intelligence read model
 convex/seed.ts                   Idempotent Prajogo corpus import
 src/features/empire/             React graph and interaction model
-scripts/sync-sectors.mjs       Sectors API client and corpus generator
-scripts/sync-market-flow.mjs   Daily OHLCV and broker-flow collector
-data/empires/prajogo/         Generated Sectors-backed corpus
-data/market-flow/              Immutable ticker-date market observations
-src/empire-corpus.mjs         Boundary validation and corpus queries
-src/market-flow.mjs           Market-flow boundary and storage contract
-docs/                         Product and architecture decisions
+src/features/company/            Reusable listed-company intelligence view
+scripts/sync-sectors.mjs         Sectors API client and corpus generator
+scripts/sync-market-flow.mjs     Daily OHLCV and broker-flow collector
+data/empires/prajogo/            Generated Sectors-backed corpus
+data/market-flow/                Immutable ticker-date market observations
+src/empire-corpus.mjs            Boundary validation and corpus queries
+src/market-flow.mjs              Market-flow boundary and storage contract
+docs/                            Product and architecture decisions
 ```
 
 The product provides information and analysis. It does not provide investment recommendations.

@@ -1,5 +1,6 @@
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
+import { Link } from "@tanstack/react-router";
 import type {
   EmpireEntity,
   EmpireGraph,
@@ -319,6 +320,15 @@ function IntelPanel({
         </span>
       </div>
       <p className="entity-summary">{entity.summary}</p>
+      {entity.ticker !== undefined && (
+        <Link
+          className="open-intelligence-link"
+          to="/company/$ticker"
+          params={{ ticker: entity.ticker }}
+        >
+          Open company intelligence <span>↗</span>
+        </Link>
+      )}
       <dl className="signal-grid">
         <div>
           <dt>Country</dt>
