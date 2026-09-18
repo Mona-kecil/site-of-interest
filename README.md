@@ -4,6 +4,10 @@ Site of Interest maps evidence-backed relationships across Indonesian conglomera
 
 The application uses the Sectors REST API as its only market-data provider. The repository validator rejects every other source host.
 
+Before adding a feature, read the [system design](docs/system-design.md), the
+[product design system](docs/product-design-system.md), and the
+[vertical product tickets](docs/tickets/README.md).
+
 ## Run the application
 
 Install the dependencies and start Convex with the Vite+ development server:
