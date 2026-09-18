@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "PTRO",
+  "tradingDate": "2026-09-14",
+  "open": 5350,
+  "high": 5375,
+  "low": 5025,
+  "close": 5300,
+  "volume": 53600200,
+  "marketCap": 53456065000000,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/PTRO/?start=2026-09-04&end=2026-09-17",
+    "retrievedAt": "2026-09-17T08:41:07.287Z"
+  }
+}

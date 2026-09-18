@@ -1,0 +1,319 @@
+[
+  {
+    "id": "prajogo",
+    "kind": "person",
+    "displayName": "Prajogo Pangestu",
+    "country": "Indonesia",
+    "summary": "Research subject. Every visible relationship is backed by a current Sectors response."
+  },
+  {
+    "id": "barito-group",
+    "kind": "business_group",
+    "displayName": "Barito Group",
+    "country": "Indonesia",
+    "summary": "Conglomerate classification returned by Sectors. Membership does not by itself prove ownership or control."
+  },
+  {
+    "id": "tpia",
+    "kind": "listed_company",
+    "displayName": "PT Chandra Asri Pacific Tbk",
+    "ticker": "TPIA",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Chemicals · Basic Materials. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "brpt",
+    "kind": "listed_company",
+    "displayName": "Barito Pacific Tbk",
+    "ticker": "BRPT",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Chemicals · Basic Materials. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "cuan",
+    "kind": "listed_company",
+    "displayName": "PT Petrindo Jaya Kreasi Tbk",
+    "ticker": "CUAN",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Coal · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "ptro",
+    "kind": "listed_company",
+    "displayName": "Petrosea Tbk",
+    "ticker": "PTRO",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Oil, Gas & Coal Supports · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "bren",
+    "kind": "listed_company",
+    "displayName": "PT Barito Renewables Energy Tbk.",
+    "ticker": "BREN",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Electric Utilities · Utilities. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "cdia",
+    "kind": "listed_company",
+    "displayName": "PT Chandra Daya Investasi Tbk",
+    "ticker": "CDIA",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Electric Utilities · Utilities. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "ratu",
+    "kind": "listed_company",
+    "displayName": "PT Raharja Energi Cepu Tbk",
+    "ticker": "RATU",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Oil & Gas · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "ssia",
+    "kind": "listed_company",
+    "displayName": "PT Surya Semesta Internusa Tbk",
+    "ticker": "SSIA",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "nrca",
+    "kind": "listed_company",
+    "displayName": "PT Nusa Raya Cipta Tbk",
+    "ticker": "NRCA",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "sini",
+    "kind": "listed_company",
+    "displayName": "PT Singaraja Putra Tbk",
+    "ticker": "SINI",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Building Products & Fixtures · Industrial Goods. Profile and cycle data returned by Sectors."
+  },
+  {
+    "id": "pt-multi-tambangjaya-utama",
+    "kind": "operating_company",
+    "displayName": "PT Multi Tambangjaya Utama",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 100% CUAN subsidiary."
+  },
+  {
+    "id": "pt-tamtama-perkasa",
+    "kind": "operating_company",
+    "displayName": "PT Tamtama Perkasa",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 99.99% CUAN subsidiary."
+  },
+  {
+    "id": "pt-armada-maritim-persada",
+    "kind": "operating_company",
+    "displayName": "PT Armada Maritim Persada",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 99.98% CUAN subsidiary."
+  },
+  {
+    "id": "pt-borneo-bangun-banua",
+    "kind": "operating_company",
+    "displayName": "PT Borneo Bangun Banua",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 70% CUAN subsidiary."
+  },
+  {
+    "id": "pt-daya-bumindo-karunia",
+    "kind": "operating_company",
+    "displayName": "PT Daya Bumindo Karunia",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 65% CUAN subsidiary."
+  },
+  {
+    "id": "pt-bara-international",
+    "kind": "operating_company",
+    "displayName": "PT Bara International",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 65% CUAN subsidiary."
+  },
+  {
+    "id": "pt-intam",
+    "kind": "operating_company",
+    "displayName": "PT Intam",
+    "country": "Indonesia",
+    "summary": "Sectors lists this as a 65% CUAN subsidiary."
+  },
+  {
+    "id": "private-scg-chemicals-public-company-limited",
+    "displayName": "Scg Chemicals Public Company Limited",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-top-investment-indonesia",
+    "displayName": "PT Top Investment Indonesia",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "kjp",
+    "displayName": "PT Kreasi Jasa Persada",
+    "scopeRole": "empire",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Private group entity identified in Sectors ownership records. Its upstream group position remains explicit about inference and missing percentages."
+  },
+  {
+    "id": "private-pt-caraka-reksa-optima",
+    "displayName": "PT Caraka Reksa Optima",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-green-era-energy-pte-ltd",
+    "displayName": "Green Era Energy Pte. Ltd",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-phoenix-power-b-v",
+    "displayName": "Phoenix Power B.V.",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-henan-putihrai-asset-management",
+    "displayName": "PT Henan Putihrai Asset Management",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-dwimuria-investama-andalan",
+    "displayName": "PT Dwimuria Investama Andalan",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-arman-investments-utama",
+    "displayName": "PT Arman Investments Utama",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-gsi-s-a-intrepid-investments-limited",
+    "displayName": "Gsi S/A Intrepid Investments Limited",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-ddbs-bank-ltd-sg-s-a-pt-persada-capital-investama",
+    "displayName": "Ddbs Bank Ltd Sg S/A PT Persada Capital Investama",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-nusira-putera",
+    "displayName": "PT Nusira Putera",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-hadinusa-tirta",
+    "displayName": "PT Hadinusa Tirta",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-anindita-rahadian",
+    "displayName": "PT Anindita Rahadian",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-anugerah-andita-suryadi",
+    "displayName": "PT Anugerah Andita Suryadi",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-pt-autum-prima-indonesia",
+    "displayName": "PT Autum Prima Indonesia",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-ever-grace-international-trading-limited",
+    "displayName": "Ever Grace International Trading Limited",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "private-batubara-development-pte-ltd",
+    "displayName": "Batubara Development Pte. Ltd.",
+    "scopeRole": "boundary",
+    "kind": "private_company",
+    "country": "Indonesia",
+    "summary": "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+  },
+  {
+    "id": "raja",
+    "displayName": "PT Rukun Raharja Tbk",
+    "ticker": "RAJA",
+    "scopeRole": "boundary",
+    "kind": "listed_company",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Listed shareholder returned by a Sectors company report. Kept outside the empire until Sectors establishes group membership."
+  },
+  {
+    "id": "srtg",
+    "displayName": "PT Saratoga Investama Sedaya Tbk",
+    "ticker": "SRTG",
+    "scopeRole": "boundary",
+    "kind": "listed_company",
+    "exchange": "IDX",
+    "country": "Indonesia",
+    "summary": "Listed shareholder returned by a Sectors company report. Kept outside the empire until Sectors establishes group membership."
+  }
+]

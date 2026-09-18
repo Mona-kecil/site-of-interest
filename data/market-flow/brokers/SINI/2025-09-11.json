@@ -1,0 +1,193 @@
+{
+  "schemaVersion": 1,
+  "kind": "broker_day",
+  "ticker": "SINI",
+  "tradingDate": "2025-09-11",
+  "brokers": [
+    {
+      "brokerCode": "AF",
+      "buy": {
+        "frequency": 3,
+        "lots": 40,
+        "value": 14820000,
+        "averagePrice": 3705
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 40,
+        "value": 14820000,
+        "averagePrice": 3705
+      }
+    },
+    {
+      "brokerCode": "CC",
+      "buy": {
+        "frequency": 3,
+        "lots": 20,
+        "value": 7420000,
+        "averagePrice": 3710
+      },
+      "sell": {
+        "frequency": 1,
+        "lots": 93,
+        "value": 34503000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": -73,
+        "value": -27083000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "CP",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 1,
+        "lots": 13,
+        "value": 4823000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": -13,
+        "value": -4823000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "KK",
+      "buy": {
+        "frequency": 1,
+        "lots": 5,
+        "value": 1855000,
+        "averagePrice": 3710
+      },
+      "sell": {
+        "frequency": 3,
+        "lots": 23,
+        "value": 8533000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": -18,
+        "value": -6678000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "LG",
+      "buy": {
+        "frequency": 2,
+        "lots": 23,
+        "value": 8533000,
+        "averagePrice": 3710
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 23,
+        "value": 8533000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "PD",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 3,
+        "lots": 11,
+        "value": 4081000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": -11,
+        "value": -4081000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "XL",
+      "buy": {
+        "frequency": 4,
+        "lots": 115,
+        "value": 42665000,
+        "averagePrice": 3710
+      },
+      "sell": {
+        "frequency": 2,
+        "lots": 20,
+        "value": 7420000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": 95,
+        "value": 35245000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "YP",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 2,
+        "lots": 23,
+        "value": 8533000,
+        "averagePrice": 3710
+      },
+      "net": {
+        "lots": -23,
+        "value": -8533000,
+        "averagePrice": 3710
+      }
+    },
+    {
+      "brokerCode": "ZP",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 1,
+        "lots": 20,
+        "value": 7400000,
+        "averagePrice": 3700
+      },
+      "net": {
+        "lots": -20,
+        "value": -7400000,
+        "averagePrice": 3700
+      }
+    }
+  ],
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/broker-summary/SINI/?start=2025-09-01&end=2025-09-14",
+    "retrievedAt": "2026-09-17T09:23:59.478Z"
+  }
+}

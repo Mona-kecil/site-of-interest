@@ -1,0 +1,17 @@
+{
+  "id": "prajogo-sectors",
+  "name": "Prajogo Pangestu",
+  "subjectEntityId": "prajogo",
+  "jurisdiction": "ID",
+  "asOf": "2026-09-17",
+  "status": "researching",
+  "scope": "Barito group membership, listed ownership paths, valuation cycles, financials, and the CUAN mining branch reachable in the Sectors REST API.",
+  "dataPolicy": "sectors_only",
+  "coverageAreas": [
+    "ownership",
+    "financials",
+    "market",
+    "valuation",
+    "physical_assets"
+  ]
+}

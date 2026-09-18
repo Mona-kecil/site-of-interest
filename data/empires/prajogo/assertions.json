@@ -1,0 +1,758 @@
+[
+  {
+    "id": "assert-prajogo-tpia",
+    "relationshipId": "prajogo-tpia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Prajogo Pangestu with 5.03% of PT Chandra Asri Pacific Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-prajogo-discovery",
+        "locator": "results[symbol=TPIA.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-prajogo-brpt",
+    "relationshipId": "prajogo-brpt",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Prajogo Pangestu with 71.37% of Barito Pacific Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-prajogo-discovery",
+        "locator": "results[symbol=BRPT.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-prajogo-cuan",
+    "relationshipId": "prajogo-cuan",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Prajogo Pangestu with 80.418% of PT Petrindo Jaya Kreasi Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-prajogo-discovery",
+        "locator": "results[symbol=CUAN.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-brpt-bren",
+    "relationshipId": "brpt-bren",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Barito Pacific Tbk with 64.637% of PT Barito Renewables Energy Tbk..",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-listed-descendants-1",
+        "locator": "results[symbol=BREN.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-brpt-tpia",
+    "relationshipId": "brpt-tpia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Barito Pacific Tbk with 34.63% of PT Chandra Asri Pacific Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-listed-descendants-1",
+        "locator": "results[symbol=TPIA.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-tpia-cdia",
+    "relationshipId": "tpia-cdia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Chandra Asri Pacific Tbk with 60% of PT Chandra Daya Investasi Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-listed-descendants-1",
+        "locator": "results[symbol=CDIA.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-ssia-nrca",
+    "relationshipId": "ssia-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Surya Semesta Internusa Tbk with 63.94% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-listed-descendants-1",
+        "locator": "results[symbol=NRCA.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-ptro-sini",
+    "relationshipId": "ptro-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Petrosea Tbk with 19.88% of PT Singaraja Putra Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-listed-descendants-2",
+        "locator": "results[symbol=SINI.JK].query_values.major_shareholders_name"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-multi-tambangjaya-utama",
+    "relationshipId": "cuan-pt-multi-tambangjaya-utama",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Multi Tambangjaya Utama as a 100% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-tamtama-perkasa",
+    "relationshipId": "cuan-pt-tamtama-perkasa",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Tamtama Perkasa as a 99.99% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-armada-maritim-persada",
+    "relationshipId": "cuan-pt-armada-maritim-persada",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Armada Maritim Persada as a 99.98% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-borneo-bangun-banua",
+    "relationshipId": "cuan-pt-borneo-bangun-banua",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Borneo Bangun Banua as a 70% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-daya-bumindo-karunia",
+    "relationshipId": "cuan-pt-daya-bumindo-karunia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Daya Bumindo Karunia as a 65% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-bara-international",
+    "relationshipId": "cuan-pt-bara-international",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Bara International as a 65% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-pt-intam",
+    "relationshipId": "cuan-pt-intam",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Intam as a 65% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-ptro",
+    "relationshipId": "cuan-ptro",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors lists PT Petrosea Tbk as a 41.5% CUAN subsidiary.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-mining-ownership",
+        "locator": "subsidiaries"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-scg-chemicals-public-company-limited-tpia",
+    "relationshipId": "private-scg-chemicals-public-company-limited-tpia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Scg Chemicals Public Company Limited with 15.71% of PT Chandra Asri Pacific Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-tpia-report",
+        "locator": "ownership.major_shareholders[name=Scg Chemicals Public Company Limited]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-top-investment-indonesia-tpia",
+    "relationshipId": "private-pt-top-investment-indonesia-tpia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Top Investment Indonesia with 15% of PT Chandra Asri Pacific Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-tpia-report",
+        "locator": "ownership.major_shareholders[name=PT Top Investment Indonesia]"
+      }
+    ]
+  },
+  {
+    "id": "assert-kjp-ptro",
+    "relationshipId": "kjp-ptro",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Kreasi Jasa Persada with 45.328% of Petrosea Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ptro-report",
+        "locator": "ownership.major_shareholders[name=PT Kreasi Jasa Persada]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-caraka-reksa-optima-ptro",
+    "relationshipId": "private-pt-caraka-reksa-optima-ptro",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Caraka Reksa Optima with 24.449% of Petrosea Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ptro-report",
+        "locator": "ownership.major_shareholders[name=PT Caraka Reksa Optima]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-green-era-energy-pte-ltd-bren",
+    "relationshipId": "private-green-era-energy-pte-ltd-bren",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Green Era Energy Pte. Ltd with 22.665% of PT Barito Renewables Energy Tbk..",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-bren-report",
+        "locator": "ownership.major_shareholders[name=Green Era Energy Pte. Ltd]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-phoenix-power-b-v-cdia",
+    "relationshipId": "private-phoenix-power-b-v-cdia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Phoenix Power B.V. with 30% of PT Chandra Daya Investasi Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cdia-report",
+        "locator": "ownership.major_shareholders[name=Phoenix Power B.V.]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-henan-putihrai-asset-management-ssia",
+    "relationshipId": "private-pt-henan-putihrai-asset-management-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Henan Putihrai Asset Management with 13.15% of PT Surya Semesta Internusa Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.major_shareholders[name=PT Henan Putihrai Asset Management]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-dwimuria-investama-andalan-ssia",
+    "relationshipId": "private-pt-dwimuria-investama-andalan-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Dwimuria Investama Andalan with 10.24% of PT Surya Semesta Internusa Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.major_shareholders[name=PT Dwimuria Investama Andalan]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-arman-investments-utama-ssia",
+    "relationshipId": "private-pt-arman-investments-utama-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Arman Investments Utama with 8.52% of PT Surya Semesta Internusa Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.major_shareholders[name=PT Arman Investments Utama]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-gsi-s-a-intrepid-investments-limited-ssia",
+    "relationshipId": "private-gsi-s-a-intrepid-investments-limited-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Gsi S/A Intrepid Investments Limited with 8.2% of PT Surya Semesta Internusa Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.major_shareholders[name=Gsi S/A Intrepid Investments Limited]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-ddbs-bank-ltd-sg-s-a-pt-persada-capital-investama-ssia",
+    "relationshipId": "private-ddbs-bank-ltd-sg-s-a-pt-persada-capital-investama-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Ddbs Bank Ltd Sg S/A PT Persada Capital Investama with 7.85% of PT Surya Semesta Internusa Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.major_shareholders[name=Ddbs Bank Ltd Sg S/A PT Persada Capital Investama]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-nusira-putera-nrca",
+    "relationshipId": "private-pt-nusira-putera-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Nusira Putera with 1.6% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-nrca-report",
+        "locator": "ownership.major_shareholders[name=PT Nusira Putera]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-hadinusa-tirta-nrca",
+    "relationshipId": "private-pt-hadinusa-tirta-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Hadinusa Tirta with 0.21% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-nrca-report",
+        "locator": "ownership.major_shareholders[name=PT Hadinusa Tirta]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-anindita-rahadian-nrca",
+    "relationshipId": "private-pt-anindita-rahadian-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Anindita Rahadian with 0.21% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-nrca-report",
+        "locator": "ownership.major_shareholders[name=PT Anindita Rahadian]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-anugerah-andita-suryadi-nrca",
+    "relationshipId": "private-pt-anugerah-andita-suryadi-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Anugerah Andita Suryadi with 0.16% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-nrca-report",
+        "locator": "ownership.major_shareholders[name=PT Anugerah Andita Suryadi]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-pt-autum-prima-indonesia-sini",
+    "relationshipId": "private-pt-autum-prima-indonesia-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Autum Prima Indonesia with 16.99% of PT Singaraja Putra Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.major_shareholders[name=PT Autum Prima Indonesia]"
+      }
+    ]
+  },
+  {
+    "id": "assert-kjp-sini",
+    "relationshipId": "kjp-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Kreasi Jasa Persada with 7.9% of PT Singaraja Putra Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.major_shareholders[name=PT Kreasi Jasa Persada]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-ever-grace-international-trading-limited-sini",
+    "relationshipId": "private-ever-grace-international-trading-limited-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Ever Grace International Trading Limited with 7.48% of PT Singaraja Putra Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.major_shareholders[name=Ever Grace International Trading Limited]"
+      }
+    ]
+  },
+  {
+    "id": "assert-private-batubara-development-pte-ltd-sini",
+    "relationshipId": "private-batubara-development-pte-ltd-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports Batubara Development Pte. Ltd. with 6.2% of PT Singaraja Putra Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.major_shareholders[name=Batubara Development Pte. Ltd.]"
+      }
+    ]
+  },
+  {
+    "id": "assert-raja-ratu",
+    "relationshipId": "raja-ratu",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Rukun Raharja Tbk with 68.68% of PT Raharja Energi Cepu Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-ratu-report",
+        "locator": "ownership.major_shareholders[name=PT Rukun Raharja Tbk]"
+      }
+    ]
+  },
+  {
+    "id": "assert-srtg-nrca",
+    "relationshipId": "srtg-nrca",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors reports PT Saratoga Investama Sedaya Tbk with 5.98% of PT Nusa Raya Cipta Tbk.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-nrca-report",
+        "locator": "ownership.major_shareholders[name=PT Saratoga Investama Sedaya Tbk]"
+      }
+    ]
+  },
+  {
+    "id": "assert-prajogo-barito-group",
+    "relationshipId": "prajogo-barito-group",
+    "type": "inference",
+    "stance": "supports",
+    "statement": "Sectors repeatedly co-tags listed companies with the Barito and Prajogo Pangestu affiliates. The graph uses Barito Group as the research-group container without treating it as a legal ownership entity.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[*].query_values.affiliates"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-bren",
+    "relationshipId": "barito-group-bren",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Barito Renewables Energy Tbk. with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=BREN.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-bren-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-tpia",
+    "relationshipId": "barito-group-tpia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Chandra Asri Pacific Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=TPIA.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-tpia-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-brpt",
+    "relationshipId": "barito-group-brpt",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies Barito Pacific Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=BRPT.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-brpt-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-cuan",
+    "relationshipId": "barito-group-cuan",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Petrindo Jaya Kreasi Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=CUAN.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-cuan-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-cdia",
+    "relationshipId": "barito-group-cdia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Chandra Daya Investasi Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=CDIA.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-cdia-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-ptro",
+    "relationshipId": "barito-group-ptro",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies Petrosea Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=PTRO.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-ptro-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-ratu",
+    "relationshipId": "barito-group-ratu",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Raharja Energi Cepu Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=RATU.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-ratu-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-ssia",
+    "relationshipId": "barito-group-ssia",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Surya Semesta Internusa Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-barito-affiliates",
+        "locator": "results[symbol=SSIA.JK].query_values.affiliates"
+      },
+      {
+        "sourceId": "sectors-ssia-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-barito-group-sini",
+    "relationshipId": "barito-group-sini",
+    "type": "fact",
+    "stance": "supports",
+    "statement": "Sectors classifies PT Singaraja Putra Tbk with Barito Group. This is group membership, not an ownership claim.",
+    "asOf": "2026-09-17",
+    "confidence": "high",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.conglomerates_group"
+      }
+    ]
+  },
+  {
+    "id": "assert-cuan-kjp",
+    "relationshipId": "cuan-kjp",
+    "type": "inference",
+    "stance": "supports",
+    "statement": "Sectors reports that CUAN is pursuing SINI through subsidiaries and separately lists KJP as a 7.9% SINI shareholder. This supports a CUAN-group link to KJP, but Sectors does not disclose CUAN's ownership percentage in KJP.",
+    "asOf": "2026-09-17",
+    "confidence": "medium",
+    "sourceRefs": [
+      {
+        "sourceId": "sectors-cuan-sini-subsidiaries-news",
+        "locator": "results[0].title"
+      },
+      {
+        "sourceId": "sectors-sini-report",
+        "locator": "ownership.major_shareholders[name=PT Kreasi Jasa Persada]"
+      }
+    ]
+  }
+]

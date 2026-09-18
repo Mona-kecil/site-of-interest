@@ -1,0 +1,212 @@
+[
+  {
+    "id": "sectors-prajogo-discovery",
+    "title": "Prajogo listed-company discovery",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/companies/?where=key_executives_name+%3D+%27Prajogo+Pangestu%27+or+major_shareholders_name+like+%27%25Prajogo+Pangestu%25%27&order_by=-market_cap&limit=200&include_query_values=true"
+  },
+  {
+    "id": "sectors-barito-affiliates",
+    "title": "Barito affiliated-company discovery",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/companies/?where=affiliates+in+%5B%27Barito%27%5D&order_by=-market_cap&limit=200&include_query_values=true"
+  },
+  {
+    "id": "sectors-listed-descendants-1",
+    "title": "Listed-company descendant discovery at depth 1",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/companies/?where=major_shareholders_name+%3D+%27PT+Chandra+Asri+Pacific+Tbk%27+or+major_shareholders_name+%3D+%27PT+Chandra+Asri+Pacific+Tbk.%27+or+major_shareholders_name+%3D+%27Barito+Pacific+Tbk%27+or+major_shareholders_name+%3D+%27Barito+Pacific+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Barito+Pacific+Tbk%27+or+major_shareholders_name+%3D+%27PT+Petrindo+Jaya+Kreasi+Tbk%27+or+major_shareholders_name+%3D+%27PT+Petrindo+Jaya+Kreasi+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Barito+Renewables+Energy+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Barito+Renewables+Energy+Tbk%27+or+major_shareholders_name+%3D+%27PT+Chandra+Daya+Investasi+Tbk%27+or+major_shareholders_name+%3D+%27PT+Chandra+Daya+Investasi+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Raharja+Energi+Cepu+Tbk%27+or+major_shareholders_name+%3D+%27PT+Raharja+Energi+Cepu+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Surya+Semesta+Internusa+Tbk%27+or+major_shareholders_name+%3D+%27PT+Surya+Semesta+Internusa+Tbk.%27&order_by=-market_cap&limit=200&include_query_values=true"
+  },
+  {
+    "id": "sectors-listed-descendants-2",
+    "title": "Listed-company descendant discovery at depth 2",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/companies/?where=major_shareholders_name+%3D+%27PT+Petrosea+Tbk%27+or+major_shareholders_name+%3D+%27PT+Petrosea+Tbk.%27+or+major_shareholders_name+%3D+%27PT+Nusa+Raya+Cipta+Tbk%27+or+major_shareholders_name+%3D+%27PT+Nusa+Raya+Cipta+Tbk.%27&order_by=-market_cap&limit=200&include_query_values=true"
+  },
+  {
+    "id": "sectors-listed-descendants-3",
+    "title": "Listed-company descendant discovery at depth 3",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/companies/?where=major_shareholders_name+%3D+%27PT+Singaraja+Putra+Tbk%27+or+major_shareholders_name+%3D+%27PT+Singaraja+Putra+Tbk.%27&order_by=-market_cap&limit=200&include_query_values=true"
+  },
+  {
+    "id": "sectors-cuan-mining-search",
+    "title": "CUAN mining-company search",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/mining/companies/?keyword=CUAN&limit=10"
+  },
+  {
+    "id": "sectors-cuan-mining-detail",
+    "title": "CUAN mining-company detail",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/mining/companies/pt-petrindo-jaya-kreasi-tbk/"
+  },
+  {
+    "id": "sectors-cuan-mining-ownership",
+    "title": "CUAN mining ownership",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/mining/companies/ownership/pt-petrindo-jaya-kreasi-tbk/"
+  },
+  {
+    "id": "sectors-cuan-mining-sites",
+    "title": "CUAN mining sites",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/mining/sites/?company=pt-petrindo-jaya-kreasi-tbk&limit=30"
+  },
+  {
+    "id": "sectors-tpia-report",
+    "title": "TPIA company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/TPIA/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-brpt-report",
+    "title": "BRPT company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/BRPT/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-cuan-report",
+    "title": "CUAN company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/CUAN/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-ptro-report",
+    "title": "PTRO company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/PTRO/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-bren-report",
+    "title": "BREN company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/BREN/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-cdia-report",
+    "title": "CDIA company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/CDIA/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-ratu-report",
+    "title": "RATU company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/RATU/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-ssia-report",
+    "title": "SSIA company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/SSIA/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-nrca-report",
+    "title": "NRCA company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/NRCA/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-sini-report",
+    "title": "SINI company report",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/SINI/?sections=overview,ownership,financials,valuation"
+  },
+  {
+    "id": "sectors-prdl-ownership",
+    "title": "PRDL ownership section",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/company/report/PRDL/?sections=ownership"
+  },
+  {
+    "id": "sectors-cuan-sini-subsidiaries-news",
+    "title": "CUAN takeover through subsidiaries",
+    "publisher": "Sectors",
+    "provider": "sectors",
+    "kind": "api_response",
+    "authority": "data_provider",
+    "retrievedAt": "2026-09-17",
+    "url": "https://api.sectors.app/v2/news/?extension=idx&symbols=CUAN%2CSINI&keyword=through+subsidiaries"
+  }
+]

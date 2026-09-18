@@ -1,0 +1,14 @@
+{
+  "name": "site-of-interest",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node scripts/serve.mjs",
+    "sync:sectors": "node scripts/sync-sectors.mjs",
+    "sync:flow": "node scripts/sync-market-flow.mjs",
+    "analyze:empire": "node scripts/analyze-empire.mjs data/empires/prajogo",
+    "validate": "node scripts/validate-corpus.mjs data/empires/prajogo",
+    "validate:flow": "node scripts/validate-market-flow.mjs",
+    "test": "node --test"
+  }
+}
