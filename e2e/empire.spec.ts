@@ -27,9 +27,11 @@ test("moves from the Empire graph into company intelligence", async ({ page }) =
 });
 
 test("presents authenticated Sectors evidence without a dead browser link", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/company/CUAN");
 
   await expect(page.getByText("Authenticated API", { exact: true }).first()).toBeVisible();
   await expect(page.getByText("/v2/company/report/CUAN/", { exact: false })).toBeVisible();
   await expect(page.getByRole("link", { name: "CUAN company report" })).toHaveCount(0);
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });

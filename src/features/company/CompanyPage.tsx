@@ -1,6 +1,5 @@
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
-import { motion } from "motion/react";
 import { api } from "../../../convex/_generated/api";
 import { deriveCycleLens, formatCompanyValue } from "./company-model";
 
@@ -46,22 +45,17 @@ export function CompanyPage() {
             ← Prajogo Empire
           </Link>
           <p className="eyebrow">
-            Company intelligence <span>/</span> {company.exchange} <span>/</span> {company.country}
+            [company / {company.exchange} / {company.country}]
           </p>
           <div className="company-title-row">
             <h1>{company.ticker}</h1>
-            <span>Sectors only</span>
+            <span>data: sectors</span>
           </div>
           <h2>{company.name}</h2>
           <p className="company-summary">{company.summary}</p>
         </div>
-        <motion.aside
-          className={`cycle-lens cycle-${cycle.status}`}
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-        >
-          <p className="eyebrow">Valuation cycle lens</p>
-          <span className="cycle-pulse" />
+        <aside className={`cycle-lens cycle-${cycle.status}`}>
+          <p className="eyebrow">[status / valuation]</p>
           <h2>{cycle.title}</h2>
           <p>{cycle.summary}</p>
           <dl>
@@ -85,29 +79,24 @@ export function CompanyPage() {
             </div>
           </dl>
           <small>Descriptive screen, not a price forecast.</small>
-        </motion.aside>
+        </aside>
       </header>
 
-      <section className="company-metric-strip" aria-label="Key company metrics">
-        {facts.metrics.slice(0, 8).map((metric, index) => (
-          <motion.article
-            key={metric.id}
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: index * 0.035 }}
-          >
-            <p>{metric.label}</p>
-            <strong>{formatCompanyValue(metric.value, metric.unit)}</strong>
-            <small>As of {metric.asOf}</small>
-          </motion.article>
+      <dl className="company-metric-strip" aria-label="Key company metrics">
+        {facts.metrics.slice(0, 8).map((metric) => (
+          <div key={metric.id}>
+            <dt>{metric.label}</dt>
+            <dd>{formatCompanyValue(metric.value, metric.unit)}</dd>
+            <small>{metric.asOf}</small>
+          </div>
         ))}
-      </section>
+      </dl>
 
       <div className="company-grid">
         <section className="company-card financial-history">
           <header>
             <div>
-              <p className="eyebrow">Delivery record</p>
+              <p className="eyebrow">[01 / delivery record]</p>
               <h2>Financial history</h2>
             </div>
             <span>{facts.financials.length} years</span>
@@ -156,7 +145,7 @@ export function CompanyPage() {
         <section className="company-card signal-board">
           <header>
             <div>
-              <p className="eyebrow">Current readings</p>
+              <p className="eyebrow">[02 / current readings]</p>
               <h2>Signal board</h2>
             </div>
           </header>
@@ -176,7 +165,7 @@ export function CompanyPage() {
         <section className="company-card valuation-history">
           <header>
             <div>
-              <p className="eyebrow">Multiple history</p>
+              <p className="eyebrow">[03 / multiple history]</p>
               <h2>P/E versus peers</h2>
             </div>
           </header>
@@ -210,7 +199,7 @@ export function CompanyPage() {
         <section className="company-card research-frontier">
           <header>
             <div>
-              <p className="eyebrow">Research state</p>
+              <p className="eyebrow">[04 / research state]</p>
               <h2>Coverage frontier</h2>
             </div>
             <span>{coverage?.frontier.priority ?? "unknown"} priority</span>
@@ -237,7 +226,7 @@ export function CompanyPage() {
         <section className="company-card network-context">
           <header>
             <div>
-              <p className="eyebrow">Empire context</p>
+              <p className="eyebrow">[05 / empire context]</p>
               <h2>Connected entities</h2>
             </div>
             <span>{relationships.length} links</span>
@@ -258,7 +247,7 @@ export function CompanyPage() {
         <section className="company-card source-ledger">
           <header>
             <div>
-              <p className="eyebrow">Evidence ledger</p>
+              <p className="eyebrow">[06 / evidence ledger]</p>
               <h2>Sectors sources</h2>
             </div>
             <span>{sources.length} records</span>
@@ -266,11 +255,13 @@ export function CompanyPage() {
           <ul>
             {sources.map((source) => (
               <li key={source.id}>
-                <a href={source.url} rel="noreferrer" target="_blank">
-                  {source.title}
-                </a>
+                <strong>{source.title}</strong>
+                <code>{source.reference}</code>
                 <small>
-                  {source.publisher} · retrieved {source.retrievedAt}
+                  <span>
+                    {source.access === "authenticated_api" ? "Authenticated API" : source.access}
+                  </span>{" "}
+                  / {source.publisher} / retrieved {source.retrievedAt}
                 </small>
               </li>
             ))}

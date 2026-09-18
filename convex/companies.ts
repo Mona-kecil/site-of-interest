@@ -1,6 +1,8 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 
+const authenticatedApiAccess = "authenticated_api";
+
 export const getIntelligence = query({
   args: {
     empireSlug: v.string(),
@@ -109,8 +111,9 @@ export const getIntelligence = query({
           id: source.stableId,
           title: source.title,
           publisher: source.publisher,
+          access: authenticatedApiAccess,
           retrievedAt: source.retrievedAt,
-          url: source.url,
+          reference: source.url.replace("https://api.sectors.app", ""),
         })),
     };
   },
