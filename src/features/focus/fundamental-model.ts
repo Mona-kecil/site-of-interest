@@ -6,7 +6,7 @@ export type FundamentalBoardData = NonNullable<
   FunctionReturnType<typeof api.focus.getFundamentals>
 >;
 export type FundamentalRow = FundamentalBoardData["rows"][number];
-export type FocusSort = "priority" | "ticker" | "pe" | "revenue" | "earnings" | "cash_flow";
+export type FundamentalSort = "priority" | "ticker" | "pe" | "revenue" | "earnings" | "cash_flow";
 
 export function peerPremium(row: FundamentalRow): number | null {
   const pe = row.fundamentals.pe?.value;
@@ -15,7 +15,7 @@ export function peerPremium(row: FundamentalRow): number | null {
   return (pe / peerPe - 1) * 100;
 }
 
-export function focusGaps(row: FundamentalRow): string[] {
+export function fundamentalGaps(row: FundamentalRow): string[] {
   const gaps: string[] = [];
   const { pe, peerPe, revenueGrowth, earningsGrowth, freeCashFlow } = row.fundamentals;
   if (pe === null) gaps.push("P/E not returned");
@@ -30,7 +30,7 @@ export function focusGaps(row: FundamentalRow): string[] {
   return gaps;
 }
 
-export function focusCycle(row: FundamentalRow): CycleState {
+export function fundamentalCycle(row: FundamentalRow): CycleState {
   return deriveCycleState(
     row.fundamentals.revenueGrowth?.value ?? null,
     row.fundamentals.earningsGrowth?.value ?? null,
@@ -43,18 +43,18 @@ function growthDivergence(row: FundamentalRow): number {
   return Math.abs(revenueGrowth.value - earningsGrowth.value);
 }
 
-export function orderFocusRows(
+export function orderFundamentalRows(
   rows: ReadonlyArray<FundamentalRow>,
-  options: { sort: FocusSort; cycle: CycleState | "all"; incompleteOnly: boolean },
+  options: { sort: FundamentalSort; cycle: CycleState | "all"; incompleteOnly: boolean },
 ): FundamentalRow[] {
   const filtered = rows.filter(
     (row) =>
-      (options.cycle === "all" || focusCycle(row) === options.cycle) &&
-      (!options.incompleteOnly || focusGaps(row).length > 0),
+      (options.cycle === "all" || fundamentalCycle(row) === options.cycle) &&
+      (!options.incompleteOnly || fundamentalGaps(row).length > 0),
   );
   return filtered.sort((left, right) => {
     if (options.sort === "priority") {
-      const gapDifference = focusGaps(right).length - focusGaps(left).length;
+      const gapDifference = fundamentalGaps(right).length - fundamentalGaps(left).length;
       if (gapDifference !== 0) return gapDifference;
       const divergence = growthDivergence(right) - growthDivergence(left);
       if (divergence !== 0) return divergence;
@@ -80,8 +80,8 @@ export function orderFocusRows(
   });
 }
 
-export function priorityReason(row: FundamentalRow): string {
-  const gaps = focusGaps(row);
+export function fundamentalPriorityReason(row: FundamentalRow): string {
+  const gaps = fundamentalGaps(row);
   if (gaps.length > 0)
     return `${gaps.length} unresolved board ${gaps.length === 1 ? "gap" : "gaps"}`;
   return `${growthDivergence(row).toFixed(1)} percentage points between reported growth values`;

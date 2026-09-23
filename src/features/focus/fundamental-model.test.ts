@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
 import { deriveCycleState } from "../company/company-model";
 import {
-  focusCycle,
-  focusGaps,
-  orderFocusRows,
+  fundamentalCycle,
+  fundamentalGaps,
+  orderFundamentalRows,
   peerPremium,
   type FundamentalRow,
 } from "./fundamental-model";
@@ -47,7 +47,7 @@ describe("Focus research queue", () => {
     expect(deriveCycleState(20, -10)).toBe("revenue_growing");
     expect(deriveCycleState(-20, 10)).toBe("earnings_growing");
     expect(deriveCycleState(0, -10)).toBe("neither_growing");
-    expect(focusCycle(row("CDIA", null, null, 10))).toBe("incomplete");
+    expect(fundamentalCycle(row("CDIA", null, null, 10))).toBe("incomplete");
   });
 
   it("orders unresolved coverage first and uses growth divergence to break ties", () => {
@@ -56,21 +56,21 @@ describe("Focus research queue", () => {
     const invalidPeer = row("SSIA", 12, -40, -5);
     const missingGrowth = row("CDIA", null, null, 10);
     expect(
-      orderFocusRows([completeB, invalidPeer, missingGrowth, completeA], {
+      orderFundamentalRows([completeB, invalidPeer, missingGrowth, completeA], {
         sort: "priority",
         cycle: "all",
         incompleteOnly: false,
       }).map(({ ticker }) => ticker),
     ).toEqual(["CDIA", "SSIA", "AAAA", "BBBB"]);
     expect(
-      orderFocusRows([completeB, invalidPeer, missingGrowth, completeA], {
+      orderFundamentalRows([completeB, invalidPeer, missingGrowth, completeA], {
         sort: "priority",
         cycle: "all",
         incompleteOnly: true,
       }).map(({ ticker }) => ticker),
     ).toEqual(["CDIA", "SSIA"]);
     expect(
-      orderFocusRows([completeB, invalidPeer, missingGrowth, completeA], {
+      orderFundamentalRows([completeB, invalidPeer, missingGrowth, completeA], {
         sort: "priority",
         cycle: "revenue_growing",
         incompleteOnly: false,
@@ -82,7 +82,7 @@ describe("Focus research queue", () => {
     const invalidPeer = row("SSIA", 12, -40, -5);
     expect(invalidPeer.fundamentals.peerPe?.value).toBe(-5);
     expect(peerPremium(invalidPeer)).toBeNull();
-    expect(focusGaps(invalidPeer)).toContain("Peer premium: peer P/E is zero or negative");
+    expect(fundamentalGaps(invalidPeer)).toContain("Peer premium: peer P/E is zero or negative");
     expect(peerPremium(row("TPIA", 10, 5, 10))).toBe(100);
   });
 
@@ -91,7 +91,7 @@ describe("Focus research queue", () => {
     const falling = row("SSIA", -10, -20, 10);
     const rising = row("TPIA", 40, 10, 10);
     expect(
-      orderFocusRows([missing, falling, rising], {
+      orderFundamentalRows([missing, falling, rising], {
         sort: "revenue",
         cycle: "all",
         incompleteOnly: false,
