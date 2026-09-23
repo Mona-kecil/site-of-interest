@@ -2,17 +2,17 @@ import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { cycleLabels, formatCompanyValue, type CycleState } from "../company/company-model";
 import {
-  focusCycle,
-  focusGaps,
-  orderFocusRows,
+  fundamentalCycle,
+  fundamentalGaps,
+  orderFundamentalRows,
   peerPremium,
-  priorityReason,
+  fundamentalPriorityReason,
   type FundamentalBoardData,
   type FundamentalRow,
-  type FocusSort,
+  type FundamentalSort,
 } from "./fundamental-model";
 
-const sorts: ReadonlyArray<{ value: FocusSort; label: string; explanation: string }> = [
+const sorts: ReadonlyArray<{ value: FundamentalSort; label: string; explanation: string }> = [
   {
     value: "priority",
     label: "Research priority",
@@ -42,7 +42,7 @@ const sorts: ReadonlyArray<{ value: FocusSort; label: string; explanation: strin
   },
 ];
 
-function selectedSort(value: string): FocusSort {
+function selectedSort(value: string): FundamentalSort {
   return sorts.find((sort) => sort.value === value)?.value ?? "priority";
 }
 
@@ -92,9 +92,9 @@ function Evidence({
         Cycle state compares the signs of the two reported quarterly growth values. Zero counts as
         not growing. The provider field does not identify the reporting quarter.
       </p>
-      {focusGaps(row).length > 0 && (
+      {fundamentalGaps(row).length > 0 && (
         <p className="focus-gap-copy">
-          Check the next Sectors company report for: {focusGaps(row).join("; ")}.
+          Check the next Sectors company report for: {fundamentalGaps(row).join("; ")}.
         </p>
       )}
       <dl>
@@ -127,13 +127,13 @@ function Evidence({
 }
 
 export function FundamentalBoard({ board }: { board: FundamentalBoardData }) {
-  const [sort, setSort] = useState<FocusSort>("priority");
+  const [sort, setSort] = useState<FundamentalSort>("priority");
   const [cycle, setCycle] = useState<CycleState | "all">("all");
   const [incompleteOnly, setIncompleteOnly] = useState(false);
 
-  const rows = orderFocusRows(board.rows, { sort, cycle, incompleteOnly });
+  const rows = orderFundamentalRows(board.rows, { sort, cycle, incompleteOnly });
   const sourceMap = new Map(board.sources.map((source) => [source.id, source]));
-  const incompleteCount = board.rows.filter((row) => focusGaps(row).length > 0).length;
+  const incompleteCount = board.rows.filter((row) => fundamentalGaps(row).length > 0).length;
   const currentSort = sorts.find((item) => item.value === sort) ?? sorts[0];
 
   return (
@@ -156,8 +156,8 @@ export function FundamentalBoard({ board }: { board: FundamentalBoardData }) {
       <section className="focus-workspace" aria-label="Focus research queue">
         <header className="focus-workspace-header">
           <div>
-            <p className="eyebrow">[01 / comparison queue]</p>
-            <h2>Company board</h2>
+            <p className="eyebrow">[01 / fundamentals comparison queue]</p>
+            <h2>Fundamentals board</h2>
           </div>
           <span>Facts, calculations and gaps</span>
         </header>
@@ -195,7 +195,7 @@ export function FundamentalBoard({ board }: { board: FundamentalBoardData }) {
         <p className="focus-sort-explanation">
           <strong>{currentSort.label}.</strong> {currentSort.explanation}
           {sort === "priority" && rows.length > 0
-            ? ` First: ${rows[0].ticker}, ${priorityReason(rows[0])}.`
+            ? ` First: ${rows[0].ticker}, ${fundamentalPriorityReason(rows[0])}.`
             : ""}
         </p>
         {rows.length === 0 ? (
@@ -221,7 +221,7 @@ export function FundamentalBoard({ board }: { board: FundamentalBoardData }) {
               <tbody>
                 {rows.map((row) => {
                   const premium = peerPremium(row);
-                  const gaps = focusGaps(row);
+                  const gaps = fundamentalGaps(row);
                   return (
                     <tr key={`${row.empireSlug}:${row.ticker}`}>
                       <th scope="row">
@@ -238,7 +238,7 @@ export function FundamentalBoard({ board }: { board: FundamentalBoardData }) {
                           </small>
                         </Link>
                       </th>
-                      <td>{cycleLabels[focusCycle(row)]}</td>
+                      <td>{cycleLabels[fundamentalCycle(row)]}</td>
                       <td>
                         <MetricValue metric={row.fundamentals.pe} />
                       </td>
