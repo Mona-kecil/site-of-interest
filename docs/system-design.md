@@ -67,6 +67,7 @@ The current and target routes are:
 | Open the default application | Redirects to `/happening` | `/happening` |
 | Inspect one Empire | `/empire/$slug` | `/empire/$empireSlug` |
 | Inspect one listed company | `/empire/$empireSlug/company/$ticker`; legacy `/company/$ticker` | `/empire/$empireSlug/company/$ticker` |
+| Compare listed members in one Empire | `/focus/$empireSlug` | `/focus/$empireSlug` |
 | Inspect one research case | Not implemented | `/research/$caseId` |
 
 The target company route includes `empireSlug` because one ticker may appear as a member or boundary entity in more than one imported Empire. Do not add a private-entity route until the Empire inspector can no longer complete a named private-company research task.
@@ -99,6 +100,8 @@ A sector template names every metric that the company view may compare. A calcul
 The current corpus stores annual financial records, valuation periods, profile metrics, provider measurements, and data gaps in `companyFacts`. The importer stores calculated fundamental results separately in `fundamentalSignals` so the cross-company feed can use indexed queries. The current rule set covers annual revenue, earnings, operating cash flow, and free cash flow changes; operating cash flow divided by earnings; debt divided by assets; earnings divided by assets; and provider-reported P/E. Unknown sectors receive no template. Financial-sector templates exclude debt divided by assets.
 
 The corpus has no defined peer set, daily price series, book value, EBITDA, or dividend inputs for these rules. The feed does not calculate peer rankings, P/BV, EV/EBITDA, or dividend yield.
+
+Focus reads the stored listed membership and company facts for one Empire. It shows the latest annual P/E and provider peer P/E, quarterly revenue and earnings growth measurements, and latest annual free cash flow. Peer premium is `(company P/E / provider peer P/E - 1) × 100` only when both P/E values are positive; the provider has not defined its peer set. The shared company and Focus growth state compares the signs of the two quarterly growth measurements, treating zero as not growing and missing measurements as incomplete. The source field does not identify the reporting quarter. Focus research priority sorts unresolved board metrics first, then absolute divergence between the two growth values, then ticker. It does not estimate returns.
 
 ### Market
 
@@ -217,6 +220,8 @@ The Empire query returns at most 500 records from each of entities, relationship
 The target Empire view supplies context after the user opens it from a signal, company, or news item. It reads the graph, a fixed number of recent signals, and a fixed number of timeline items. It does not read market or broker history for every listed company.
 
 The target company view reads the stable profile and bounded summaries for fundamentals, market activity, broker activity, events, news, and Empire membership. Each historical series uses pagination or a documented maximum.
+
+The Focus board reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before import.
 
 The target **What's happening?** view reads paginated signal summaries in reverse observation-time order for a bounded date range. Today and Yesterday are presets over the same date-range contract. Filters use indexed fields. Signal detail loads cited inputs after the user opens one signal.
 
