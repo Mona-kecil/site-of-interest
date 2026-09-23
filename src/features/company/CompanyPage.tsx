@@ -89,6 +89,14 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
           </div>
           <h2>{company.name}</h2>
           <p className="company-summary">{company.summary}</p>
+          <Link
+            className="company-flow-link"
+            to="/flow/$ticker"
+            params={{ ticker: company.ticker }}
+            search={{ empireSlug }}
+          >
+            Open Flow for {company.ticker} →
+          </Link>
         </div>
         <aside className="cycle-lens">
           <p className="eyebrow">[growth state / reported values]</p>

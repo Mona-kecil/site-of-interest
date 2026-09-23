@@ -5,12 +5,15 @@ import {
   createRoute,
   createRouter,
   redirect,
+  useMatchRoute,
+  useRouterState,
 } from "@tanstack/react-router";
 import { EmpirePage } from "./features/empire/EmpirePage";
 import { EmpireDirectoryPage } from "./features/empire/EmpireDirectoryPage";
 import { CompanyPage, EmpireCompanyPage } from "./features/company/CompanyPage";
 import { TodayPage } from "./features/today/TodayPage";
 import { FocusPage } from "./features/focus/FocusPage";
+import { FlowPage } from "./features/flow/FlowPage";
 
 type FocusKind = "fundamental" | "broker" | "market" | "news";
 type TodaySearch = { focusKind?: FocusKind; focusId?: string; focusEmpire?: string };
@@ -23,6 +26,30 @@ function focusKind(value: unknown): FocusKind | undefined {
 }
 
 function RootLayout() {
+  const matchRoute = useMatchRoute();
+  const search = useRouterState({ select: (state) => state.location.search });
+  const companyMatch = matchRoute({ to: "/company/$ticker" });
+  const empireCompanyMatch = matchRoute({ to: "/empire/$empireSlug/company/$ticker" });
+  const flowMatch = matchRoute({ to: "/flow/$ticker" });
+  const empireMatch = matchRoute({ to: "/empire/$slug" });
+  const selectedEmpireTicker =
+    empireMatch && "ticker" in search && typeof search.ticker === "string"
+      ? search.ticker
+      : undefined;
+  const flowTicker = flowMatch
+    ? flowMatch.ticker
+    : empireCompanyMatch
+      ? empireCompanyMatch.ticker
+      : companyMatch
+        ? companyMatch.ticker
+        : selectedEmpireTicker;
+  const flowEmpireSlug =
+    (empireCompanyMatch ? empireCompanyMatch.empireSlug : undefined) ??
+    (empireMatch ? empireMatch.slug : undefined) ??
+    ("empireSlug" in search && typeof search.empireSlug === "string"
+      ? search.empireSlug
+      : "prajogo");
+
   return (
     <div className="app-shell">
       <header className="topbar">
@@ -46,7 +73,19 @@ function RootLayout() {
             Empires
           </Link>
           <span className="nav-link is-disabled">Asset map</span>
-          <span className="nav-link is-disabled">Flow</span>
+          {flowTicker ? (
+            <Link
+              activeProps={{ className: "nav-link is-active" }}
+              className="nav-link"
+              to="/flow/$ticker"
+              params={{ ticker: flowTicker }}
+              search={{ empireSlug: flowEmpireSlug }}
+            >
+              Flow
+            </Link>
+          ) : (
+            <span className="nav-link is-disabled">Flow</span>
+          )}
           <Link
             activeProps={{ className: "nav-link is-active" }}
             className="nav-link"
@@ -127,6 +166,18 @@ const focusRoute = createRoute({
   component: FocusPage,
 });
 
+const flowRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/flow/$ticker",
+  validateSearch: (search): { empireSlug: string } => ({
+    empireSlug:
+      typeof search.empireSlug === "string" && search.empireSlug.length > 0
+        ? search.empireSlug
+        : "prajogo",
+  }),
+  component: FlowPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   todayRoute,
@@ -136,6 +187,7 @@ const routeTree = rootRoute.addChildren([
   companyRoute,
   empireCompanyRoute,
   focusRoute,
+  flowRoute,
 ]);
 
 export const router = createRouter({
