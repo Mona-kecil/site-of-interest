@@ -14,6 +14,7 @@ import type * as companies from "../companies.js";
 import type * as empireDirectory from "../empireDirectory.js";
 import type * as empires from "../empires.js";
 import type * as fundamentalSignals from "../fundamentalSignals.js";
+import type * as focus from "../focus.js";
 import type * as marketSignals from "../marketSignals.js";
 import type * as news from "../news.js";
 import type * as seed from "../seed.js";
@@ -31,6 +32,7 @@ declare const fullApi: ApiFromModules<{
   empireDirectory: typeof empireDirectory;
   empires: typeof empires;
   fundamentalSignals: typeof fundamentalSignals;
+  focus: typeof focus;
   marketSignals: typeof marketSignals;
   news: typeof news;
   seed: typeof seed;

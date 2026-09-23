@@ -10,6 +10,7 @@ import { EmpirePage } from "./features/empire/EmpirePage";
 import { EmpireDirectoryPage } from "./features/empire/EmpireDirectoryPage";
 import { CompanyPage, EmpireCompanyPage } from "./features/company/CompanyPage";
 import { TodayPage } from "./features/today/TodayPage";
+import { FocusPage } from "./features/focus/FocusPage";
 
 type FocusKind = "fundamental" | "broker" | "market" | "news";
 type TodaySearch = { focusKind?: FocusKind; focusId?: string; focusEmpire?: string };
@@ -46,7 +47,14 @@ function RootLayout() {
           </Link>
           <span className="nav-link is-disabled">Asset map</span>
           <span className="nav-link is-disabled">Flow</span>
-          <span className="nav-link is-disabled">Focus</span>
+          <Link
+            activeProps={{ className: "nav-link is-active" }}
+            className="nav-link"
+            to="/focus/$empireSlug"
+            params={{ empireSlug: "prajogo" }}
+          >
+            Focus
+          </Link>
         </nav>
         <span className="product-state">Research build 01</span>
       </header>
@@ -113,6 +121,12 @@ const empireCompanyRoute = createRoute({
   component: EmpireCompanyPage,
 });
 
+const focusRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/focus/$empireSlug",
+  component: FocusPage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   todayRoute,
@@ -121,6 +135,7 @@ const routeTree = rootRoute.addChildren([
   empireRoute,
   companyRoute,
   empireCompanyRoute,
+  focusRoute,
 ]);
 
 export const router = createRouter({
