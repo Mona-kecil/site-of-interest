@@ -101,7 +101,9 @@ The current corpus stores annual financial records, valuation periods, profile m
 
 The corpus has no defined peer set, daily price series, book value, EBITDA, or dividend inputs for these rules. The feed does not calculate peer rankings, P/BV, EV/EBITDA, or dividend yield.
 
-Focus reads the stored listed membership and company facts for one Empire. It shows the latest annual P/E and provider peer P/E, quarterly revenue and earnings growth measurements, and latest annual free cash flow. Peer premium is `(company P/E / provider peer P/E - 1) × 100` only when both P/E values are positive; the provider has not defined its peer set. The shared company and Focus growth state compares the signs of the two quarterly growth measurements, treating zero as not growing and missing measurements as incomplete. The source field does not identify the reporting quarter. Focus research priority sorts unresolved board metrics first, then absolute divergence between the two growth values, then ticker. It does not estimate returns.
+Focus is the cross-domain comparison route for listed companies in one Empire. Its company identity is `empireSlug + ticker`. The current `getFundamentals` read model returns that identity and a nested `fundamentals` measurement group. The Focus route owns the shared page frame; the Fundamentals board owns its measurements, evidence, filters, and sort. Later market and broker boards should read their own bounded, domain-specific summaries keyed by the same company identity. They may have different observation windows, sources, coverage gaps, and sorting. Do not blend their gaps or ranks into one composite score.
+
+The current Fundamentals board reads stored listed membership and company facts. It shows the latest annual P/E and provider peer P/E, quarterly revenue and earnings growth measurements, and latest annual free cash flow. Peer premium is `(company P/E / provider peer P/E - 1) × 100` only when both P/E values are positive; the provider has not defined its peer set. The shared company and Focus growth state compares the signs of the two quarterly growth measurements, treating zero as not growing and missing measurements as incomplete. The source field does not identify the reporting quarter. Fundamental research priority sorts unresolved board metrics first, then absolute divergence between the two growth values, then ticker. It does not estimate returns.
 
 ### Market
 
@@ -221,7 +223,7 @@ The target Empire view supplies context after the user opens it from a signal, c
 
 The target company view reads the stable profile and bounded summaries for fundamentals, market activity, broker activity, events, news, and Empire membership. Each historical series uses pagination or a documented maximum.
 
-The Focus board reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before the board can display it.
+The current Focus Fundamentals query reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with `empireSlug + ticker`, nested fundamental metrics, fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before the board can display it. Future market and broker summaries need independent bounded reads; opening Focus must not load their full histories.
 
 The target **What's happening?** view reads paginated signal summaries in reverse observation-time order for a bounded date range. Today and Yesterday are presets over the same date-range contract. Filters use indexed fields. Signal detail loads cited inputs after the user opens one signal.
 

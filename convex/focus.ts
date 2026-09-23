@@ -13,7 +13,7 @@ const metric = v.object({
 });
 const maybeMetric = v.union(metric, v.null());
 
-export const getBoard = query({
+export const getFundamentals = query({
   args: { empireSlug: v.string() },
   returns: v.union(
     v.null(),
@@ -30,13 +30,16 @@ export const getBoard = query({
       ),
       rows: v.array(
         v.object({
+          empireSlug: v.string(),
           ticker: v.string(),
           companyName: v.string(),
-          pe: maybeMetric,
-          peerPe: maybeMetric,
-          revenueGrowth: maybeMetric,
-          earningsGrowth: maybeMetric,
-          freeCashFlow: maybeMetric,
+          fundamentals: v.object({
+            pe: maybeMetric,
+            peerPe: maybeMetric,
+            revenueGrowth: maybeMetric,
+            earningsGrowth: maybeMetric,
+            freeCashFlow: maybeMetric,
+          }),
         }),
       ),
     }),
@@ -99,68 +102,71 @@ export const getBoard = query({
         );
 
         return {
+          empireSlug,
           ticker: membership.ticker,
           companyName: membership.companyName,
-          pe:
-            valuation?.pe == null
-              ? null
-              : {
-                  value: valuation.pe,
-                  unit: "multiple",
-                  period: String(valuation.year),
-                  asOf: valuation.asOf,
-                  factId: valuation.id,
-                  sourceRefs: valuation.sourceRefs,
-                  context: valuation.context,
-                },
-          peerPe:
-            valuation?.peerPe == null
-              ? null
-              : {
-                  value: valuation.peerPe,
-                  unit: "multiple",
-                  period: String(valuation.year),
-                  asOf: valuation.asOf,
-                  factId: valuation.id,
-                  sourceRefs: valuation.sourceRefs,
-                  context: valuation.context,
-                },
-          revenueGrowth:
-            revenueGrowth === undefined
-              ? null
-              : {
-                  value: revenueGrowth.value,
-                  unit: revenueGrowth.unit,
-                  period: "Latest reported quarter, date unspecified",
-                  asOf: revenueGrowth.asOf,
-                  factId: revenueGrowth.id,
-                  sourceRefs: revenueGrowth.sourceRefs,
-                  context: revenueGrowth.context,
-                },
-          earningsGrowth:
-            earningsGrowth === undefined
-              ? null
-              : {
-                  value: earningsGrowth.value,
-                  unit: earningsGrowth.unit,
-                  period: "Latest reported quarter, date unspecified",
-                  asOf: earningsGrowth.asOf,
-                  factId: earningsGrowth.id,
-                  sourceRefs: earningsGrowth.sourceRefs,
-                  context: earningsGrowth.context,
-                },
-          freeCashFlow:
-            financial === undefined
-              ? null
-              : {
-                  value: financial.freeCashFlow,
-                  unit: financial.unit,
-                  period: String(financial.year),
-                  asOf: financial.asOf,
-                  factId: financial.id,
-                  sourceRefs: financial.sourceRefs,
-                  context: financial.context,
-                },
+          fundamentals: {
+            pe:
+              valuation?.pe == null
+                ? null
+                : {
+                    value: valuation.pe,
+                    unit: "multiple",
+                    period: String(valuation.year),
+                    asOf: valuation.asOf,
+                    factId: valuation.id,
+                    sourceRefs: valuation.sourceRefs,
+                    context: valuation.context,
+                  },
+            peerPe:
+              valuation?.peerPe == null
+                ? null
+                : {
+                    value: valuation.peerPe,
+                    unit: "multiple",
+                    period: String(valuation.year),
+                    asOf: valuation.asOf,
+                    factId: valuation.id,
+                    sourceRefs: valuation.sourceRefs,
+                    context: valuation.context,
+                  },
+            revenueGrowth:
+              revenueGrowth === undefined
+                ? null
+                : {
+                    value: revenueGrowth.value,
+                    unit: revenueGrowth.unit,
+                    period: "Latest reported quarter, date unspecified",
+                    asOf: revenueGrowth.asOf,
+                    factId: revenueGrowth.id,
+                    sourceRefs: revenueGrowth.sourceRefs,
+                    context: revenueGrowth.context,
+                  },
+            earningsGrowth:
+              earningsGrowth === undefined
+                ? null
+                : {
+                    value: earningsGrowth.value,
+                    unit: earningsGrowth.unit,
+                    period: "Latest reported quarter, date unspecified",
+                    asOf: earningsGrowth.asOf,
+                    factId: earningsGrowth.id,
+                    sourceRefs: earningsGrowth.sourceRefs,
+                    context: earningsGrowth.context,
+                  },
+            freeCashFlow:
+              financial === undefined
+                ? null
+                : {
+                    value: financial.freeCashFlow,
+                    unit: financial.unit,
+                    period: String(financial.year),
+                    asOf: financial.asOf,
+                    factId: financial.id,
+                    sourceRefs: financial.sourceRefs,
+                    context: financial.context,
+                  },
+          },
         };
       }),
     );
