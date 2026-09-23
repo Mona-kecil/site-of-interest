@@ -11,7 +11,8 @@ import sources from "../data/empires/prajogo/sources.json";
 import brokerSnapshot from "../data/broker-snapshot.json";
 import marketSnapshot from "../data/market-snapshot.json";
 import newsSnapshot from "../data/news-snapshot.json";
-import { companyFact, membershipEvidence } from "./schema";
+import { brokerDayInput, companyFact, membershipEvidence } from "./schema";
+import { sameBrokerRows } from "./brokerRows";
 import { v } from "convex/values";
 import { buildFundamentalSignals } from "../src/features/today/fundamental-rules";
 
@@ -20,7 +21,6 @@ const empireTables: Array<
   | "companyCoverage"
   | "companyFacts"
   | "fundamentalSignals"
-  | "brokerDays"
   | "brokerSignals"
   | "marketDays"
   | "marketSignals"
@@ -35,7 +35,6 @@ const empireTables: Array<
   "companyCoverage",
   "companyFacts",
   "fundamentalSignals",
-  "brokerDays",
   "brokerSignals",
   "marketDays",
   "marketSignals",
@@ -321,13 +320,24 @@ export const replacePrajogo = mutation({
       if (day.kind !== "broker_day" || day.source.provider !== "sectors") {
         throw new Error("Invalid broker snapshot day");
       }
-      await ctx.db.insert("brokerDays", {
+      const storedDay: Infer<typeof brokerDayInput> = {
         empireSlug: slug,
         ticker: day.ticker,
         tradingDate: day.tradingDate,
         brokers: day.brokers,
         source: { ...day.source, provider: "sectors" },
-      });
+      };
+      const existingDay = await ctx.db
+        .query("brokerDays")
+        .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
+          index.eq("empireSlug", slug).eq("ticker", day.ticker).eq("tradingDate", day.tradingDate),
+        )
+        .unique();
+      if (existingDay === null) {
+        await ctx.db.insert("brokerDays", storedDay);
+      } else if (!sameBrokerRows(existingDay.brokers, day.brokers)) {
+        throw new Error(`Conflicting stored broker day ${day.ticker} ${day.tradingDate}`);
+      }
     }
     for (const signal of brokerSnapshot.signals) {
       if (signal.metricId !== "broker_buy_share" || signal.source.provider !== "sectors") {

@@ -251,6 +251,21 @@ export default defineSchema({
     .index("by_empire", ["empireSlug"])
     .index("by_empire_and_ticker_and_trading_date", ["empireSlug", "ticker", "tradingDate"]),
 
+  flowWindows: defineTable({
+    empireSlug: v.string(),
+    ticker: v.string(),
+    start: v.string(),
+    end: v.string(),
+    status: v.union(v.literal("fetching"), v.literal("stored"), v.literal("failed")),
+    claimToken: v.string(),
+    claimedAt: v.number(),
+    attempts: v.number(),
+    retrievedAt: v.union(v.string(), v.null()),
+    error: v.union(v.string(), v.null()),
+  })
+    .index("by_empire", ["empireSlug"])
+    .index("by_empire_and_ticker_and_end", ["empireSlug", "ticker", "end"]),
+
   brokerSignals: defineTable(brokerSignalInput)
     .index("by_empire", ["empireSlug"])
     .index("by_empire_and_stable_id", ["empireSlug", "stableId"])
@@ -287,11 +302,13 @@ export default defineSchema({
     gap: v.union(v.string(), v.null()),
     volume: v.number(),
     baselineAverage: v.union(v.number(), v.null()),
-    baselineDays: v.array(v.object({
-      tradingDate: v.string(),
-      volume: v.number(),
-      source: flowSource,
-    })),
+    baselineDays: v.array(
+      v.object({
+        tradingDate: v.string(),
+        volume: v.number(),
+        source: flowSource,
+      }),
+    ),
     source: flowSource,
   })
     .index("by_empire", ["empireSlug"])
