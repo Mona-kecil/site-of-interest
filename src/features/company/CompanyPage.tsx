@@ -1,7 +1,12 @@
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { deriveAnnualComparisons, formatCompanyValue } from "./company-model";
+import {
+  cycleLabels,
+  deriveAnnualComparisons,
+  deriveCycleState,
+  formatCompanyValue,
+} from "./company-model";
 import { BrokerFlow } from "./BrokerFlow";
 import { MarketContext } from "./MarketContext";
 import { CompanyNews } from "./CompanyNews";
@@ -56,6 +61,13 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
   const latestValuation = facts.valuations.at(-1);
   const previousValuation = facts.valuations.at(-2);
   const comparisons = deriveAnnualComparisons(facts.financials);
+  const revenueGrowth = facts.measurements.find(
+    (fact) => fact.metric === "yoy_quarter_revenue_growth",
+  );
+  const earningsGrowth = facts.measurements.find(
+    (fact) => fact.metric === "yoy_quarter_earnings_growth",
+  );
+  const cycleState = deriveCycleState(revenueGrowth?.value ?? null, earningsGrowth?.value ?? null);
 
   return (
     <main className="company-page">
@@ -80,8 +92,14 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
           <p className="company-summary">{company.summary}</p>
         </div>
         <aside className="cycle-lens">
+          <p className="eyebrow">[growth state / reported values]</p>
+          <h2>{cycleLabels[cycleState]}</h2>
+          <small>
+            Sign of provider-reported quarterly revenue and earnings growth. Zero counts as not
+            growing. The reporting quarter is not identified.
+          </small>
           <p className="eyebrow">[valuation / reported values]</p>
-          <h2>P/E record</h2>
+          <h3>P/E record</h3>
           <dl>
             <div>
               <dt>{latestValuation?.year ?? "Latest"} P/E</dt>
