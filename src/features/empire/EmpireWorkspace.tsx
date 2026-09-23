@@ -12,6 +12,9 @@ import { calculateLayout, findPath, relationshipLabel, visibleGraph } from "./gr
 
 interface EmpireWorkspaceProps {
   graph: EmpireGraph;
+  empireSlug: string;
+  initialEntityId?: string;
+  origin?: { kind: "fundamental" | "broker" | "market" | "news"; id: string };
 }
 
 const views: ReadonlyArray<{ id: EmpireView; label: string }> = [
@@ -21,10 +24,17 @@ const views: ReadonlyArray<{ id: EmpireView; label: string }> = [
   { id: "minority", label: "Minority" },
 ];
 
-export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
+export function EmpireWorkspace({
+  graph,
+  empireSlug,
+  initialEntityId,
+  origin,
+}: EmpireWorkspaceProps) {
   const [view, setView] = useState<EmpireView>("empire");
   const [reflow, setReflow] = useState(0);
-  const [selectedEntityId, setSelectedEntityId] = useState(graph.manifest.subjectEntityId);
+  const [selectedEntityId, setSelectedEntityId] = useState(
+    initialEntityId ?? graph.manifest.subjectEntityId,
+  );
   const [selectedRelationshipId, setSelectedRelationshipId] = useState<string>();
   const [trace, setTrace] = useState<GraphSelection | null>(null);
 
@@ -50,12 +60,11 @@ export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
     setTrace(null);
   }
 
-  function traceSini() {
-    const sini = graph.entities.find((entity) => entity.ticker === "SINI");
-    if (sini === undefined) return;
+  function traceSelected() {
+    if (!selectedEntity) return;
     setView("empire");
-    setTrace(findPath(graph, sini.id));
-    setSelectedEntityId(sini.id);
+    setTrace(findPath(graph, selectedEntity.id));
+    setSelectedEntityId(selectedEntity.id);
     setSelectedRelationshipId(undefined);
   }
 
@@ -71,6 +80,15 @@ export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
             <h1>{graph.manifest.name}</h1>
           </div>
           <div className="canvas-actions">
+            {origin && (
+              <Link
+                className="text-action"
+                to="/happening"
+                search={{ focusKind: origin.kind, focusId: origin.id, focusEmpire: empireSlug }}
+              >
+                Return to record →
+              </Link>
+            )}
             <div className="segmented-control" aria-label="Relationship filter">
               {views.map((option) => (
                 <button
@@ -86,8 +104,13 @@ export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
                 </button>
               ))}
             </div>
-            <button className="text-action" onClick={traceSini} type="button">
-              Trace SINI
+            <button
+              className="text-action"
+              onClick={traceSelected}
+              disabled={!selectedEntity}
+              type="button"
+            >
+              Trace selected
             </button>
             <button
               className="reflow-action"
@@ -208,6 +231,7 @@ export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
       </section>
 
       <IntelPanel
+        empireSlug={empireSlug}
         graph={graph}
         onSelectEntity={selectEntity}
         onSelectRelationship={selectRelationship}
@@ -220,6 +244,7 @@ export function EmpireWorkspace({ graph }: EmpireWorkspaceProps) {
 
 interface IntelPanelProps {
   graph: EmpireGraph;
+  empireSlug: string;
   selectedEntity?: EmpireEntity;
   selectedRelationship?: EmpireRelationship;
   onSelectEntity: (id: string) => void;
@@ -228,6 +253,7 @@ interface IntelPanelProps {
 
 function IntelPanel({
   graph,
+  empireSlug,
   selectedEntity,
   selectedRelationship,
   onSelectEntity,
@@ -323,8 +349,8 @@ function IntelPanel({
       {entity.ticker !== undefined && (
         <Link
           className="open-intelligence-link"
-          to="/company/$ticker"
-          params={{ ticker: entity.ticker }}
+          to="/empire/$empireSlug/company/$ticker"
+          params={{ empireSlug, ticker: entity.ticker }}
         >
           Open company intelligence <span>↗</span>
         </Link>

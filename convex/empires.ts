@@ -1,8 +1,38 @@
 import { v } from "convex/values";
 import { query } from "./_generated/server";
 
+const maxGraphRowsPerTable = 500;
+
+const graph = v.object({
+  manifest: v.object({
+    id: v.string(), name: v.string(), subjectEntityId: v.string(), jurisdiction: v.string(),
+    asOf: v.string(), status: v.string(), scope: v.string(), dataPolicy: v.string(),
+    coverageAreas: v.array(v.string()),
+  }),
+  entities: v.array(v.object({
+    id: v.string(), kind: v.string(), displayName: v.string(), country: v.string(),
+    summary: v.string(), ticker: v.optional(v.string()), exchange: v.optional(v.string()),
+    scopeRole: v.optional(v.string()),
+  })),
+  relationships: v.array(v.object({
+    id: v.string(), from: v.string(), to: v.string(), kind: v.string(), directness: v.string(),
+    control: v.string(), scope: v.string(), status: v.string(), lastVerifiedAt: v.string(),
+    metrics: v.array(v.object({ kind: v.string(), value: v.number(), unit: v.string() })),
+  })),
+  assertions: v.array(v.object({
+    id: v.string(), relationshipId: v.string(), type: v.string(), stance: v.string(),
+    statement: v.string(), asOf: v.string(), confidence: v.string(),
+    sourceRefs: v.array(v.object({ sourceId: v.string(), locator: v.string() })),
+  })),
+  sources: v.array(v.object({
+    id: v.string(), title: v.string(), publisher: v.string(), provider: v.string(),
+    kind: v.string(), authority: v.string(), retrievedAt: v.string(), url: v.string(),
+  })),
+});
+
 export const getBySlug = query({
   args: { slug: v.string() },
+  returns: v.union(graph, v.null()),
   handler: async (ctx, { slug }) => {
     const empire = await ctx.db
       .query("empires")
@@ -15,20 +45,24 @@ export const getBySlug = query({
       ctx.db
         .query("entities")
         .withIndex("by_empire", (index) => index.eq("empireSlug", slug))
-        .collect(),
+        .take(maxGraphRowsPerTable + 1),
       ctx.db
         .query("relationships")
         .withIndex("by_empire", (index) => index.eq("empireSlug", slug))
-        .collect(),
+        .take(maxGraphRowsPerTable + 1),
       ctx.db
         .query("relationshipAssertions")
         .withIndex("by_empire", (index) => index.eq("empireSlug", slug))
-        .collect(),
+        .take(maxGraphRowsPerTable + 1),
       ctx.db
         .query("sources")
         .withIndex("by_empire", (index) => index.eq("empireSlug", slug))
-        .collect(),
+        .take(maxGraphRowsPerTable + 1),
     ]);
+
+    if ([entities, relationships, assertions, sources].some((rows) => rows.length > maxGraphRowsPerTable)) {
+      throw new Error(`Empire graph exceeds the ${maxGraphRowsPerTable}-row per-table limit`);
+    }
 
     return {
       manifest: {

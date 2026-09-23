@@ -10,7 +10,6 @@ import {
   formatMetric,
   formatProfileValue,
   groupProfileFacts,
-  deriveValuationCycle,
   relationshipLabel,
   relationshipMatchesView
 } from "./empire-view.mjs";
@@ -33,7 +32,7 @@ test("derives the CUAN profile sections from Sectors facts", async () => {
 
   assert.equal(groups.profile_metric.length, 8);
   assert.equal(groups.financial_year.length, 5);
-  assert.equal(groups.signal.length, 5);
+  assert.equal(groups.measurement.length, 5);
   assert.equal(groups.valuation_period.length, 4);
   assert.equal(groups.data_gap.length, 1);
   assert.equal(formatProfileValue(20_345_142_032_280, "IDR"), "Rp20.35tn");
@@ -72,32 +71,22 @@ test("derives profile source and coverage summaries from normalized records", as
   const sourceIds = entitySourceIds(corpus, "cuan");
   const coverage = coverageSummary(corpus, "cuan");
 
-  assert.deepEqual(sourceIds.sort(), ["sectors-barito-affiliates", "sectors-cuan-mining-detail", "sectors-cuan-mining-ownership", "sectors-cuan-mining-sites", "sectors-cuan-report", "sectors-cuan-sini-subsidiaries-news", "sectors-prajogo-discovery", "sectors-sini-report"]);
+  assert.deepEqual(sourceIds.sort(), ["sectors-barito-affiliates", "sectors-cuan-mining-detail", "sectors-cuan-mining-ownership", "sectors-cuan-mining-sites", "sectors-cuan-report", "sectors-cuan-sini-subsidiaries-news", "sectors-prajogo-discovery"]);
   assert.equal(coverage.total, 5);
   assert.equal(coverage.frontier.status, "active");
   assert.ok(coverage.areas.some(({ area, status }) => area === "physical_assets" && status === "partial"));
 });
 
-test("classifies CUAN's falling P/E and growing quarterly earnings as multiple digestion", async () => {
+test("retains sourced measurements for every listed empire company", async () => {
   const corpus = await loadEmpireCorpus(corpusDirectory);
-  const cycle = deriveValuationCycle(corpus.getEntityProfile("cuan").facts);
-
-  assert.equal(cycle.stage, "digestion");
-  assert.equal(cycle.readiness, "mixed");
-  assert.ok(cycle.guardrails.some((guardrail) => guardrail.includes("Free-cash-flow conversion")));
-});
-
-test("derives a reviewable cycle screen for every listed empire company", async () => {
-  const corpus = await loadEmpireCorpus(corpusDirectory);
-  const screens = corpus.entities.filter(({ kind, scopeRole }) => kind === "listed_company" && scopeRole !== "boundary").map((entity) => ({
+  const companies = corpus.entities.filter(({ kind, scopeRole }) => kind === "listed_company" && scopeRole !== "boundary").map((entity) => ({
     ticker: entity.ticker,
-    cycle: deriveValuationCycle(corpus.getEntityProfile(entity.id).facts)
+    measurements: groupProfileFacts(corpus.getEntityProfile(entity.id).facts).measurement ?? []
   }));
 
-  assert.deepEqual(screens.map(({ ticker }) => ticker).sort(), ["BREN", "BRPT", "CDIA", "CUAN", "NRCA", "PTRO", "RATU", "SINI", "SSIA", "TPIA"]);
-  for (const { cycle } of screens) {
-    assert.notEqual(cycle.stage, "insufficient");
-    assert.equal(Object.keys(cycle.checks).length, 3);
-    assert.ok(cycle.guardrails.at(-1).includes("not price forecasts"));
+  assert.deepEqual(companies.map(({ ticker }) => ticker).sort(), ["BREN", "BRPT", "CDIA", "CUAN", "NRCA", "PTRO", "RATU", "SINI", "SSIA", "TPIA"]);
+  for (const { measurements } of companies) {
+    assert.ok(measurements.length > 0);
+    assert.ok(measurements.every(({ sourceRefs }) => sourceRefs.length > 0));
   }
 });

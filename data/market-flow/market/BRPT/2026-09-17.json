@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "BRPT",
+  "tradingDate": "2026-09-17",
+  "open": 1605,
+  "high": 1670,
+  "low": 1600,
+  "close": 1610,
+  "volume": 60726100,
+  "marketCap": 150933021050840,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/BRPT/?start=2026-09-10&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:47:17.217Z"
+  }
+}

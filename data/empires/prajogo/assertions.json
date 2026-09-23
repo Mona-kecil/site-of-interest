@@ -739,19 +739,15 @@
   {
     "id": "assert-cuan-kjp",
     "relationshipId": "cuan-kjp",
-    "type": "inference",
+    "type": "fact",
     "stance": "supports",
-    "statement": "Sectors reports that CUAN is pursuing SINI through subsidiaries and separately lists KJP as a 7.9% SINI shareholder. This supports a CUAN-group link to KJP, but Sectors does not disclose CUAN's ownership percentage in KJP.",
+    "statement": "The Sectors news record names KJP as one of CUAN's subsidiaries while describing a possible SINI takeover. The record does not give CUAN's ownership percentage in KJP.",
     "asOf": "2026-09-17",
     "confidence": "medium",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-sini-subsidiaries-news",
-        "locator": "results[0].title"
-      },
-      {
-        "sourceId": "sectors-sini-report",
-        "locator": "ownership.major_shareholders[name=PT Kreasi Jasa Persada]"
+        "locator": "results[0].body"
       }
     ]
   }

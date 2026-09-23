@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "CDIA",
+  "tradingDate": "2026-08-14",
+  "open": 705,
+  "high": 715,
+  "low": 685,
+  "close": 705,
+  "volume": 45463600,
+  "marketCap": 88004709163500,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/CDIA/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:50:45.216Z"
+  }
+}

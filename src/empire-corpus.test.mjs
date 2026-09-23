@@ -6,7 +6,7 @@ import { validateCorpus } from "./empire-corpus.mjs";
 import { loadEmpireCorpus } from "./load-empire-corpus.mjs";
 
 const corpusDirectory = resolve("data/empires/prajogo");
-const fileNames = ["manifest", "entities", "relationships", "assertions", "sources", "coverage", "facts"];
+const fileNames = ["manifest", "entities", "relationships", "assertions", "sources", "coverage", "facts", "memberships"];
 
 async function loadRawCorpus() {
   const entries = await Promise.all(fileNames.map(async (name) => {
@@ -34,7 +34,7 @@ test("resolves SINI through a listed company introduced by mining discovery", as
   assert.equal(path.at(-1).metrics.find(({ kind }) => kind === "ownership_percent").value, 19.88);
 });
 
-test("keeps the inferred CUAN to KJP link separate from KJP's proven SINI stake", async () => {
+test("keeps the reported CUAN to KJP affiliation separate from KJP's proven SINI stake", async () => {
   const corpus = await loadEmpireCorpus(corpusDirectory);
   const groupLink = corpus.relationships.find(({ id }) => id === "cuan-kjp");
   const ptroStake = corpus.relationships.find(({ id }) => id === "kjp-ptro");
@@ -42,7 +42,8 @@ test("keeps the inferred CUAN to KJP link separate from KJP's proven SINI stake"
 
   assert.equal(groupLink.kind, "group_affiliation");
   assert.equal(groupLink.control, "unknown");
-  assert.equal(corpus.getRelationshipEvidence(groupLink.id)[0].type, "inference");
+  assert.equal(corpus.getRelationshipEvidence(groupLink.id)[0].type, "fact");
+  assert.equal(corpus.getRelationshipEvidence(groupLink.id)[0].sourceRefs[0].locator, "results[0].body");
   assert.equal(ptroStake.metrics.find(({ kind }) => kind === "ownership_percent").value, 45.328);
   assert.equal(ptroStake.scope, "empire");
   assert.equal(siniStake.metrics.find(({ kind }) => kind === "ownership_percent").value, 7.9);
@@ -71,6 +72,19 @@ test("keeps Sectors group membership separate from concrete ownership paths", as
   assert.deepEqual(corpus.findPath("prajogo", "ratu", { includeGroupLinks: true }).map(({ id }) => id), ["prajogo-barito-group", "barito-group-ratu"]);
   assert.equal(ratuParent.scope, "boundary");
   assert.equal(ratuParent.metrics.find(({ kind }) => kind === "ownership_percent").value, 68.68);
+});
+
+test("exposes the complete listed collection universe with cited evidence", async () => {
+  const corpus = await loadEmpireCorpus(corpusDirectory);
+
+  assert.deepEqual(corpus.memberships.map(({ ticker }) => ticker), [
+    "BREN", "BRPT", "CDIA", "CUAN", "NRCA", "PTRO", "RATU", "SINI", "SSIA", "TPIA",
+  ]);
+  assert.equal(
+    corpus.memberships.find(({ ticker }) => ticker === "NRCA").evidence[0].kind,
+    "ownership_path",
+  );
+  assert.equal(corpus.memberships.some(({ ticker }) => ticker === "RAJA"), false);
 });
 
 test("rejects a profile fact without source evidence", async () => {

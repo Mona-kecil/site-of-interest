@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "SSIA",
+  "tradingDate": "2026-08-13",
+  "open": 1720,
+  "high": 1720,
+  "low": 1650,
+  "close": 1660,
+  "volume": 12241700,
+  "marketCap": 7810714070400,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/SSIA/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:51:49.006Z"
+  }
+}

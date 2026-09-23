@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "CUAN",
+  "tradingDate": "2026-08-11",
+  "open": 710,
+  "high": 740,
+  "low": 670,
+  "close": 720,
+  "volume": 301045000,
+  "marketCap": 80941608000000,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/CUAN/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:50:45.216Z"
+  }
+}

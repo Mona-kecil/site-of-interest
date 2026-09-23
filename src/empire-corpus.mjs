@@ -15,9 +15,9 @@ const SOURCE_AUTHORITY = new Set(["data_provider"]);
 const FRONTIER_STATUS = new Set(["active", "queued", "complete", "blocked"]);
 const PRIORITY = new Set(["high", "medium", "low"]);
 const CHECK_STATUS = new Set(["checked", "partial", "not_applicable"]);
-const FACT_KINDS = new Set(["profile_metric", "financial_year", "valuation_period", "signal", "data_gap"]);
+const FACT_KINDS = new Set(["profile_metric", "financial_year", "valuation_period", "measurement", "data_gap"]);
 const FACT_UNITS = new Set(["IDR", "IDR_per_share", "count", "percent", "multiple"]);
-const FILES = ["manifest", "entities", "relationships", "assertions", "sources", "coverage", "facts"];
+const FILES = ["manifest", "entities", "relationships", "assertions", "sources", "coverage", "facts", "memberships"];
 
 function isRecord(value) {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -74,11 +74,14 @@ export function validateCorpus(raw) {
   const sources = ensureArray(errors, raw.sources, "sources");
   const coverage = ensureArray(errors, raw.coverage, "coverage");
   const facts = ensureArray(errors, raw.facts, "facts");
+  const memberships = ensureArray(errors, raw.memberships, "memberships");
   const entityById = indexUnique(errors, entities, "entities");
   const relationshipById = indexUnique(errors, relationships, "relationships");
   const assertionById = indexUnique(errors, assertions, "assertions");
   const sourceById = indexUnique(errors, sources, "sources");
   const factById = indexUnique(errors, facts, "facts");
+
+  errors.push(...validateTickerRegistry(memberships));
 
   requireString(errors, manifest.id, "manifest.id");
   requireString(errors, manifest.name, "manifest.name");
@@ -187,6 +190,32 @@ export function validateCorpus(raw) {
     }
   }
 
+  const membershipEntityIds = new Set();
+  for (const [position, membership] of memberships.entries()) {
+    if (!isRecord(membership)) continue;
+    const path = `memberships[${position}]`;
+    const entity = entityById.get(membership.entityId);
+    if (!entity) {
+      errors.push(`${path}.entityId references missing entity ${membership.entityId}`);
+    } else {
+      membershipEntityIds.add(membership.entityId);
+      if (entity.kind !== "listed_company") errors.push(`${path}.entityId must reference a listed company`);
+      if (entity.scopeRole === "boundary") errors.push(`${path}.entityId cannot reference a boundary entity`);
+      if (membership.ticker !== entity.ticker) errors.push(`${path}.ticker does not match entity ${membership.entityId}`);
+    }
+    for (const [evidencePosition, evidence] of ensureArray(errors, membership.evidence, `${path}.evidence`).entries()) {
+      if (!isRecord(evidence)) continue;
+      if (!sourceById.has(evidence.sourceId)) {
+        errors.push(`${path}.evidence[${evidencePosition}].sourceId references missing source ${evidence.sourceId}`);
+      }
+    }
+  }
+  for (const entity of entities) {
+    if (entity.kind === "listed_company" && entity.scopeRole !== "boundary" && !membershipEntityIds.has(entity.id)) {
+      errors.push(`listed empire entity ${entity.id} has no ticker membership`);
+    }
+  }
+
   for (const [position, fact] of facts.entries()) {
     if (!isRecord(fact)) continue;
     const path = `facts[${position}]`;
@@ -223,11 +252,10 @@ export function validateCorpus(raw) {
       for (const field of ["pe", "peerPe"]) {
         if (fact[field] !== null && (typeof fact[field] !== "number" || !Number.isFinite(fact[field]))) errors.push(`${path}.${field} must be a finite number or null`);
       }
-    } else if (fact.kind === "signal") {
+    } else if (fact.kind === "measurement") {
       requireString(errors, fact.label, `${path}.label`);
       requireString(errors, fact.metric, `${path}.metric`);
       requireEnum(errors, fact.unit, FACT_UNITS, `${path}.unit`);
-      requireEnum(errors, fact.tone, new Set(["positive", "watch"]), `${path}.tone`);
       if (typeof fact.value !== "number" || !Number.isFinite(fact.value)) errors.push(`${path}.value must be a finite number`);
     } else if (fact.kind === "data_gap") {
       requireString(errors, fact.label, `${path}.label`);
@@ -346,3 +374,4 @@ export function createEmpireCorpus(raw) {
 }
 
 export const CORPUS_FILE_NAMES = Object.freeze([...FILES]);
+import { validateTickerRegistry } from "./empire-ticker-registry.mjs";

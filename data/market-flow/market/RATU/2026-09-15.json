@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "RATU",
+  "tradingDate": "2026-09-15",
+  "open": 4470,
+  "high": 4480,
+  "low": 4370,
+  "close": 4380,
+  "volume": 3015400,
+  "marketCap": 11891935644000,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/RATU/?start=2026-09-10&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:47:17.217Z"
+  }
+}

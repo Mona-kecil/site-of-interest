@@ -2,7 +2,7 @@ import { pathToFileURL } from "node:url";
 import { resolve } from "node:path";
 
 import { loadEmpireCorpus } from "../src/load-empire-corpus.mjs";
-import { deriveValuationCycle, groupProfileFacts } from "../src/empire-view.mjs";
+import { groupProfileFacts } from "../src/empire-view.mjs";
 
 const OWNERSHIP_KINDS = new Set(["control", "shareholding", "portfolio_investment"]);
 
@@ -10,8 +10,10 @@ function finite(value) {
   return typeof value === "number" && Number.isFinite(value);
 }
 
-function ratio(current, previous) {
-  return finite(current) && finite(previous) && previous !== 0 ? current / previous - 1 : null;
+function percentChange(current, previous) {
+  return finite(current) && finite(previous) && previous !== 0
+    ? (current - previous) / Math.abs(previous) * 100
+    : null;
 }
 
 function findDirectedPath(corpus, startEntityId, endEntityId, predicate) {
@@ -106,42 +108,35 @@ function valuationRows(corpus) {
       const facts = corpus.getEntityProfile(entity.id).facts;
       const groups = groupProfileFacts(facts);
       const valuations = [...(groups.valuation_period ?? [])]
-        .filter(({ pe }) => finite(pe) && pe > 0)
         .sort((first, second) => first.year - second.year);
       const financials = [...(groups.financial_year ?? [])].sort((first, second) => first.year - second.year);
-      const signals = new Map((groups.signal ?? []).map((signal) => [signal.metric, signal.value]));
-      const cycle = deriveValuationCycle(facts);
+      const measurements = new Map((groups.measurement ?? []).map((measurement) => [measurement.metric, measurement.value]));
       const latestValuation = valuations.at(-1);
       const priorValuation = valuations.at(-2);
       const latestFinancial = financials.at(-1);
       const priorFinancial = financials.at(-2);
-      const quarterlyEarningsGrowth = signals.get("yoy_quarter_earnings_growth") ?? null;
+      const quarterlyEarningsGrowth = measurements.get("yoy_quarter_earnings_growth") ?? null;
       const annualEarningsGrowth = latestFinancial && priorFinancial
-        ? ratio(latestFinancial.earnings, priorFinancial.earnings) * 100
+        ? percentChange(latestFinancial.earnings, priorFinancial.earnings)
         : null;
 
       return {
         ticker: entity.ticker,
-        stage: cycle.stage,
-        readiness: cycle.readiness,
-        confidence: cycle.confidence,
         latestPeYear: latestValuation?.year ?? null,
         latestPe: latestValuation?.pe ?? null,
-        priorPositivePeYear: priorValuation?.year ?? null,
-        priorPositivePe: priorValuation?.pe ?? null,
-        peChangePercent: latestValuation && priorValuation
-          ? ratio(latestValuation.pe, priorValuation.pe) * 100
-          : null,
+        priorPeYear: priorValuation?.year ?? null,
+        priorPe: priorValuation?.pe ?? null,
+        peChangePercent: percentChange(latestValuation?.pe, priorValuation?.pe),
         peerPe: latestValuation?.peerPe ?? null,
         peerPremiumPercent: latestValuation?.peerPe > 0
-          ? ratio(latestValuation.pe, latestValuation.peerPe) * 100
+          ? percentChange(latestValuation.pe, latestValuation.peerPe)
           : null,
         financialYear: latestFinancial?.year ?? null,
-        quarterlyRevenueGrowthPercent: signals.get("yoy_quarter_revenue_growth") ?? null,
+        quarterlyRevenueGrowthPercent: measurements.get("yoy_quarter_revenue_growth") ?? null,
         quarterlyEarningsGrowthPercent: quarterlyEarningsGrowth,
         annualEarningsGrowthPercent: annualEarningsGrowth,
         freeCashFlow: latestFinancial?.freeCashFlow ?? null,
-        freeCashFlowConversionPercent: latestFinancial?.earnings
+        freeCashFlowConversionPercent: latestFinancial?.earnings && latestFinancial.earnings !== 0
           ? latestFinancial.freeCashFlow / Math.abs(latestFinancial.earnings) * 100
           : null,
         totalDebt: latestFinancial?.totalDebt ?? null,
@@ -166,8 +161,7 @@ export function analyzeEmpire(corpus) {
       companiesWithOwnershipPath: network.filter(({ ownershipPath }) => ownershipPath).length,
       companiesWithControlPath: network.filter(({ controlPath }) => controlPath).length,
       affiliationOverlaps: network.filter(({ role }) => role === "affiliation overlap").length,
-      digestionScreens: valuations.filter(({ stage }) => stage === "digestion").length,
-      digestionWithPositiveFreeCashFlow: valuations.filter(({ stage, freeCashFlow }) => stage === "digestion" && freeCashFlow > 0).length,
+      companiesWithTwoPePeriods: valuations.filter(({ latestPe, priorPe }) => latestPe !== null && priorPe !== null).length,
     },
     network,
     valuations,

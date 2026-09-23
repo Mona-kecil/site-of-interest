@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "BREN",
+  "tradingDate": "2026-08-10",
+  "open": 3560,
+  "high": 3610,
+  "low": 3360,
+  "close": 3370,
+  "volume": 48929300,
+  "marketCap": 450859561400000,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/BREN/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:50:45.216Z"
+  }
+}

@@ -5,14 +5,28 @@ import coverage from "../data/empires/prajogo/coverage.json";
 import entities from "../data/empires/prajogo/entities.json";
 import facts from "../data/empires/prajogo/facts.json";
 import manifest from "../data/empires/prajogo/manifest.json";
+import memberships from "../data/empires/prajogo/memberships.json";
 import relationships from "../data/empires/prajogo/relationships.json";
 import sources from "../data/empires/prajogo/sources.json";
-import { companyFact } from "./schema";
+import brokerSnapshot from "../data/broker-snapshot.json";
+import marketSnapshot from "../data/market-snapshot.json";
+import newsSnapshot from "../data/news-snapshot.json";
+import { companyFact, membershipEvidence } from "./schema";
+import { v } from "convex/values";
+import { buildFundamentalSignals } from "../src/features/today/fundamental-rules";
 
 const slug = "prajogo";
 const empireTables: Array<
   | "companyCoverage"
   | "companyFacts"
+  | "fundamentalSignals"
+  | "brokerDays"
+  | "brokerSignals"
+  | "marketDays"
+  | "marketSignals"
+  | "newsRecords"
+  | "newsCoverage"
+  | "empireMemberships"
   | "relationshipAssertions"
   | "relationships"
   | "sources"
@@ -20,6 +34,14 @@ const empireTables: Array<
 > = [
   "companyCoverage",
   "companyFacts",
+  "fundamentalSignals",
+  "brokerDays",
+  "brokerSignals",
+  "marketDays",
+  "marketSignals",
+  "newsRecords",
+  "newsCoverage",
+  "empireMemberships",
   "relationshipAssertions",
   "relationships",
   "sources",
@@ -27,6 +49,7 @@ const empireTables: Array<
 ];
 
 type CompanyFact = Infer<typeof companyFact>;
+type MembershipEvidence = Infer<typeof membershipEvidence>;
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return value !== null && typeof value === "object" && !Array.isArray(value);
@@ -71,6 +94,23 @@ function parseSourceRefs(record: Record<string, unknown>) {
   });
 }
 
+function parseMembershipEvidence(value: unknown): MembershipEvidence {
+  const item = requireRecord(value, "membership evidence");
+  const kind = requireString(item, "kind");
+  if (
+    kind !== "provider_affiliate" &&
+    kind !== "provider_group_label" &&
+    kind !== "ownership_path"
+  ) {
+    throw new Error(`Unknown membership evidence kind: ${kind}`);
+  }
+  return {
+    kind,
+    sourceId: requireString(item, "sourceId"),
+    locator: requireString(item, "locator"),
+  };
+}
+
 function parseFact(value: unknown): CompanyFact {
   const fact = requireRecord(value, "fact");
   const common = {
@@ -112,15 +152,14 @@ function parseFact(value: unknown): CompanyFact {
         pe: nullableNumber(fact, "pe"),
         peerPe: nullableNumber(fact, "peerPe"),
       };
-    case "signal":
+    case "measurement":
       return {
         ...common,
-        kind: "signal",
+        kind: "measurement",
         metric: requireString(fact, "metric"),
         label: requireString(fact, "label"),
         value: requireNumber(fact, "value"),
         unit: requireString(fact, "unit"),
-        tone: requireString(fact, "tone"),
       };
     case "data_gap":
       return {
@@ -135,7 +174,26 @@ function parseFact(value: unknown): CompanyFact {
 
 export const replacePrajogo = mutation({
   args: {},
+  returns: v.object({
+    slug: v.string(),
+    entities: v.number(),
+    memberships: v.number(),
+    relationships: v.number(),
+    assertions: v.number(),
+    sources: v.number(),
+    facts: v.number(),
+    signals: v.number(),
+    brokerDays: v.number(),
+    brokerSignals: v.number(),
+    marketDays: v.number(),
+    marketSignals: v.number(),
+    newsRecords: v.number(),
+    coverage: v.number(),
+  }),
   handler: async (ctx) => {
+    if (brokerSnapshot.schemaVersion !== 1) throw new Error("Unsupported broker snapshot version");
+    if (marketSnapshot.schemaVersion !== 1) throw new Error("Unsupported market snapshot version");
+    if (newsSnapshot.schemaVersion !== 1) throw new Error("Unsupported news snapshot version");
     const existingEmpire = await ctx.db
       .query("empires")
       .withIndex("by_slug", (index) => index.eq("slug", slug))
@@ -175,6 +233,17 @@ export const replacePrajogo = mutation({
         ticker: entity.ticker,
         exchange: entity.exchange,
         scopeRole: entity.scopeRole,
+      });
+    }
+
+    for (const membership of memberships) {
+      await ctx.db.insert("empireMemberships", {
+        empireSlug: slug,
+        entityId: membership.entityId,
+        ticker: membership.ticker,
+        exchange: membership.exchange,
+        companyName: membership.companyName,
+        evidence: membership.evidence.map(parseMembershipEvidence),
       });
     }
 
@@ -222,8 +291,8 @@ export const replacePrajogo = mutation({
       });
     }
 
-    for (const rawFact of facts) {
-      const fact = parseFact(rawFact);
+    const parsedFacts = facts.map(parseFact);
+    for (const fact of parsedFacts) {
       await ctx.db.insert("companyFacts", {
         empireSlug: slug,
         entityId: fact.entityId,
@@ -231,6 +300,98 @@ export const replacePrajogo = mutation({
         fact,
       });
     }
+
+    let signalCount = 0;
+    for (const membership of memberships) {
+      const entity = entities.find((item) => item.id === membership.entityId);
+      if (!entity) throw new Error(`Missing entity ${membership.entityId}`);
+      const signals = buildFundamentalSignals({
+        empireSlug: slug,
+        entityId: membership.entityId,
+        ticker: membership.ticker,
+        companyName: membership.companyName,
+        summary: entity.summary,
+        facts: parsedFacts.filter((fact) => fact.entityId === membership.entityId),
+      });
+      for (const signal of signals) await ctx.db.insert("fundamentalSignals", signal);
+      signalCount += signals.length;
+    }
+
+    for (const day of brokerSnapshot.days) {
+      if (day.kind !== "broker_day" || day.source.provider !== "sectors") {
+        throw new Error("Invalid broker snapshot day");
+      }
+      await ctx.db.insert("brokerDays", {
+        empireSlug: slug,
+        ticker: day.ticker,
+        tradingDate: day.tradingDate,
+        brokers: day.brokers,
+        source: { ...day.source, provider: "sectors" },
+      });
+    }
+    for (const signal of brokerSnapshot.signals) {
+      if (signal.metricId !== "broker_buy_share" || signal.source.provider !== "sectors") {
+        throw new Error("Invalid broker snapshot signal");
+      }
+      await ctx.db.insert("brokerSignals", {
+        ...signal,
+        metricId: "broker_buy_share",
+        unit: "%",
+        source: { ...signal.source, provider: "sectors" },
+      });
+    }
+
+    for (const day of marketSnapshot.days) {
+      if (day.kind !== "market_day" || day.source.provider !== "sectors") {
+        throw new Error("Invalid market snapshot day");
+      }
+      await ctx.db.insert("marketDays", {
+        empireSlug: slug,
+        ticker: day.ticker,
+        tradingDate: day.tradingDate,
+        open: day.open,
+        high: day.high,
+        low: day.low,
+        close: day.close,
+        volume: day.volume,
+        marketCap: day.marketCap,
+        source: { ...day.source, provider: "sectors" },
+      });
+    }
+    for (const signal of marketSnapshot.signals) {
+      if (signal.metricId !== "relative_volume_20" || signal.source.provider !== "sectors") {
+        throw new Error("Invalid market snapshot signal");
+      }
+      await ctx.db.insert("marketSignals", {
+        ...signal,
+        metricId: "relative_volume_20",
+        unit: "x",
+        source: { ...signal.source, provider: "sectors" },
+        baselineDays: signal.baselineDays.map((day) => ({
+          ...day,
+          source: { ...day.source, provider: "sectors" },
+        })),
+      });
+    }
+    for (const record of newsSnapshot.records) {
+      if (record.provider !== "sectors" || record.matchRule !== "provider_symbol_exact") {
+        throw new Error("Invalid news snapshot record");
+      }
+      await ctx.db.insert("newsRecords", {
+        ...record,
+        provider: "sectors",
+        matchRule: "provider_symbol_exact",
+      });
+    }
+    await ctx.db.insert("newsCoverage", {
+      empireSlug: slug,
+      start: newsSnapshot.query.start,
+      end: newsSnapshot.query.end,
+      totalCount: newsSnapshot.query.totalCount,
+      importedCount: newsSnapshot.records.length,
+      truncated: newsSnapshot.query.truncated,
+      retrievedAt: newsSnapshot.records[0]?.retrievedAt ?? "",
+    });
 
     for (const company of coverage) {
       await ctx.db.insert("companyCoverage", {
@@ -244,10 +405,17 @@ export const replacePrajogo = mutation({
     return {
       slug,
       entities: entities.length,
+      memberships: memberships.length,
       relationships: relationships.length,
       assertions: assertions.length,
       sources: sources.length,
       facts: facts.length,
+      signals: signalCount,
+      brokerDays: brokerSnapshot.days.length,
+      brokerSignals: brokerSnapshot.signals.length,
+      marketDays: marketSnapshot.days.length,
+      marketSignals: marketSnapshot.signals.length,
+      newsRecords: newsSnapshot.records.length,
       coverage: coverage.length,
     };
   },

@@ -7,6 +7,7 @@ const route = getRouteApi("/empire/$slug");
 
 export function EmpirePage() {
   const { slug } = route.useParams();
+  const { ticker, originKind, originId } = route.useSearch();
   const empire = useQuery(api.empires.getBySlug, { slug });
 
   if (empire === undefined) {
@@ -27,5 +28,16 @@ export function EmpirePage() {
     );
   }
 
-  return <EmpireWorkspace graph={empire} />;
+  const initialEntityId = ticker
+    ? empire.entities.find((entity) => entity.ticker === ticker)?.id
+    : undefined;
+  return (
+    <EmpireWorkspace
+      key={`${slug}:${initialEntityId ?? "root"}`}
+      graph={empire}
+      empireSlug={slug}
+      initialEntityId={initialEntityId}
+      origin={originKind && originId ? { kind: originKind, id: originId } : undefined}
+    />
+  );
 }

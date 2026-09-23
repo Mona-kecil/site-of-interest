@@ -20,7 +20,7 @@
     "ticker": "TPIA",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Chemicals · Basic Materials. Profile and cycle data returned by Sectors."
+    "summary": "Chemicals · Basic Materials. Company records returned by Sectors."
   },
   {
     "id": "brpt",
@@ -29,7 +29,7 @@
     "ticker": "BRPT",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Chemicals · Basic Materials. Profile and cycle data returned by Sectors."
+    "summary": "Chemicals · Basic Materials. Company records returned by Sectors."
   },
   {
     "id": "cuan",
@@ -38,7 +38,7 @@
     "ticker": "CUAN",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Coal · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+    "summary": "Coal · Oil, Gas & Coal. Company records returned by Sectors."
   },
   {
     "id": "ptro",
@@ -47,7 +47,7 @@
     "ticker": "PTRO",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Oil, Gas & Coal Supports · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+    "summary": "Oil, Gas & Coal Supports · Oil, Gas & Coal. Company records returned by Sectors."
   },
   {
     "id": "bren",
@@ -56,7 +56,7 @@
     "ticker": "BREN",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Electric Utilities · Utilities. Profile and cycle data returned by Sectors."
+    "summary": "Electric Utilities · Utilities. Company records returned by Sectors."
   },
   {
     "id": "cdia",
@@ -65,7 +65,7 @@
     "ticker": "CDIA",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Electric Utilities · Utilities. Profile and cycle data returned by Sectors."
+    "summary": "Electric Utilities · Utilities. Company records returned by Sectors."
   },
   {
     "id": "ratu",
@@ -74,7 +74,7 @@
     "ticker": "RATU",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Oil & Gas · Oil, Gas & Coal. Profile and cycle data returned by Sectors."
+    "summary": "Oil & Gas · Oil, Gas & Coal. Company records returned by Sectors."
   },
   {
     "id": "ssia",
@@ -83,7 +83,7 @@
     "ticker": "SSIA",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Profile and cycle data returned by Sectors."
+    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Company records returned by Sectors."
   },
   {
     "id": "nrca",
@@ -92,7 +92,7 @@
     "ticker": "NRCA",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Profile and cycle data returned by Sectors."
+    "summary": "Heavy Constructions & Civil Engineering · Heavy Constructions & Civil Engineering. Company records returned by Sectors."
   },
   {
     "id": "sini",
@@ -101,7 +101,7 @@
     "ticker": "SINI",
     "exchange": "IDX",
     "country": "Indonesia",
-    "summary": "Building Products & Fixtures · Industrial Goods. Profile and cycle data returned by Sectors."
+    "summary": "Building Products & Fixtures · Industrial Goods. Company records returned by Sectors."
   },
   {
     "id": "pt-multi-tambangjaya-utama",
@@ -174,7 +174,7 @@
     "scopeRole": "empire",
     "kind": "private_company",
     "country": "Indonesia",
-    "summary": "Private group entity identified in Sectors ownership records. Its upstream group position remains explicit about inference and missing percentages."
+    "summary": "Private group entity identified in Sectors ownership records and named as a CUAN subsidiary in a Sectors news record. CUAN's ownership percentage in KJP is not reported."
   },
   {
     "id": "private-pt-caraka-reksa-optima",

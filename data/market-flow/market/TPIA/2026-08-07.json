@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "TPIA",
+  "tradingDate": "2026-08-07",
+  "open": 2150,
+  "high": 2250,
+  "low": 2110,
+  "close": 2230,
+  "volume": 578851700,
+  "marketCap": 192920745555160,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/TPIA/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:51:49.006Z"
+  }
+}

@@ -1,14 +1,27 @@
 import { getRouteApi, Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { deriveCycleLens, formatCompanyValue } from "./company-model";
+import { deriveAnnualComparisons, formatCompanyValue } from "./company-model";
+import { BrokerFlow } from "./BrokerFlow";
+import { MarketContext } from "./MarketContext";
+import { CompanyNews } from "./CompanyNews";
 
 const route = getRouteApi("/company/$ticker");
+const empireCompanyRoute = getRouteApi("/empire/$empireSlug/company/$ticker");
 
 export function CompanyPage() {
   const { ticker } = route.useParams();
+  return <CompanyRecord ticker={ticker} empireSlug="prajogo" />;
+}
+
+export function EmpireCompanyPage() {
+  const { ticker, empireSlug } = empireCompanyRoute.useParams();
+  return <CompanyRecord ticker={ticker} empireSlug={empireSlug} />;
+}
+
+function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: string }) {
   const intelligence = useQuery(api.companies.getIntelligence, {
-    empireSlug: "prajogo",
+    empireSlug,
     ticker,
   });
 
@@ -26,7 +39,12 @@ export function CompanyPage() {
       <main className="route-state">
         <p className="eyebrow">Unknown listed company</p>
         <h1>No intelligence exists for “{ticker.toUpperCase()}”.</h1>
-        <Link className="company-back-link" to="/empire/$slug" params={{ slug: "prajogo" }}>
+        <Link
+          className="company-back-link"
+          to="/empire/$slug"
+          params={{ slug: empireSlug }}
+          search={{ ticker: undefined, originKind: undefined, originId: undefined }}
+        >
           Return to Empire
         </Link>
       </main>
@@ -34,15 +52,22 @@ export function CompanyPage() {
   }
 
   const { company, coverage, facts, relationships, sources } = intelligence;
-  const cycle = deriveCycleLens(facts.valuations, facts.financials, facts.signals);
   const latestFinancial = facts.financials.at(-1);
+  const latestValuation = facts.valuations.at(-1);
+  const previousValuation = facts.valuations.at(-2);
+  const comparisons = deriveAnnualComparisons(facts.financials);
 
   return (
     <main className="company-page">
       <header className="company-hero">
         <div className="company-hero-copy">
-          <Link className="company-back-link" to="/empire/$slug" params={{ slug: "prajogo" }}>
-            ← Prajogo Empire
+          <Link
+            className="company-back-link"
+            to="/empire/$slug"
+            params={{ slug: empireSlug }}
+            search={{ ticker: company.ticker, originKind: undefined, originId: undefined }}
+          >
+            ← {empireSlug} Empire
           </Link>
           <p className="eyebrow">
             [company / {company.exchange} / {company.country}]
@@ -54,31 +79,34 @@ export function CompanyPage() {
           <h2>{company.name}</h2>
           <p className="company-summary">{company.summary}</p>
         </div>
-        <aside className={`cycle-lens cycle-${cycle.status}`}>
-          <p className="eyebrow">[status / valuation]</p>
-          <h2>{cycle.title}</h2>
-          <p>{cycle.summary}</p>
+        <aside className="cycle-lens">
+          <p className="eyebrow">[valuation / reported values]</p>
+          <h2>P/E record</h2>
           <dl>
             <div>
-              <dt>Latest P/E</dt>
-              <dd>{cycle.latestPe === null ? "—" : `${cycle.latestPe.toFixed(2)}×`}</dd>
+              <dt>{latestValuation?.year ?? "Latest"} P/E</dt>
+              <dd>{latestValuation?.pe == null ? "—" : `${latestValuation.pe.toFixed(2)}×`}</dd>
             </div>
             <div>
-              <dt>Peer P/E</dt>
-              <dd>{cycle.peerPe === null ? "—" : `${cycle.peerPe.toFixed(2)}×`}</dd>
+              <dt>{previousValuation?.year ?? "Prior"} P/E</dt>
+              <dd>{previousValuation?.pe == null ? "—" : `${previousValuation.pe.toFixed(2)}×`}</dd>
             </div>
             <div>
-              <dt>Peer premium</dt>
+              <dt>{latestValuation?.year ?? "Latest"} provider peer P/E</dt>
               <dd>
-                {cycle.peerPremium === null ? "—" : `${(cycle.peerPremium * 100).toFixed(0)}%`}
+                {latestValuation?.peerPe == null ? "—" : `${latestValuation.peerPe.toFixed(2)}×`}
               </dd>
             </div>
             <div>
-              <dt>Quarter earnings</dt>
-              <dd>{cycle.earningsGrowth === null ? "—" : `${cycle.earningsGrowth.toFixed(1)}%`}</dd>
+              <dt>{latestFinancial?.year ?? "Latest"} earnings</dt>
+              <dd>
+                {latestFinancial === undefined
+                  ? "—"
+                  : formatCompanyValue(latestFinancial.earnings, latestFinancial.unit)}
+              </dd>
             </div>
           </dl>
-          <small>Descriptive screen, not a price forecast.</small>
+          <small>Source: Sectors company report. Missing values are shown as —.</small>
         </aside>
       </header>
 
@@ -93,10 +121,13 @@ export function CompanyPage() {
       </dl>
 
       <div className="company-grid">
+        <BrokerFlow empireSlug={empireSlug} ticker={company.ticker} />
+        <MarketContext empireSlug={empireSlug} ticker={company.ticker} />
+        <CompanyNews empireSlug={empireSlug} ticker={company.ticker} />
         <section className="company-card financial-history">
           <header>
             <div>
-              <p className="eyebrow">[01 / delivery record]</p>
+              <p className="eyebrow">[01 / annual records]</p>
               <h2>Financial history</h2>
             </div>
             <span>{facts.financials.length} years</span>
@@ -118,15 +149,9 @@ export function CompanyPage() {
                   <tr key={year.id}>
                     <th>{year.year}</th>
                     <td>{formatCompanyValue(year.revenue, year.unit)}</td>
-                    <td className={year.earnings < 0 ? "is-negative" : "is-positive"}>
-                      {formatCompanyValue(year.earnings, year.unit)}
-                    </td>
-                    <td className={year.operatingCashFlow < 0 ? "is-negative" : undefined}>
-                      {formatCompanyValue(year.operatingCashFlow, year.unit)}
-                    </td>
-                    <td className={year.freeCashFlow < 0 ? "is-negative" : undefined}>
-                      {formatCompanyValue(year.freeCashFlow, year.unit)}
-                    </td>
+                    <td>{formatCompanyValue(year.earnings, year.unit)}</td>
+                    <td>{formatCompanyValue(year.operatingCashFlow, year.unit)}</td>
+                    <td>{formatCompanyValue(year.freeCashFlow, year.unit)}</td>
                     <td>
                       {year.totalDebt === undefined
                         ? "—"
@@ -142,21 +167,91 @@ export function CompanyPage() {
           )}
         </section>
 
+        <section className="company-card annual-comparisons">
+          <header>
+            <div>
+              <p className="eyebrow">[02 / calculated comparisons]</p>
+              <h2>Year over year</h2>
+            </div>
+            <span>Formula v1</span>
+          </header>
+          {comparisons.length === 0 ? (
+            <p className="table-note">Two annual records are required for comparison.</p>
+          ) : (
+            <div className="financial-table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Metric</th>
+                    <th>{comparisons[0].previousYear}</th>
+                    <th>{comparisons[0].currentYear}</th>
+                    <th>Change</th>
+                    <th>Change %</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {comparisons.map((comparison) => (
+                    <tr key={comparison.metric}>
+                      <th>{comparison.label}</th>
+                      <td>
+                        {comparison.previous === null
+                          ? "—"
+                          : formatCompanyValue(comparison.previous, comparison.unit)}
+                      </td>
+                      <td>
+                        {comparison.current === null
+                          ? "—"
+                          : formatCompanyValue(comparison.current, comparison.unit)}
+                      </td>
+                      <td>
+                        {comparison.change === null
+                          ? "—"
+                          : formatCompanyValue(comparison.change, comparison.unit)}
+                      </td>
+                      <td>
+                        {comparison.changePercent === null
+                          ? "—"
+                          : formatCompanyValue(comparison.changePercent, "percent")}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          )}
+          {comparisons.length > 0 ? (
+            <p className="table-note">
+              Change % = (current − previous) ÷ |previous| × 100. A zero or missing baseline shows
+              —. Formula v1. Sources:{" "}
+              {comparisons[0].sourceRefs
+                .map(({ sourceId, locator }) => `${sourceId} · ${locator}`)
+                .join("; ")}
+              .
+            </p>
+          ) : null}
+        </section>
+
         <section className="company-card signal-board">
           <header>
             <div>
-              <p className="eyebrow">[02 / current readings]</p>
-              <h2>Signal board</h2>
+              <p className="eyebrow">[03 / provider measurements]</p>
+              <h2>Reported ratios and growth</h2>
             </div>
           </header>
           <div className="signal-stack">
-            {facts.signals.map((signal) => (
-              <article key={signal.id} className={`tone-${signal.tone}`}>
+            {facts.measurements.map((measurement) => (
+              <article key={measurement.id}>
                 <div>
-                  <span>{signal.label}</span>
-                  <strong>{formatCompanyValue(signal.value, signal.unit)}</strong>
+                  <span>{measurement.label}</span>
+                  <strong>{formatCompanyValue(measurement.value, measurement.unit)}</strong>
                 </div>
-                <p>{signal.context}</p>
+                <p>{measurement.context}</p>
+                <small>
+                  {measurement.asOf} ·{" "}
+                  {measurement.sourceRefs
+                    .map(({ sourceId, locator }) => `${sourceId} · ${locator}`)
+                    .join("; ")}
+                </small>
               </article>
             ))}
           </div>
@@ -165,48 +260,47 @@ export function CompanyPage() {
         <section className="company-card valuation-history">
           <header>
             <div>
-              <p className="eyebrow">[03 / multiple history]</p>
-              <h2>P/E versus peers</h2>
+              <p className="eyebrow">[04 / multiple history]</p>
+              <h2>Reported P/E history</h2>
             </div>
           </header>
-          <div className="valuation-bars">
-            {facts.valuations.map((period) => {
-              const companyPe = period.pe ?? 0;
-              const peerPe = period.peerPe ?? 0;
-              const maximum = Math.max(Math.abs(companyPe), peerPe, 1);
-              return (
-                <article key={period.id}>
-                  <span>{period.year}</span>
-                  <div>
-                    <i
-                      className={companyPe < 0 ? "is-negative" : undefined}
-                      style={{ width: `${Math.max((Math.abs(companyPe) / maximum) * 100, 2)}%` }}
-                    />
-                    <small>
-                      {period.pe === null ? "N/M company" : `${period.pe.toFixed(1)}× company`}
-                    </small>
-                    <i className="peer-bar" style={{ width: `${(peerPe / maximum) * 100}%` }} />
-                    <small>
-                      {period.peerPe === null ? "N/M peers" : `${period.peerPe.toFixed(1)}× peers`}
-                    </small>
-                  </div>
-                </article>
-              );
-            })}
+          <div className="financial-table-wrap">
+            <table className="valuation-table">
+              <thead>
+                <tr>
+                  <th>Year</th>
+                  <th>Company P/E</th>
+                  <th>Provider peer P/E</th>
+                </tr>
+              </thead>
+              <tbody>
+                {facts.valuations.map((period) => (
+                  <tr key={period.id}>
+                    <th>{period.year}</th>
+                    <td>{period.pe === null ? "—" : formatCompanyValue(period.pe, "multiple")}</td>
+                    <td>
+                      {period.peerPe === null ? "—" : formatCompanyValue(period.peerPe, "multiple")}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
           </div>
+          <p className="table-note">
+            The provider did not define the peer set. This column is a reported value, not a ranked
+            comparison.
+          </p>
         </section>
 
         <section className="company-card research-frontier">
           <header>
             <div>
-              <p className="eyebrow">[04 / research state]</p>
-              <h2>Coverage frontier</h2>
+              <p className="eyebrow">[05 / data coverage]</p>
+              <h2>Coverage</h2>
             </div>
-            <span>{coverage?.frontier.priority ?? "unknown"} priority</span>
           </header>
           {coverage !== null && (
             <>
-              <p className="next-action">{coverage.frontier.nextAction}</p>
               <ul>
                 {coverage.checks.map((check) => (
                   <li key={check.area}>
@@ -226,7 +320,7 @@ export function CompanyPage() {
         <section className="company-card network-context">
           <header>
             <div>
-              <p className="eyebrow">[05 / empire context]</p>
+              <p className="eyebrow">[06 / empire context]</p>
               <h2>Connected entities</h2>
             </div>
             <span>{relationships.length} links</span>
@@ -247,7 +341,7 @@ export function CompanyPage() {
         <section className="company-card source-ledger">
           <header>
             <div>
-              <p className="eyebrow">[06 / evidence ledger]</p>
+              <p className="eyebrow">[07 / evidence ledger]</p>
               <h2>Sectors sources</h2>
             </div>
             <span>{sources.length} records</span>

@@ -6,6 +6,7 @@ import { extractPrivateShareholders } from "../src/private-shareholders.mjs";
 import { collectConglomerateMembership } from "../src/conglomerate-membership.mjs";
 import { extractListedShareholders } from "../src/listed-shareholders.mjs";
 import { createSectorsClient } from "../src/sectors-client.mjs";
+import { buildEmpireTickerRegistry } from "../src/empire-ticker-registry.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const outputDirectory = resolve(root, "data/empires/prajogo");
@@ -180,7 +181,7 @@ for (const [symbol, { body: report }] of reports) {
   entities.push({
     id: entityIdForSymbol(symbol), kind: "listed_company", displayName: report.company_name ?? listedBySymbol.get(symbol).companyName,
     ticker, exchange: "IDX", country: "Indonesia",
-    summary: classification ? `${classification}. Profile and cycle data returned by Sectors.` : "Listed company profile returned by Sectors."
+    summary: classification ? `${classification}. Company records returned by Sectors.` : "Listed company profile returned by Sectors."
   });
 }
 const entityIds = new Set(entities.map(({ id }) => id));
@@ -196,9 +197,11 @@ for (const privateEntity of privateShareholders.entities) {
     ...privateEntity,
     kind: "private_company",
     country: "Indonesia",
-    summary: privateEntity.scopeRole === "empire"
-      ? "Private group entity identified in Sectors ownership records. Its upstream group position remains explicit about inference and missing percentages."
-      : "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
+    summary: privateEntity.id === "kjp"
+      ? "Private group entity identified in Sectors ownership records and named as a CUAN subsidiary in a Sectors news record. CUAN's ownership percentage in KJP is not reported."
+      : privateEntity.scopeRole === "empire"
+        ? "Private group entity identified in Sectors records. Its upstream ownership percentage may be unavailable."
+        : "Corporate shareholder reported by Sectors. Kept as an outside boundary until separate Sectors evidence links it to the empire."
   });
   entityIds.add(privateEntity.id);
 }
@@ -332,14 +335,13 @@ relationships.push({
 assertions.push({
   id: "assert-cuan-kjp",
   relationshipId: "cuan-kjp",
-  type: "inference",
+  type: "fact",
   stance: "supports",
-  statement: "Sectors reports that CUAN is pursuing SINI through subsidiaries and separately lists KJP as a 7.9% SINI shareholder. This supports a CUAN-group link to KJP, but Sectors does not disclose CUAN's ownership percentage in KJP.",
+  statement: "The Sectors news record names KJP as one of CUAN's subsidiaries while describing a possible SINI takeover. The record does not give CUAN's ownership percentage in KJP.",
   asOf: retrievedAt,
   confidence: "medium",
   sourceRefs: [
-    { sourceId: "sectors-cuan-sini-subsidiaries-news", locator: "results[0].title" },
-    { sourceId: reportSourceId("SINI.JK"), locator: "ownership.major_shareholders[name=PT Kreasi Jasa Persada]" }
+    { sourceId: "sectors-cuan-sini-subsidiaries-news", locator: "results[0].body" }
   ]
 });
 const facts = [];
@@ -373,16 +375,16 @@ for (const [symbol, { body: report }] of reports) {
     peerPe: finite(row.pe_peer_avg) ? row.pe_peer_avg : null, asOf: retrievedAt, context: "Annual P/E and peer average returned by the Sectors valuation section.",
     sourceRefs: sourceRef(sourceId, `valuation.historical_valuation[year=${row.year}]`)
   })));
-  const signalCandidates = [
-    ["debt_to_equity", "Debt to equity", latestRatio?.leverage?.debt_to_equity_ratio, "multiple", "watch", "Higher leverage increases sensitivity to financing costs."],
-    ["interest_coverage", "Interest coverage", latestRatio?.leverage?.interest_coverage_ratio, "multiple", "watch", "Operating earnings divided by reported interest expense."],
-    ["operating_cash_flow_margin", "Operating cash-flow margin", finite(latestRatio?.liquidity?.operating_cash_flow_margin) ? latestRatio.liquidity.operating_cash_flow_margin * 100 : null, "percent", "watch", "Cash conversion against revenue."],
-    ["yoy_quarter_revenue_growth", "Quarterly revenue growth", normalizePercentage(report.financials?.yoy_quarter_revenue_growth), "percent", "positive", "Latest year-on-year quarterly growth returned by Sectors."],
-    ["yoy_quarter_earnings_growth", "Quarterly earnings growth", normalizePercentage(report.financials?.yoy_quarter_earnings_growth), "percent", "positive", "Latest year-on-year quarterly growth returned by Sectors."]
+  const measurementCandidates = [
+    ["debt_to_equity", "Debt to equity", latestRatio?.leverage?.debt_to_equity_ratio, "multiple", "Total debt divided by equity as returned by Sectors.", `financials.historical_financial_ratio[year=${latestFinancial?.year}].leverage.debt_to_equity_ratio`],
+    ["interest_coverage", "Interest coverage", latestRatio?.leverage?.interest_coverage_ratio, "multiple", "Operating earnings divided by reported interest expense.", `financials.historical_financial_ratio[year=${latestFinancial?.year}].leverage.interest_coverage_ratio`],
+    ["operating_cash_flow_margin", "Operating cash-flow margin", finite(latestRatio?.liquidity?.operating_cash_flow_margin) ? latestRatio.liquidity.operating_cash_flow_margin * 100 : null, "percent", "Operating cash flow divided by revenue.", `financials.historical_financial_ratio[year=${latestFinancial?.year}].liquidity.operating_cash_flow_margin`],
+    ["yoy_quarter_revenue_growth", "Quarterly revenue growth", normalizePercentage(report.financials?.yoy_quarter_revenue_growth), "percent", "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.", "financials.yoy_quarter_revenue_growth"],
+    ["yoy_quarter_earnings_growth", "Quarterly earnings growth", normalizePercentage(report.financials?.yoy_quarter_earnings_growth), "percent", "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.", "financials.yoy_quarter_earnings_growth"]
   ];
-  facts.push(...signalCandidates.filter(([, , value]) => finite(value)).map(([metric, label, value, unit, tone, context]) => ({
-    id: `${entityId}-signal-${metric}`, entityId, kind: "signal", metric, label, value, unit, tone: tone === "positive" && value < 0 ? "watch" : tone,
-    asOf: retrievedAt, context: `${context} Analytical flag only, not an investment recommendation.`, sourceRefs: sourceRef(sourceId, `financials.${metric}`)
+  facts.push(...measurementCandidates.filter(([, , value]) => finite(value)).map(([metric, label, value, unit, context, locator]) => ({
+    id: `${entityId}-measurement-${metric}`, entityId, kind: "measurement", metric, label, value, unit,
+    asOf: retrievedAt, context, sourceRefs: sourceRef(sourceId, locator)
   })));
 }
 
@@ -402,10 +404,9 @@ facts.push({
   kind: "data_gap",
   label: "Upstream ownership percentage unavailable",
   asOf: retrievedAt,
-  context: "The CUAN-group link is an inference from two Sectors records. The current API does not provide CUAN's ownership percentage in KJP, so the graph does not label this as control or aggregate KJP's SINI stake into CUAN or PTRO.",
+  context: "A Sectors news record names KJP as a CUAN subsidiary but does not give CUAN's ownership percentage in KJP. The graph does not label this link as control or aggregate KJP's SINI stake into CUAN or PTRO.",
   sourceRefs: [
-    { sourceId: "sectors-cuan-sini-subsidiaries-news", locator: "results[0].title" },
-    { sourceId: reportSourceId("SINI.JK"), locator: "ownership.major_shareholders[name=PT Kreasi Jasa Persada]" }
+    { sourceId: "sectors-cuan-sini-subsidiaries-news", locator: "results[0].body" }
   ]
 });
 facts.push({
@@ -495,7 +496,13 @@ const coverage = entities.map((entity) => {
 
 const corpus = {
   manifest: { id: "prajogo-sectors", name: "Prajogo Pangestu", subjectEntityId: "prajogo", jurisdiction: "ID", asOf: retrievedAt, status: "researching", scope: "Barito group membership, listed ownership paths, valuation cycles, financials, and the CUAN mining branch reachable in the Sectors REST API.", dataPolicy: "sectors_only", coverageAreas },
-  entities, relationships, assertions, sources, coverage, facts
+  entities,
+  relationships,
+  assertions,
+  sources,
+  coverage,
+  facts,
+  memberships: buildEmpireTickerRegistry({ entities, relationships, assertions })
 };
 
 createEmpireCorpus(corpus);

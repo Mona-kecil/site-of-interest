@@ -94,7 +94,7 @@ export const getIntelligence = query({
         valuations: facts
           .filter((fact) => fact.kind === "valuation_period")
           .sort((left, right) => left.year - right.year),
-        signals: facts.filter((fact) => fact.kind === "signal"),
+        measurements: facts.filter((fact) => fact.kind === "measurement"),
         gaps: facts.filter((fact) => fact.kind === "data_gap"),
       },
       coverage:

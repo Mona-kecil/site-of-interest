@@ -48,11 +48,13 @@ export async function createSectorsClient({
   apiKey: suppliedApiKey,
   cacheDirectory = null,
   refresh = false,
+  maxCredits = Infinity,
   fetchImpl = globalThis.fetch,
 } = {}) {
   const apiKey = suppliedApiKey ?? await apiKeyFromEnvironment(root);
   if (!apiKey) throw new Error("SECTORS_API_KEY is missing");
   if (typeof fetchImpl !== "function") throw new Error("fetch implementation is missing");
+  if (maxCredits !== Infinity) validateCredits(maxCredits);
   const stats = { remoteCalls: 0, cachedCalls: 0, credits: 0 };
 
   async function requestWithUsage(pathname, credits = 1) {
@@ -67,6 +69,10 @@ export async function createSectorsClient({
       } catch (error) {
         if (error.code !== "ENOENT") throw error;
       }
+    }
+
+    if (stats.credits + credits > maxCredits) {
+      throw new Error(`${pathname} would exceed the ${maxCredits}-credit run limit`);
     }
 
     const response = await fetchImpl(`https://api.sectors.app${pathname}`, { headers: { Authorization: apiKey } });

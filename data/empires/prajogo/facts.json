@@ -318,70 +318,66 @@
     ]
   },
   {
-    "id": "tpia-signal-debt_to_equity",
+    "id": "tpia-measurement-debt_to_equity",
     "entityId": "tpia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 1.6461131457198597,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-tpia-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "tpia-signal-interest_coverage",
+    "id": "tpia-measurement-interest_coverage",
     "entityId": "tpia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 5.989586787055385,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-tpia-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "tpia-signal-operating_cash_flow_margin",
+    "id": "tpia-measurement-operating_cash_flow_margin",
     "entityId": "tpia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 4.984496454205814,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-tpia-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "tpia-signal-yoy_quarter_revenue_growth",
+    "id": "tpia-measurement-yoy_quarter_revenue_growth",
     "entityId": "tpia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 40.9653384357966,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-tpia-report",
@@ -390,16 +386,15 @@
     ]
   },
   {
-    "id": "tpia-signal-yoy_quarter_earnings_growth",
+    "id": "tpia-measurement-yoy_quarter_earnings_growth",
     "entityId": "tpia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": -88.3540978675995,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-tpia-report",
@@ -726,70 +721,66 @@
     ]
   },
   {
-    "id": "brpt-signal-debt_to_equity",
+    "id": "brpt-measurement-debt_to_equity",
     "entityId": "brpt",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 1.870371699766046,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-brpt-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "brpt-signal-interest_coverage",
+    "id": "brpt-measurement-interest_coverage",
     "entityId": "brpt",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 4.7333923351926686,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-brpt-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "brpt-signal-operating_cash_flow_margin",
+    "id": "brpt-measurement-operating_cash_flow_margin",
     "entityId": "brpt",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 4.057419919792018,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-brpt-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "brpt-signal-yoy_quarter_revenue_growth",
+    "id": "brpt-measurement-yoy_quarter_revenue_growth",
     "entityId": "brpt",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 39.969447896131896,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-brpt-report",
@@ -798,16 +789,15 @@
     ]
   },
   {
-    "id": "brpt-signal-yoy_quarter_earnings_growth",
+    "id": "brpt-measurement-yoy_quarter_earnings_growth",
     "entityId": "brpt",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": -78.9384177266946,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-brpt-report",
@@ -1117,70 +1107,66 @@
     ]
   },
   {
-    "id": "cuan-signal-debt_to_equity",
+    "id": "cuan-measurement-debt_to_equity",
     "entityId": "cuan",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 3.296084034418352,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "cuan-signal-interest_coverage",
+    "id": "cuan-measurement-interest_coverage",
     "entityId": "cuan",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 2.5537305354317597,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "cuan-signal-operating_cash_flow_margin",
+    "id": "cuan-measurement-operating_cash_flow_margin",
     "entityId": "cuan",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": -2.269709727891492,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "cuan-signal-yoy_quarter_revenue_growth",
+    "id": "cuan-measurement-yoy_quarter_revenue_growth",
     "entityId": "cuan",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 62.089232298605005,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-report",
@@ -1189,16 +1175,15 @@
     ]
   },
   {
-    "id": "cuan-signal-yoy_quarter_earnings_growth",
+    "id": "cuan-measurement-yoy_quarter_earnings_growth",
     "entityId": "cuan",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 64.5270509419382,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-report",
@@ -1525,70 +1510,66 @@
     ]
   },
   {
-    "id": "ptro-signal-debt_to_equity",
+    "id": "ptro-measurement-debt_to_equity",
     "entityId": "ptro",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 4.148290172966714,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ptro-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "ptro-signal-interest_coverage",
+    "id": "ptro-measurement-interest_coverage",
     "entityId": "ptro",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 1.7051832169338768,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ptro-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "ptro-signal-operating_cash_flow_margin",
+    "id": "ptro-measurement-operating_cash_flow_margin",
     "entityId": "ptro",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 5.432287336470158,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ptro-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "ptro-signal-yoy_quarter_revenue_growth",
+    "id": "ptro-measurement-yoy_quarter_revenue_growth",
     "entityId": "ptro",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 88.7020539144448,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ptro-report",
@@ -1597,16 +1578,15 @@
     ]
   },
   {
-    "id": "ptro-signal-yoy_quarter_earnings_growth",
+    "id": "ptro-measurement-yoy_quarter_earnings_growth",
     "entityId": "ptro",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 54.1900352304677,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ptro-report",
@@ -1917,70 +1897,66 @@
     ]
   },
   {
-    "id": "bren-signal-debt_to_equity",
+    "id": "bren-measurement-debt_to_equity",
     "entityId": "bren",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 3.3772799453096085,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-bren-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "bren-signal-interest_coverage",
+    "id": "bren-measurement-interest_coverage",
     "entityId": "bren",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 3.5734269265730734,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-bren-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "bren-signal-operating_cash_flow_margin",
+    "id": "bren-measurement-operating_cash_flow_margin",
     "entityId": "bren",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 37.73808756632248,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-bren-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "bren-signal-yoy_quarter_revenue_growth",
+    "id": "bren-measurement-yoy_quarter_revenue_growth",
     "entityId": "bren",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 24.7864831013639,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-bren-report",
@@ -1989,16 +1965,15 @@
     ]
   },
   {
-    "id": "bren-signal-yoy_quarter_earnings_growth",
+    "id": "bren-measurement-yoy_quarter_earnings_growth",
     "entityId": "bren",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 55.8852388064839,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-bren-report",
@@ -2211,56 +2186,53 @@
     ]
   },
   {
-    "id": "cdia-signal-debt_to_equity",
+    "id": "cdia-measurement-debt_to_equity",
     "entityId": "cdia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 0.5351486427887732,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cdia-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "cdia-signal-interest_coverage",
+    "id": "cdia-measurement-interest_coverage",
     "entityId": "cdia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 5.571546237898169,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cdia-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "cdia-signal-operating_cash_flow_margin",
+    "id": "cdia-measurement-operating_cash_flow_margin",
     "entityId": "cdia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 16.41902784991255,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cdia-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
@@ -2453,70 +2425,66 @@
     ]
   },
   {
-    "id": "ratu-signal-debt_to_equity",
+    "id": "ratu-measurement-debt_to_equity",
     "entityId": "ratu",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 0.3430015117961127,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ratu-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "ratu-signal-interest_coverage",
+    "id": "ratu-measurement-interest_coverage",
     "entityId": "ratu",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 19.461635646857378,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ratu-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "ratu-signal-operating_cash_flow_margin",
+    "id": "ratu-measurement-operating_cash_flow_margin",
     "entityId": "ratu",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 41.73565389886546,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ratu-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "ratu-signal-yoy_quarter_revenue_growth",
+    "id": "ratu-measurement-yoy_quarter_revenue_growth",
     "entityId": "ratu",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 35.5212899270815,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ratu-report",
@@ -2525,16 +2493,15 @@
     ]
   },
   {
-    "id": "ratu-signal-yoy_quarter_earnings_growth",
+    "id": "ratu-measurement-yoy_quarter_earnings_growth",
     "entityId": "ratu",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 5.71112467798758,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ratu-report",
@@ -2861,70 +2828,66 @@
     ]
   },
   {
-    "id": "ssia-signal-debt_to_equity",
+    "id": "ssia-measurement-debt_to_equity",
     "entityId": "ssia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 0.5732599006156912,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ssia-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "ssia-signal-interest_coverage",
+    "id": "ssia-measurement-interest_coverage",
     "entityId": "ssia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 1.1025227881485544,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ssia-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "ssia-signal-operating_cash_flow_margin",
+    "id": "ssia-measurement-operating_cash_flow_margin",
     "entityId": "ssia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": -26.014648971017234,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ssia-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "ssia-signal-yoy_quarter_revenue_growth",
+    "id": "ssia-measurement-yoy_quarter_revenue_growth",
     "entityId": "ssia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 82.77912375168019,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ssia-report",
@@ -2933,16 +2896,15 @@
     ]
   },
   {
-    "id": "ssia-signal-yoy_quarter_earnings_growth",
+    "id": "ssia-measurement-yoy_quarter_earnings_growth",
     "entityId": "ssia",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 24.1511277181888,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-ssia-report",
@@ -3269,70 +3231,66 @@
     ]
   },
   {
-    "id": "nrca-signal-debt_to_equity",
+    "id": "nrca-measurement-debt_to_equity",
     "entityId": "nrca",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": 1.1255559535089705,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-nrca-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "nrca-signal-interest_coverage",
+    "id": "nrca-measurement-interest_coverage",
     "entityId": "nrca",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 10.388855058004118,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-nrca-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "nrca-signal-operating_cash_flow_margin",
+    "id": "nrca-measurement-operating_cash_flow_margin",
     "entityId": "nrca",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": 0.4734181845088996,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-nrca-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "nrca-signal-yoy_quarter_revenue_growth",
+    "id": "nrca-measurement-yoy_quarter_revenue_growth",
     "entityId": "nrca",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 6.40137731825995,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-nrca-report",
@@ -3341,16 +3299,15 @@
     ]
   },
   {
-    "id": "nrca-signal-yoy_quarter_earnings_growth",
+    "id": "nrca-measurement-yoy_quarter_earnings_growth",
     "entityId": "nrca",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 53.834528733377,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-nrca-report",
@@ -3677,70 +3634,66 @@
     ]
   },
   {
-    "id": "sini-signal-debt_to_equity",
+    "id": "sini-measurement-debt_to_equity",
     "entityId": "sini",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "debt_to_equity",
     "label": "Debt to equity",
     "value": -3.282748054741602,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Higher leverage increases sensitivity to financing costs. Analytical flag only, not an investment recommendation.",
+    "context": "Total debt divided by equity as returned by Sectors.",
     "sourceRefs": [
       {
         "sourceId": "sectors-sini-report",
-        "locator": "financials.debt_to_equity"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.debt_to_equity_ratio"
       }
     ]
   },
   {
-    "id": "sini-signal-interest_coverage",
+    "id": "sini-measurement-interest_coverage",
     "entityId": "sini",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "interest_coverage",
     "label": "Interest coverage",
     "value": 0.1496446142212392,
     "unit": "multiple",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Operating earnings divided by reported interest expense. Analytical flag only, not an investment recommendation.",
+    "context": "Operating earnings divided by reported interest expense.",
     "sourceRefs": [
       {
         "sourceId": "sectors-sini-report",
-        "locator": "financials.interest_coverage"
+        "locator": "financials.historical_financial_ratio[year=2025].leverage.interest_coverage_ratio"
       }
     ]
   },
   {
-    "id": "sini-signal-operating_cash_flow_margin",
+    "id": "sini-measurement-operating_cash_flow_margin",
     "entityId": "sini",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "operating_cash_flow_margin",
     "label": "Operating cash-flow margin",
     "value": -9.687743461023762,
     "unit": "percent",
-    "tone": "watch",
     "asOf": "2026-09-17",
-    "context": "Cash conversion against revenue. Analytical flag only, not an investment recommendation.",
+    "context": "Operating cash flow divided by revenue.",
     "sourceRefs": [
       {
         "sourceId": "sectors-sini-report",
-        "locator": "financials.operating_cash_flow_margin"
+        "locator": "financials.historical_financial_ratio[year=2025].liquidity.operating_cash_flow_margin"
       }
     ]
   },
   {
-    "id": "sini-signal-yoy_quarter_revenue_growth",
+    "id": "sini-measurement-yoy_quarter_revenue_growth",
     "entityId": "sini",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_revenue_growth",
     "label": "Quarterly revenue growth",
     "value": 30.460032446896,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-sini-report",
@@ -3749,16 +3702,15 @@
     ]
   },
   {
-    "id": "sini-signal-yoy_quarter_earnings_growth",
+    "id": "sini-measurement-yoy_quarter_earnings_growth",
     "entityId": "sini",
-    "kind": "signal",
+    "kind": "measurement",
     "metric": "yoy_quarter_earnings_growth",
     "label": "Quarterly earnings growth",
     "value": 46.625900085007,
     "unit": "percent",
-    "tone": "positive",
     "asOf": "2026-09-17",
-    "context": "Latest year-on-year quarterly growth returned by Sectors. Analytical flag only, not an investment recommendation.",
+    "context": "Latest year-on-year quarterly growth returned by Sectors. Reporting quarter is not identified in this field.",
     "sourceRefs": [
       {
         "sourceId": "sectors-sini-report",
@@ -3804,15 +3756,11 @@
     "kind": "data_gap",
     "label": "Upstream ownership percentage unavailable",
     "asOf": "2026-09-17",
-    "context": "The CUAN-group link is an inference from two Sectors records. The current API does not provide CUAN's ownership percentage in KJP, so the graph does not label this as control or aggregate KJP's SINI stake into CUAN or PTRO.",
+    "context": "A Sectors news record names KJP as a CUAN subsidiary but does not give CUAN's ownership percentage in KJP. The graph does not label this link as control or aggregate KJP's SINI stake into CUAN or PTRO.",
     "sourceRefs": [
       {
         "sourceId": "sectors-cuan-sini-subsidiaries-news",
-        "locator": "results[0].title"
-      },
-      {
-        "sourceId": "sectors-sini-report",
-        "locator": "ownership.major_shareholders[name=PT Kreasi Jasa Persada]"
+        "locator": "results[0].body"
       }
     ]
   },

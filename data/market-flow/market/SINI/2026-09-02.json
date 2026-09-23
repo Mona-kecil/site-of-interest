@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "SINI",
+  "tradingDate": "2026-09-02",
+  "open": 11850,
+  "high": 12975,
+  "low": 11275,
+  "close": 12750,
+  "volume": 17262200,
+  "marketCap": 15331875000000,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/SINI/?start=2026-08-01&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:50:45.216Z"
+  }
+}

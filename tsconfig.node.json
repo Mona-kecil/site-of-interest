@@ -10,5 +10,5 @@
     "strict": true,
     "noEmit": true
   },
-  "include": ["vite.config.ts", "playwright.config.ts", "convex/**/*.ts"]
+  "include": ["vite.config.ts", "playwright.config.ts", "convex/**/*.ts", "src/features/today/fundamental-rules.ts"]
 }

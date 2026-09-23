@@ -22,14 +22,15 @@ Users can drag and pin nodes, release them with Reflow, switch to a focus orbit,
 
 Each listed-company profile groups normalized Sectors facts into:
 
-- a valuation-cycle card with three explicit checks;
+- current and previous P/E values;
 - latest market and financial metrics;
 - five annual financial periods;
-- derived positive and watch signals;
+- year-over-year annual changes with their formula and source periods;
+- provider-reported ratios and quarterly growth values;
 - explicit gaps in Sectors coverage;
 - research coverage, relationships, and exact API sources.
 
-The Cycle board compares the same checks across BRPT, TPIA, BREN, CDIA, CUAN, PTRO, and SINI. It orders the research queue by passed checks without presenting the order as a forecast or recommendation.
+The analysis command exports the same numeric fields for each listed company. It does not assign cycle stages or order companies by a hidden score.
 
 Profiles for operating entities that have not been synced remain sparse. The interface shows the next API action rather than filling empty sections with outside research.
 

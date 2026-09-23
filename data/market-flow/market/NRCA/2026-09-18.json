@@ -1,0 +1,17 @@
+{
+  "schemaVersion": 1,
+  "kind": "market_day",
+  "ticker": "NRCA",
+  "tradingDate": "2026-09-18",
+  "open": 610,
+  "high": 615,
+  "low": 555,
+  "close": 585,
+  "volume": 11919800,
+  "marketCap": 1460311131240,
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/daily/NRCA/?start=2026-09-10&end=2026-09-23",
+    "retrievedAt": "2026-09-23T08:47:17.217Z"
+  }
+}

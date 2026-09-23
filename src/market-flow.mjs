@@ -5,6 +5,8 @@ import { dirname, join } from "node:path";
 const BROKER_COHORTS = new Set(["retail", "mixed", "institutional", "unknown"]);
 const FLOW_KINDS = new Set(["market_day", "broker_day", "broker_registry"]);
 
+export class FlowConflictError extends Error {}
+
 function record(value, path) {
   if (value === null || typeof value !== "object" || Array.isArray(value)) throw new Error(`${path} must be an object`);
   return value;
@@ -297,7 +299,7 @@ export async function writeFlowObservation(root, observation) {
   } catch (error) {
     if (error.code !== "EEXIST") throw error;
     const existing = validateFlowObservation(JSON.parse(await readFile(target, "utf8")));
-    if (!sameFacts(existing, observation)) throw new Error(`${target} conflicts with stored facts`);
+    if (!sameFacts(existing, observation)) throw new FlowConflictError(`${target} conflicts with stored facts`);
     return "unchanged";
   } finally {
     await unlink(temporary).catch((error) => {
@@ -324,6 +326,20 @@ export async function loadBrokerHistory(root, ticker) {
     const observation = validateFlowObservation(JSON.parse(await readFile(path, "utf8")));
     if (observation.kind !== "broker_day" || observation.ticker !== normalizedTicker) {
       throw new Error(`${path} is not broker history for ${normalizedTicker}`);
+    }
+    if (flowObservationPath(root, observation) !== path) throw new Error(`${path} does not match its observation key`);
+    return observation;
+  }));
+  return days.sort((first, second) => first.tradingDate.localeCompare(second.tradingDate));
+}
+
+export async function loadMarketHistory(root, ticker) {
+  const normalizedTicker = normalizeTicker(ticker);
+  const paths = await filesIn(join(root, "market", normalizedTicker));
+  const days = await Promise.all(paths.map(async (path) => {
+    const observation = validateFlowObservation(JSON.parse(await readFile(path, "utf8")));
+    if (observation.kind !== "market_day" || observation.ticker !== normalizedTicker) {
+      throw new Error(`${path} is not market history for ${normalizedTicker}`);
     }
     if (flowObservationPath(root, observation) !== path) throw new Error(`${path} does not match its observation key`);
     return observation;

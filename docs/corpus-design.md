@@ -49,9 +49,9 @@ The first was a runtime backend proxy. It would always return fresh data, but it
 
 The selected design is a reproducible sync command. It keeps the API key out of the browser, gives the demo stable data, and lets judges regenerate every displayed value. The tradeoff is that freshness depends on running the sync.
 
-## Derived signals
+## Measurements and comparisons
 
-Signals may combine Sectors fields, but they must keep their source locators and calculation meaning. Every listed profile includes available leverage, cash-conversion, quarterly-growth, and valuation-history facts. The cycle classifier derives its stage at runtime and exposes its evidence and guardrails. These are analytical flags, not financial advice.
+Each listed profile keeps available leverage, cash-flow margin, quarterly growth, and valuation history with Sectors source locators. The company view calculates annual changes from two cited financial periods using a versioned formula. It shows the inputs, result, formula, and missing baselines without assigning a company stage or quality label.
 
 Corporate shareholders are extracted conservatively from legal-name markers in Sectors company reports. Public float, treasury stock, people, and already-listed holders are excluded from this private-entity pass. Legal names are normalized for deduplication, while the Sectors display name is preserved.
 

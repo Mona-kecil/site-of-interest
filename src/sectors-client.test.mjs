@@ -39,3 +39,14 @@ test("rejects paths outside the Sectors v2 boundary", async () => {
   const client = await createSectorsClient({ apiKey: "test-key", fetchImpl: async () => assert.fail("fetch must not run") });
   await assert.rejects(client.request("https://example.com/steal", 1), /Sectors v2 API path/);
 });
+
+test("stops before a remote request exceeds the explicit credit cap", async () => {
+  let calls = 0;
+  const client = await createSectorsClient({
+    apiKey: "test-key",
+    maxCredits: 0,
+    fetchImpl: async () => { calls += 1; return { ok: true, json: async () => ({}) }; },
+  });
+  await assert.rejects(client.request("/v2/example/", 1), /0-credit run limit/);
+  assert.equal(calls, 0);
+});
