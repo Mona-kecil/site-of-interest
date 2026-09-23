@@ -221,7 +221,7 @@ The target Empire view supplies context after the user opens it from a signal, c
 
 The target company view reads the stable profile and bounded summaries for fundamentals, market activity, broker activity, events, news, and Empire membership. Each historical series uses pagination or a documented maximum.
 
-The Focus board reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before import.
+The Focus board reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before the board can display it.
 
 The target **What's happening?** view reads paginated signal summaries in reverse observation-time order for a bounded date range. Today and Yesterday are presets over the same date-range contract. Filters use indexed fields. Signal detail loads cited inputs after the user opens one signal.
 

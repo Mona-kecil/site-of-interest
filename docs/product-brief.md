@@ -45,6 +45,12 @@ The inspector pins the selected record and its calculation first. It then shows 
 
 The current feed filters by metric, reporting period, and fact date. An Empire filter follows the second import. It sorts numeric values only after the researcher selects one metric and period with a common unit. Sector, coverage-state, and review-status filters remain future work. It has no composite score.
 
+### Focus
+
+**Focus** compares every in-scope listed company in one Empire using stored company facts. It shows the latest annual P/E, provider peer P/E, a premium only when both P/E values are positive, reported quarterly revenue and earnings growth, and latest annual free cash flow. Each value has a fact ID, date, and source locator. Missing or non-comparable values remain visible as gaps. The quarterly growth fields do not identify their reporting quarter.
+
+The default research-priority order puts companies with more board gaps first, then the largest difference between the two reported growth values. Researchers can change the sort, filter for incomplete board metrics, or filter by a descriptive growth state. The state compares the signs of quarterly revenue and earnings growth; it does not label company quality or predict returns. Opening Focus makes no Sectors request.
+
 ### Empire
 
 **Empire** supplies ownership and group context for a signal, company, or news item. It maps one conglomerate from a versioned dataset. The default graph includes entities that the dataset classifies as members of the selected group. A separate boundary view includes outside owners and counterparties.
@@ -167,8 +173,9 @@ The current application provides:
 - the Prajogo Pangestu Empire graph;
 - relationship assertions and Sectors source references;
 - listed-company financial, valuation, and calculated measurement records;
-- filesystem collectors and validators for daily market and broker data; and
-- a signal feed that opens each measurement's inputs and provider sources.
+- filesystem collectors and validators for daily market and broker data;
+- a signal feed that opens each measurement's inputs and provider sources; and
+- a Focus board for comparing the Prajogo listed companies and opening their records.
 
 **What's happening?** shows fundamental measurements, recent stored broker and market measurements, and September 2026 matched IDX news for the 10 listed companies in the checked-in Prajogo corpus. Selected periods without stored observations show a coverage gap. The app does not yet provide a multi-Empire selector, a general event timeline, authentication, or research cases.
 

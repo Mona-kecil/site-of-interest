@@ -88,11 +88,14 @@ export const getBoard = query({
         const financial = facts
           .filter((fact) => fact.kind === "financial_year")
           .sort((left, right) => right.year - left.year)[0];
-        const revenueGrowth = facts.find(
-          (fact) => fact.kind === "measurement" && fact.metric === "yoy_quarter_revenue_growth",
+        const measurements = facts
+          .filter((fact) => fact.kind === "measurement")
+          .sort((left, right) => right.asOf.localeCompare(left.asOf));
+        const revenueGrowth = measurements.find(
+          (fact) => fact.metric === "yoy_quarter_revenue_growth",
         );
-        const earningsGrowth = facts.find(
-          (fact) => fact.kind === "measurement" && fact.metric === "yoy_quarter_earnings_growth",
+        const earningsGrowth = measurements.find(
+          (fact) => fact.metric === "yoy_quarter_earnings_growth",
         );
 
         return {
@@ -123,7 +126,7 @@ export const getBoard = query({
                   context: valuation.context,
                 },
           revenueGrowth:
-            revenueGrowth?.kind !== "measurement"
+            revenueGrowth === undefined
               ? null
               : {
                   value: revenueGrowth.value,
@@ -135,7 +138,7 @@ export const getBoard = query({
                   context: revenueGrowth.context,
                 },
           earningsGrowth:
-            earningsGrowth?.kind !== "measurement"
+            earningsGrowth === undefined
               ? null
               : {
                   value: earningsGrowth.value,

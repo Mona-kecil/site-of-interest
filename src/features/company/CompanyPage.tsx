@@ -61,12 +61,11 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
   const latestValuation = facts.valuations.at(-1);
   const previousValuation = facts.valuations.at(-2);
   const comparisons = deriveAnnualComparisons(facts.financials);
-  const revenueGrowth = facts.measurements.find(
-    (fact) => fact.metric === "yoy_quarter_revenue_growth",
+  const measurements = [...facts.measurements].sort((left, right) =>
+    right.asOf.localeCompare(left.asOf),
   );
-  const earningsGrowth = facts.measurements.find(
-    (fact) => fact.metric === "yoy_quarter_earnings_growth",
-  );
+  const revenueGrowth = measurements.find((fact) => fact.metric === "yoy_quarter_revenue_growth");
+  const earningsGrowth = measurements.find((fact) => fact.metric === "yoy_quarter_earnings_growth");
   const cycleState = deriveCycleState(revenueGrowth?.value ?? null, earningsGrowth?.value ?? null);
 
   return (
