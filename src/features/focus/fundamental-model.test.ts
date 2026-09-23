@@ -1,6 +1,12 @@
 import { describe, expect, it } from "vitest";
 import { deriveCycleState } from "../company/company-model";
-import { focusCycle, focusGaps, orderFocusRows, peerPremium, type FocusRow } from "./focus-model";
+import {
+  focusCycle,
+  focusGaps,
+  orderFocusRows,
+  peerPremium,
+  type FundamentalRow,
+} from "./fundamental-model";
 
 const sourceRefs = [{ sourceId: "report", locator: "valuation.pe" }];
 function metric(value: number) {
@@ -20,15 +26,18 @@ function row(
   revenue: number | null,
   earnings: number | null,
   peer: number | null,
-): FocusRow {
+): FundamentalRow {
   return {
+    empireSlug: "prajogo",
     ticker,
     companyName: ticker,
-    pe: metric(20),
-    peerPe: peer === null ? null : metric(peer),
-    revenueGrowth: revenue === null ? null : metric(revenue),
-    earningsGrowth: earnings === null ? null : metric(earnings),
-    freeCashFlow: metric(100),
+    fundamentals: {
+      pe: metric(20),
+      peerPe: peer === null ? null : metric(peer),
+      revenueGrowth: revenue === null ? null : metric(revenue),
+      earningsGrowth: earnings === null ? null : metric(earnings),
+      freeCashFlow: metric(100),
+    },
   };
 }
 
@@ -71,7 +80,7 @@ describe("Focus research queue", () => {
 
   it("preserves a negative peer P/E fact but leaves the derived premium open", () => {
     const invalidPeer = row("SSIA", 12, -40, -5);
-    expect(invalidPeer.peerPe?.value).toBe(-5);
+    expect(invalidPeer.fundamentals.peerPe?.value).toBe(-5);
     expect(peerPremium(invalidPeer)).toBeNull();
     expect(focusGaps(invalidPeer)).toContain("Peer premium: peer P/E is zero or negative");
     expect(peerPremium(row("TPIA", 10, 5, 10))).toBe(100);
