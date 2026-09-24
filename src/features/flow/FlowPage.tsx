@@ -48,7 +48,7 @@ function observationLabel(
   market: MarketDay | undefined,
   broker: BrokerDay | undefined,
 ) {
-  if (broker && broker.brokers.length === 0) return "No broker rows";
+  if (broker && broker.brokers.length === 0) return "No identifiable broker rows";
   if (market && broker) return "Market + broker";
   if (market && Number(date.slice(8, 10)) > 28) return "Broker collection skipped";
   if (market) return "Broker not stored";
@@ -98,7 +98,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
   if (record.window === null) {
     return (
       <main className="route-state">
-        <p>The first broker window, September 1–14, becomes available on September 15.</p>
+        <p>The first broker window, August 1–14, becomes available on August 15.</p>
       </main>
     );
   }
@@ -371,8 +371,8 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                   </p>
                 ) : brokers.length === 0 ? (
                   <p className="flow-gap-note">
-                    Sectors returned no broker rows for {activeDate}. This is a coverage gap, not
-                    zero activity.
+                    Sectors returned no identifiable broker rows for {activeDate}. This is a
+                    coverage gap, not zero activity.
                   </p>
                 ) : (
                   <div className="flow-table-wrap">

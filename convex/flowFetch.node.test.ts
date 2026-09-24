@@ -93,10 +93,10 @@ test("a configured key remains inert until the enable flag is set", async () => 
   expect(deps.claim).not.toHaveBeenCalled();
 });
 
-test("does not claim or request data before the first September window is complete", async () => {
+test("does not claim or request data before the first August window is complete", async () => {
   const deps = dependencies();
   expect(
-    await fetchBrokerWindow({ ...deps, now: new Date("2026-09-14T16:59:59.000Z") }),
+    await fetchBrokerWindow({ ...deps, now: new Date("2026-08-14T16:59:59.000Z") }),
   ).toEqual({ status: "unavailable", window: null });
   expect(deps.claim).not.toHaveBeenCalled();
   expect(deps.fetchImpl).not.toHaveBeenCalled();

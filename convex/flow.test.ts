@@ -100,12 +100,13 @@ test("persists an empty response and never claims that window again", async () =
   expect(view?.brokerDays).toEqual([]);
 });
 
-test("shows only observations from September 2026 onward and the completed window", async () => {
+test("shows observations from August 2026 onward and the completed window", async () => {
   const t = await ready();
   await t.run(async (ctx) => {
+    await ctx.db.insert("brokerDays", day("2026-07-31", 500));
     await ctx.db.insert("brokerDays", day("2026-08-28", 1000));
     await ctx.db.insert("brokerDays", day("2026-09-01", 2000));
-    for (const tradingDate of ["2026-08-28", "2026-09-29"]) {
+    for (const tradingDate of ["2026-07-31", "2026-08-28", "2026-09-29"]) {
       await ctx.db.insert("marketDays", {
         ...key,
         tradingDate,
@@ -120,9 +121,9 @@ test("shows only observations from September 2026 onward and the completed windo
     }
   });
   const before = await t.query(api.flow.get, { ...key, asOf: "2026-09-14T16:59:59.000Z" });
-  expect(before?.window).toBeNull();
-  expect(before?.brokerDays.map((row) => row.tradingDate)).toEqual(["2026-09-01"]);
-  expect(before?.marketDays.map((row) => row.tradingDate)).toEqual(["2026-09-29"]);
+  expect(before?.window).toEqual({ start: "2026-08-15", end: "2026-08-28" });
+  expect(before?.brokerDays.map((row) => row.tradingDate)).toEqual(["2026-09-01", "2026-08-28"]);
+  expect(before?.marketDays.map((row) => row.tradingDate)).toEqual(["2026-09-29", "2026-08-28"]);
 
   const after = await t.query(api.flow.get, { ...key, asOf: "2026-09-14T17:00:00.000Z" });
   expect(after?.window).toEqual(window);

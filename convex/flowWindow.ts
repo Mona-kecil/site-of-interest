@@ -1,4 +1,4 @@
-export const FLOW_COVERAGE_START = "2026-09-01";
+export const FLOW_COVERAGE_START = "2026-08-01";
 
 export type BrokerWindow = { start: string; end: string };
 
