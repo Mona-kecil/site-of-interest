@@ -172,7 +172,7 @@ function parseFact(value: unknown): CompanyFact {
 }
 
 export const replacePrajogo = mutation({
-  args: {},
+  args: { deferBrokerImport: v.optional(v.boolean()) },
   returns: v.object({
     slug: v.string(),
     entities: v.number(),
@@ -189,7 +189,7 @@ export const replacePrajogo = mutation({
     newsRecords: v.number(),
     coverage: v.number(),
   }),
-  handler: async (ctx) => {
+  handler: async (ctx, { deferBrokerImport }) => {
     if (brokerSnapshot.schemaVersion !== 1) throw new Error("Unsupported broker snapshot version");
     if (marketSnapshot.schemaVersion !== 1) throw new Error("Unsupported market snapshot version");
     if (newsSnapshot.schemaVersion !== 1) throw new Error("Unsupported news snapshot version");
@@ -316,39 +316,44 @@ export const replacePrajogo = mutation({
       signalCount += signals.length;
     }
 
-    for (const day of brokerSnapshot.days) {
-      if (day.kind !== "broker_day" || day.source.provider !== "sectors") {
-        throw new Error("Invalid broker snapshot day");
+    if (!deferBrokerImport) {
+      for (const day of brokerSnapshot.days) {
+        if (day.kind !== "broker_day" || day.source.provider !== "sectors") {
+          throw new Error("Invalid broker snapshot day");
+        }
+        const storedDay: Infer<typeof brokerDayInput> = {
+          empireSlug: slug,
+          ticker: day.ticker,
+          tradingDate: day.tradingDate,
+          brokers: day.brokers,
+          source: { ...day.source, provider: "sectors" },
+        };
+        const existingDay = await ctx.db
+          .query("brokerDays")
+          .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
+            index
+              .eq("empireSlug", slug)
+              .eq("ticker", day.ticker)
+              .eq("tradingDate", day.tradingDate),
+          )
+          .unique();
+        if (existingDay === null) {
+          await ctx.db.insert("brokerDays", storedDay);
+        } else if (!sameBrokerRows(existingDay.brokers, day.brokers)) {
+          throw new Error(`Conflicting stored broker day ${day.ticker} ${day.tradingDate}`);
+        }
       }
-      const storedDay: Infer<typeof brokerDayInput> = {
-        empireSlug: slug,
-        ticker: day.ticker,
-        tradingDate: day.tradingDate,
-        brokers: day.brokers,
-        source: { ...day.source, provider: "sectors" },
-      };
-      const existingDay = await ctx.db
-        .query("brokerDays")
-        .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
-          index.eq("empireSlug", slug).eq("ticker", day.ticker).eq("tradingDate", day.tradingDate),
-        )
-        .unique();
-      if (existingDay === null) {
-        await ctx.db.insert("brokerDays", storedDay);
-      } else if (!sameBrokerRows(existingDay.brokers, day.brokers)) {
-        throw new Error(`Conflicting stored broker day ${day.ticker} ${day.tradingDate}`);
+      for (const signal of brokerSnapshot.signals) {
+        if (signal.metricId !== "broker_buy_share" || signal.source.provider !== "sectors") {
+          throw new Error("Invalid broker snapshot signal");
+        }
+        await ctx.db.insert("brokerSignals", {
+          ...signal,
+          metricId: "broker_buy_share",
+          unit: "%",
+          source: { ...signal.source, provider: "sectors" },
+        });
       }
-    }
-    for (const signal of brokerSnapshot.signals) {
-      if (signal.metricId !== "broker_buy_share" || signal.source.provider !== "sectors") {
-        throw new Error("Invalid broker snapshot signal");
-      }
-      await ctx.db.insert("brokerSignals", {
-        ...signal,
-        metricId: "broker_buy_share",
-        unit: "%",
-        source: { ...signal.source, provider: "sectors" },
-      });
     }
 
     for (const day of marketSnapshot.days) {
@@ -421,8 +426,8 @@ export const replacePrajogo = mutation({
       sources: sources.length,
       facts: facts.length,
       signals: signalCount,
-      brokerDays: brokerSnapshot.days.length,
-      brokerSignals: brokerSnapshot.signals.length,
+      brokerDays: deferBrokerImport ? 0 : brokerSnapshot.days.length,
+      brokerSignals: deferBrokerImport ? 0 : brokerSnapshot.signals.length,
       marketDays: marketSnapshot.days.length,
       marketSignals: marketSnapshot.signals.length,
       newsRecords: newsSnapshot.records.length,

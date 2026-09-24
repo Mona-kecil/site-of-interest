@@ -15,7 +15,7 @@
     "test:e2e": "playwright test",
     "test:legacy": "node --test 'src/**/*.test.mjs'",
     "convex:dev": "convex dev",
-    "convex:seed": "convex run seed:replacePrajogo",
+    "convex:seed": "node scripts/seed-prajogo.mjs",
     "sync:sectors": "node scripts/sync-sectors.mjs",
     "sync:flow": "node scripts/sync-market-flow.mjs",
     "import:broker": "node scripts/import-broker-days.mjs",

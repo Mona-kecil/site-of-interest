@@ -23,7 +23,7 @@ context. The feed also includes matched September 2026 news. Recent stored broke
 and market days cover all 10 listed Prajogo companies.
 Selected date ranges without stored days show a coverage gap.
 
-Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment:
+Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment. The command loads the corpus first, then imports broker days in small local batches. It makes no Sectors requests:
 
 ```sh
 npm run convex:seed
@@ -65,8 +65,9 @@ npm run build:market-snapshot
 npm run convex:seed
 ```
 
-The snapshot keeps the latest 14-calendar-day window per ticker. It does not claim
-that an uncollected ticker had no broker activity.
+The broker snapshot keeps all stored broker days. It does not claim that an
+uncollected ticker had no broker activity. Local seeding imports these days in
+small batches because the full snapshot exceeds one Convex mutation's time limit.
 
 The market snapshot keeps up to 40 stored days per ticker and generates recent
 volume comparisons against the prior 20 stored trading days. The original SINI

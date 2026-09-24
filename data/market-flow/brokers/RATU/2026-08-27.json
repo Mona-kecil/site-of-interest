@@ -1,0 +1,913 @@
+{
+  "schemaVersion": 1,
+  "kind": "broker_day",
+  "ticker": "RATU",
+  "tradingDate": "2026-08-27",
+  "brokers": [
+    {
+      "brokerCode": "AG",
+      "buy": {
+        "frequency": 3,
+        "lots": 55,
+        "value": 23520000,
+        "averagePrice": 4276.3636
+      },
+      "sell": {
+        "frequency": 1,
+        "lots": 1,
+        "value": 420000,
+        "averagePrice": 4200
+      },
+      "net": {
+        "lots": 54,
+        "value": 23100000,
+        "averagePrice": 4276.3636
+      }
+    },
+    {
+      "brokerCode": "AI",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 5,
+        "lots": 25,
+        "value": 10700000,
+        "averagePrice": 4280
+      },
+      "net": {
+        "lots": -25,
+        "value": -10700000,
+        "averagePrice": 4280
+      }
+    },
+    {
+      "brokerCode": "AK",
+      "buy": {
+        "frequency": 265,
+        "lots": 12086,
+        "value": 5140912000,
+        "averagePrice": 4253.6091
+      },
+      "sell": {
+        "frequency": 136,
+        "lots": 4426,
+        "value": 1883802000,
+        "averagePrice": 4256.2178
+      },
+      "net": {
+        "lots": 7660,
+        "value": 3257110000,
+        "averagePrice": 4253.6091
+      }
+    },
+    {
+      "brokerCode": "AT",
+      "buy": {
+        "frequency": 9,
+        "lots": 218,
+        "value": 93252000,
+        "averagePrice": 4277.6147
+      },
+      "sell": {
+        "frequency": 1,
+        "lots": 40,
+        "value": 17200000,
+        "averagePrice": 4300
+      },
+      "net": {
+        "lots": 178,
+        "value": 76052000,
+        "averagePrice": 4277.6147
+      }
+    },
+    {
+      "brokerCode": "AZ",
+      "buy": {
+        "frequency": 62,
+        "lots": 891,
+        "value": 378550000,
+        "averagePrice": 4248.5971
+      },
+      "sell": {
+        "frequency": 58,
+        "lots": 798,
+        "value": 342132000,
+        "averagePrice": 4287.3684
+      },
+      "net": {
+        "lots": 93,
+        "value": 36418000,
+        "averagePrice": 4248.5971
+      }
+    },
+    {
+      "brokerCode": "BK",
+      "buy": {
+        "frequency": 65,
+        "lots": 933,
+        "value": 397285000,
+        "averagePrice": 4258.1458
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 933,
+        "value": 397285000,
+        "averagePrice": 4258.1458
+      }
+    },
+    {
+      "brokerCode": "BQ",
+      "buy": {
+        "frequency": 18,
+        "lots": 240,
+        "value": 101939000,
+        "averagePrice": 4247.4583
+      },
+      "sell": {
+        "frequency": 3,
+        "lots": 60,
+        "value": 25671000,
+        "averagePrice": 4278.5
+      },
+      "net": {
+        "lots": 180,
+        "value": 76268000,
+        "averagePrice": 4247.4583
+      }
+    },
+    {
+      "brokerCode": "BR",
+      "buy": {
+        "frequency": 5,
+        "lots": 7,
+        "value": 2979000,
+        "averagePrice": 4255.7143
+      },
+      "sell": {
+        "frequency": 4,
+        "lots": 8,
+        "value": 3404000,
+        "averagePrice": 4255
+      },
+      "net": {
+        "lots": -1,
+        "value": -425000,
+        "averagePrice": 4255
+      }
+    },
+    {
+      "brokerCode": "CC",
+      "buy": {
+        "frequency": 298,
+        "lots": 7981,
+        "value": 3389031000,
+        "averagePrice": 4246.3739
+      },
+      "sell": {
+        "frequency": 420,
+        "lots": 15193,
+        "value": 6499100000,
+        "averagePrice": 4277.6937
+      },
+      "net": {
+        "lots": -7212,
+        "value": -3110069000,
+        "averagePrice": 4277.6937
+      }
+    },
+    {
+      "brokerCode": "CD",
+      "buy": {
+        "frequency": 12,
+        "lots": 312,
+        "value": 133348000,
+        "averagePrice": 4273.9744
+      },
+      "sell": {
+        "frequency": 23,
+        "lots": 500,
+        "value": 213800000,
+        "averagePrice": 4276
+      },
+      "net": {
+        "lots": -188,
+        "value": -80452000,
+        "averagePrice": 4276
+      }
+    },
+    {
+      "brokerCode": "CP",
+      "buy": {
+        "frequency": 55,
+        "lots": 1096,
+        "value": 470085000,
+        "averagePrice": 4289.0967
+      },
+      "sell": {
+        "frequency": 31,
+        "lots": 322,
+        "value": 138099000,
+        "averagePrice": 4288.7888
+      },
+      "net": {
+        "lots": 774,
+        "value": 331986000,
+        "averagePrice": 4289.0967
+      }
+    },
+    {
+      "brokerCode": "DH",
+      "buy": {
+        "frequency": 34,
+        "lots": 1102,
+        "value": 471229000,
+        "averagePrice": 4276.1252
+      },
+      "sell": {
+        "frequency": 16,
+        "lots": 566,
+        "value": 240285000,
+        "averagePrice": 4245.318
+      },
+      "net": {
+        "lots": 536,
+        "value": 230944000,
+        "averagePrice": 4276.1252
+      }
+    },
+    {
+      "brokerCode": "DR",
+      "buy": {
+        "frequency": 28,
+        "lots": 617,
+        "value": 264939000,
+        "averagePrice": 4293.987
+      },
+      "sell": {
+        "frequency": 21,
+        "lots": 152,
+        "value": 64206000,
+        "averagePrice": 4224.0789
+      },
+      "net": {
+        "lots": 465,
+        "value": 200733000,
+        "averagePrice": 4293.987
+      }
+    },
+    {
+      "brokerCode": "DX",
+      "buy": {
+        "frequency": 1,
+        "lots": 100,
+        "value": 43000000,
+        "averagePrice": 4300
+      },
+      "sell": {
+        "frequency": 10,
+        "lots": 232,
+        "value": 97191000,
+        "averagePrice": 4189.2672
+      },
+      "net": {
+        "lots": -132,
+        "value": -54191000,
+        "averagePrice": 4189.2672
+      }
+    },
+    {
+      "brokerCode": "EP",
+      "buy": {
+        "frequency": 11,
+        "lots": 171,
+        "value": 72978000,
+        "averagePrice": 4267.7193
+      },
+      "sell": {
+        "frequency": 22,
+        "lots": 103,
+        "value": 42983000,
+        "averagePrice": 4173.1068
+      },
+      "net": {
+        "lots": 68,
+        "value": 29995000,
+        "averagePrice": 4267.7193
+      }
+    },
+    {
+      "brokerCode": "FZ",
+      "buy": {
+        "frequency": 16,
+        "lots": 500,
+        "value": 211500000,
+        "averagePrice": 4230
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 500,
+        "value": 211500000,
+        "averagePrice": 4230
+      }
+    },
+    {
+      "brokerCode": "GR",
+      "buy": {
+        "frequency": 15,
+        "lots": 576,
+        "value": 246197000,
+        "averagePrice": 4274.2535
+      },
+      "sell": {
+        "frequency": 63,
+        "lots": 2265,
+        "value": 951830000,
+        "averagePrice": 4202.34
+      },
+      "net": {
+        "lots": -1689,
+        "value": -705633000,
+        "averagePrice": 4202.34
+      }
+    },
+    {
+      "brokerCode": "HD",
+      "buy": {
+        "frequency": 26,
+        "lots": 338,
+        "value": 143979000,
+        "averagePrice": 4259.7337
+      },
+      "sell": {
+        "frequency": 41,
+        "lots": 316,
+        "value": 134793000,
+        "averagePrice": 4265.6013
+      },
+      "net": {
+        "lots": 22,
+        "value": 9186000,
+        "averagePrice": 4259.7337
+      }
+    },
+    {
+      "brokerCode": "HP",
+      "buy": {
+        "frequency": 1,
+        "lots": 1,
+        "value": 416000,
+        "averagePrice": 4160
+      },
+      "sell": {
+        "frequency": 68,
+        "lots": 1961,
+        "value": 830154000,
+        "averagePrice": 4233.3197
+      },
+      "net": {
+        "lots": -1960,
+        "value": -829738000,
+        "averagePrice": 4233.3197
+      }
+    },
+    {
+      "brokerCode": "IF",
+      "buy": {
+        "frequency": 1,
+        "lots": 3,
+        "value": 1287000,
+        "averagePrice": 4290
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 3,
+        "value": 1287000,
+        "averagePrice": 4290
+      }
+    },
+    {
+      "brokerCode": "IU",
+      "buy": {
+        "frequency": 4,
+        "lots": 300,
+        "value": 129000000,
+        "averagePrice": 4300
+      },
+      "sell": {
+        "frequency": 13,
+        "lots": 488,
+        "value": 207599000,
+        "averagePrice": 4254.0779
+      },
+      "net": {
+        "lots": -188,
+        "value": -78599000,
+        "averagePrice": 4254.0779
+      }
+    },
+    {
+      "brokerCode": "KI",
+      "buy": {
+        "frequency": 10,
+        "lots": 31,
+        "value": 13192000,
+        "averagePrice": 4255.4839
+      },
+      "sell": {
+        "frequency": 3,
+        "lots": 3,
+        "value": 1273000,
+        "averagePrice": 4243.3333
+      },
+      "net": {
+        "lots": 28,
+        "value": 11919000,
+        "averagePrice": 4255.4839
+      }
+    },
+    {
+      "brokerCode": "KK",
+      "buy": {
+        "frequency": 58,
+        "lots": 616,
+        "value": 262409000,
+        "averagePrice": 4259.8864
+      },
+      "sell": {
+        "frequency": 204,
+        "lots": 8423,
+        "value": 3587108000,
+        "averagePrice": 4258.7059
+      },
+      "net": {
+        "lots": -7807,
+        "value": -3324699000,
+        "averagePrice": 4258.7059
+      }
+    },
+    {
+      "brokerCode": "LG",
+      "buy": {
+        "frequency": 32,
+        "lots": 698,
+        "value": 295275000,
+        "averagePrice": 4230.3009
+      },
+      "sell": {
+        "frequency": 23,
+        "lots": 228,
+        "value": 97631000,
+        "averagePrice": 4282.0614
+      },
+      "net": {
+        "lots": 470,
+        "value": 197644000,
+        "averagePrice": 4230.3009
+      }
+    },
+    {
+      "brokerCode": "LS",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 11,
+        "lots": 225,
+        "value": 96525000,
+        "averagePrice": 4290
+      },
+      "net": {
+        "lots": -225,
+        "value": -96525000,
+        "averagePrice": 4290
+      }
+    },
+    {
+      "brokerCode": "MG",
+      "buy": {
+        "frequency": 41,
+        "lots": 3305,
+        "value": 1411655000,
+        "averagePrice": 4271.2708
+      },
+      "sell": {
+        "frequency": 4,
+        "lots": 33,
+        "value": 14183000,
+        "averagePrice": 4297.8788
+      },
+      "net": {
+        "lots": 3272,
+        "value": 1397472000,
+        "averagePrice": 4271.2708
+      }
+    },
+    {
+      "brokerCode": "NI",
+      "buy": {
+        "frequency": 106,
+        "lots": 904,
+        "value": 385451000,
+        "averagePrice": 4263.8385
+      },
+      "sell": {
+        "frequency": 71,
+        "lots": 621,
+        "value": 263331000,
+        "averagePrice": 4240.4348
+      },
+      "net": {
+        "lots": 283,
+        "value": 122120000,
+        "averagePrice": 4263.8385
+      }
+    },
+    {
+      "brokerCode": "OD",
+      "buy": {
+        "frequency": 156,
+        "lots": 5220,
+        "value": 2217889000,
+        "averagePrice": 4248.8295
+      },
+      "sell": {
+        "frequency": 70,
+        "lots": 637,
+        "value": 271589000,
+        "averagePrice": 4263.5636
+      },
+      "net": {
+        "lots": 4583,
+        "value": 1946300000,
+        "averagePrice": 4248.8295
+      }
+    },
+    {
+      "brokerCode": "PD",
+      "buy": {
+        "frequency": 209,
+        "lots": 2986,
+        "value": 1274232000,
+        "averagePrice": 4267.3543
+      },
+      "sell": {
+        "frequency": 214,
+        "lots": 2708,
+        "value": 1147929000,
+        "averagePrice": 4239.0288
+      },
+      "net": {
+        "lots": 278,
+        "value": 126303000,
+        "averagePrice": 4267.3543
+      }
+    },
+    {
+      "brokerCode": "PF",
+      "buy": {
+        "frequency": 3,
+        "lots": 6,
+        "value": 2514000,
+        "averagePrice": 4190
+      },
+      "sell": {
+        "frequency": 2,
+        "lots": 11,
+        "value": 4709000,
+        "averagePrice": 4280.9091
+      },
+      "net": {
+        "lots": -5,
+        "value": -2195000,
+        "averagePrice": 4280.9091
+      }
+    },
+    {
+      "brokerCode": "QA",
+      "buy": {
+        "frequency": 2,
+        "lots": 10,
+        "value": 4252000,
+        "averagePrice": 4252
+      },
+      "sell": {
+        "frequency": 9,
+        "lots": 44,
+        "value": 18393000,
+        "averagePrice": 4180.2273
+      },
+      "net": {
+        "lots": -34,
+        "value": -14141000,
+        "averagePrice": 4180.2273
+      }
+    },
+    {
+      "brokerCode": "RO",
+      "buy": {
+        "frequency": 4,
+        "lots": 132,
+        "value": 56154000,
+        "averagePrice": 4254.0909
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 132,
+        "value": 56154000,
+        "averagePrice": 4254.0909
+      }
+    },
+    {
+      "brokerCode": "SF",
+      "buy": {
+        "frequency": 5,
+        "lots": 17,
+        "value": 7155000,
+        "averagePrice": 4208.8235
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 17,
+        "value": 7155000,
+        "averagePrice": 4208.8235
+      }
+    },
+    {
+      "brokerCode": "SH",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 22,
+        "lots": 450,
+        "value": 188550000,
+        "averagePrice": 4190
+      },
+      "net": {
+        "lots": -450,
+        "value": -188550000,
+        "averagePrice": 4190
+      }
+    },
+    {
+      "brokerCode": "SQ",
+      "buy": {
+        "frequency": 72,
+        "lots": 1534,
+        "value": 655937000,
+        "averagePrice": 4275.9909
+      },
+      "sell": {
+        "frequency": 30,
+        "lots": 705,
+        "value": 301157000,
+        "averagePrice": 4271.7305
+      },
+      "net": {
+        "lots": 829,
+        "value": 354780000,
+        "averagePrice": 4275.9909
+      }
+    },
+    {
+      "brokerCode": "TF",
+      "buy": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "sell": {
+        "frequency": 2,
+        "lots": 2,
+        "value": 842000,
+        "averagePrice": 4210
+      },
+      "net": {
+        "lots": -2,
+        "value": -842000,
+        "averagePrice": 4210
+      }
+    },
+    {
+      "brokerCode": "TP",
+      "buy": {
+        "frequency": 2,
+        "lots": 12,
+        "value": 5014000,
+        "averagePrice": 4178.3333
+      },
+      "sell": {
+        "frequency": 22,
+        "lots": 1227,
+        "value": 525183000,
+        "averagePrice": 4280.22
+      },
+      "net": {
+        "lots": -1215,
+        "value": -520169000,
+        "averagePrice": 4280.22
+      }
+    },
+    {
+      "brokerCode": "XA",
+      "buy": {
+        "frequency": 49,
+        "lots": 1336,
+        "value": 572321000,
+        "averagePrice": 4283.8398
+      },
+      "sell": {
+        "frequency": 9,
+        "lots": 75,
+        "value": 31455000,
+        "averagePrice": 4194
+      },
+      "net": {
+        "lots": 1261,
+        "value": 540866000,
+        "averagePrice": 4283.8398
+      }
+    },
+    {
+      "brokerCode": "XC",
+      "buy": {
+        "frequency": 367,
+        "lots": 4218,
+        "value": 1796144000,
+        "averagePrice": 4258.2835
+      },
+      "sell": {
+        "frequency": 367,
+        "lots": 7191,
+        "value": 3063754000,
+        "averagePrice": 4260.5396
+      },
+      "net": {
+        "lots": -2973,
+        "value": -1267610000,
+        "averagePrice": 4260.5396
+      }
+    },
+    {
+      "brokerCode": "XL",
+      "buy": {
+        "frequency": 1523,
+        "lots": 21811,
+        "value": 9279603000,
+        "averagePrice": 4254.5518
+      },
+      "sell": {
+        "frequency": 598,
+        "lots": 6404,
+        "value": 2721926000,
+        "averagePrice": 4250.3529
+      },
+      "net": {
+        "lots": 15407,
+        "value": 6557677000,
+        "averagePrice": 4254.5518
+      }
+    },
+    {
+      "brokerCode": "YB",
+      "buy": {
+        "frequency": 31,
+        "lots": 635,
+        "value": 270582000,
+        "averagePrice": 4261.1339
+      },
+      "sell": {
+        "frequency": 17,
+        "lots": 207,
+        "value": 88803000,
+        "averagePrice": 4290
+      },
+      "net": {
+        "lots": 428,
+        "value": 181779000,
+        "averagePrice": 4261.1339
+      }
+    },
+    {
+      "brokerCode": "YJ",
+      "buy": {
+        "frequency": 9,
+        "lots": 135,
+        "value": 57225000,
+        "averagePrice": 4238.8889
+      },
+      "sell": {
+        "frequency": 0,
+        "lots": 0,
+        "value": 0,
+        "averagePrice": null
+      },
+      "net": {
+        "lots": 135,
+        "value": 57225000,
+        "averagePrice": 4238.8889
+      }
+    },
+    {
+      "brokerCode": "YP",
+      "buy": {
+        "frequency": 221,
+        "lots": 5251,
+        "value": 2239053000,
+        "averagePrice": 4264.0507
+      },
+      "sell": {
+        "frequency": 147,
+        "lots": 2182,
+        "value": 917136000,
+        "averagePrice": 4203.1897
+      },
+      "net": {
+        "lots": 3069,
+        "value": 1321917000,
+        "averagePrice": 4264.0507
+      }
+    },
+    {
+      "brokerCode": "YU",
+      "buy": {
+        "frequency": 2,
+        "lots": 3,
+        "value": 1287000,
+        "averagePrice": 4290
+      },
+      "sell": {
+        "frequency": 1075,
+        "lots": 17630,
+        "value": 7510095000,
+        "averagePrice": 4259.8383
+      },
+      "net": {
+        "lots": -17627,
+        "value": -7508808000,
+        "averagePrice": 4259.8383
+      }
+    },
+    {
+      "brokerCode": "ZP",
+      "buy": {
+        "frequency": 8,
+        "lots": 84,
+        "value": 36031000,
+        "averagePrice": 4289.4048
+      },
+      "sell": {
+        "frequency": 3,
+        "lots": 9,
+        "value": 3860000,
+        "averagePrice": 4288.8889
+      },
+      "net": {
+        "lots": 75,
+        "value": 32171000,
+        "averagePrice": 4289.4048
+      }
+    }
+  ],
+  "source": {
+    "provider": "sectors",
+    "endpoint": "/v2/broker-summary/RATU/?start=2026-08-15&end=2026-08-28",
+    "retrievedAt": "2026-09-24T07:38:00.637Z"
+  }
+}

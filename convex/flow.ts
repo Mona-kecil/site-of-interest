@@ -6,6 +6,7 @@ import { FLOW_COVERAGE_START, latestCompletedBrokerWindow } from "./flowWindow";
 import { sameBrokerRows } from "./brokerRows";
 
 const windowValidator = v.object({ start: v.string(), end: v.string() });
+const visibleFlowDays = 60;
 const fetchStatus = v.union(
   v.literal("idle"),
   v.literal("fetching"),
@@ -65,7 +66,7 @@ export const get = query({
             .gte("tradingDate", FLOW_COVERAGE_START),
         )
         .order("desc")
-        .take(30),
+        .take(visibleFlowDays),
       ctx.db
         .query("marketDays")
         .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
@@ -75,7 +76,7 @@ export const get = query({
             .gte("tradingDate", FLOW_COVERAGE_START),
         )
         .order("desc")
-        .take(30),
+        .take(visibleFlowDays),
     ]);
     const status: Infer<typeof fetchStatus> =
       current?.status === "failed" && current.attempts >= 2
