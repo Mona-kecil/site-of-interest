@@ -4,13 +4,13 @@ import { expect, test, vi } from "vitest";
 import { fetchBrokerWindow } from "./flowRequest";
 
 const now = new Date("2026-09-17T05:00:00.000Z");
-const window = { start: "2026-09-04", end: "2026-09-17" };
-const endpoint = "/v2/broker-summary/SINI/?start=2026-09-04&end=2026-09-17";
+const window = { start: "2026-09-01", end: "2026-09-14" };
+const endpoint = "/v2/broker-summary/SINI/?start=2026-09-01&end=2026-09-14";
 const fixture = {
   symbol: "SINI.JK",
   data: [
     {
-      date: "2026-09-16",
+      date: "2026-09-10",
       summary: [
         {
           broker_code: "YP",
@@ -60,7 +60,7 @@ test("sends one bounded broker request and stores independent rows with source",
   expect(stored.days[0]).toMatchObject({
     empireSlug: "prajogo",
     ticker: "SINI",
-    tradingDate: "2026-09-16",
+    tradingDate: "2026-09-10",
     brokers: [
       {
         brokerCode: "YP",
@@ -91,6 +91,35 @@ test("a configured key remains inert until the enable flag is set", async () => 
   });
   expect(deps.fetchImpl).not.toHaveBeenCalled();
   expect(deps.claim).not.toHaveBeenCalled();
+});
+
+test("does not claim or request data before the first September window is complete", async () => {
+  const deps = dependencies();
+  expect(
+    await fetchBrokerWindow({ ...deps, now: new Date("2026-09-14T16:59:59.000Z") }),
+  ).toEqual({ status: "unavailable", window: null });
+  expect(deps.claim).not.toHaveBeenCalled();
+  expect(deps.fetchImpl).not.toHaveBeenCalled();
+});
+
+test("requests September 15–28 only once that entire window has completed", async () => {
+  const deps = dependencies();
+  const expectedWindow = { start: "2026-09-15", end: "2026-09-28" };
+  const fetchImpl = vi.fn(async (_input: RequestInfo | URL, _init?: RequestInit) =>
+    new Response(
+      JSON.stringify({ ...fixture, data: [{ ...fixture.data[0], date: "2026-09-20" }] }),
+      { status: 200 },
+    ),
+  );
+  const result = await fetchBrokerWindow({
+    ...deps,
+    now: new Date("2026-09-28T17:00:00.000Z"),
+    fetchImpl,
+  });
+  expect(result).toEqual({ status: "fetched", window: expectedWindow });
+  expect(fetchImpl.mock.calls[0]?.[0]).toBe(
+    "https://api.sectors.app/v2/broker-summary/SINI/?start=2026-09-15&end=2026-09-28",
+  );
 });
 
 test("a capped claim never reaches the paid endpoint", async () => {

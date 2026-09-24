@@ -4,11 +4,10 @@ import { randomUUID } from "node:crypto";
 import type { Infer } from "convex/values";
 import { normalizeTicker, parseBrokerDays } from "../src/market-flow.mjs";
 import { brokerDayInput } from "./schema";
-import { latestJakartaWindow } from "./flowWindow";
+import { latestCompletedBrokerWindow, type BrokerWindow } from "./flowWindow";
 
-type Window = { start: string; end: string };
 type Key = { empireSlug: string; ticker: string };
-type Claim = Key & Window & { claimToken: string };
+type Claim = Key & BrokerWindow & { claimToken: string };
 type Store = Key & {
   end: string;
   claimToken: string;
@@ -38,10 +37,10 @@ export async function fetchBrokerWindow({
   store: (args: Store) => Promise<boolean>;
   fail: (args: Failure) => Promise<unknown>;
   fetchImpl: typeof fetch;
-}): Promise<{ status: Status; window: Window | null }> {
+}): Promise<{ status: Status; window: BrokerWindow | null }> {
   const ticker = normalizeTicker(tickerInput);
-  const window = latestJakartaWindow(now);
-  if (!enabled || !apiKey) return { status: "unavailable", window };
+  const window = latestCompletedBrokerWindow(now);
+  if (window === null || !enabled || !apiKey) return { status: "unavailable", window };
 
   const claimToken = randomUUID();
   const claimResult = await claim({ empireSlug, ticker, ...window, claimToken });

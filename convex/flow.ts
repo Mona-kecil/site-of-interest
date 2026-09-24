@@ -2,7 +2,7 @@ import { v, type Infer } from "convex/values";
 import { internalMutation, query } from "./_generated/server";
 import { brokerDayInput } from "./schema";
 import schema from "./schema";
-import { latestJakartaWindow } from "./flowWindow";
+import { FLOW_COVERAGE_START, latestCompletedBrokerWindow } from "./flowWindow";
 import { sameBrokerRows } from "./brokerRows";
 
 const windowValidator = v.object({ start: v.string(), end: v.string() });
@@ -40,16 +40,12 @@ export const get = query({
       .unique();
     if (membership === null) return null;
 
-    const requestedWindow = asOf === undefined ? null : latestJakartaWindow(new Date(asOf));
+    const requestedWindow = latestCompletedBrokerWindow(
+      asOf === undefined ? new Date() : new Date(asOf),
+    );
     const current =
       requestedWindow === null
-        ? await ctx.db
-            .query("flowWindows")
-            .withIndex("by_empire_and_ticker_and_end", (index) =>
-              index.eq("empireSlug", empireSlug).eq("ticker", ticker),
-            )
-            .order("desc")
-            .first()
+        ? null
         : await ctx.db
             .query("flowWindows")
             .withIndex("by_empire_and_ticker_and_end", (index) =>
@@ -63,14 +59,20 @@ export const get = query({
       ctx.db
         .query("brokerDays")
         .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
-          index.eq("empireSlug", empireSlug).eq("ticker", ticker),
+          index
+            .eq("empireSlug", empireSlug)
+            .eq("ticker", ticker)
+            .gte("tradingDate", FLOW_COVERAGE_START),
         )
         .order("desc")
         .take(30),
       ctx.db
         .query("marketDays")
         .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
-          index.eq("empireSlug", empireSlug).eq("ticker", ticker),
+          index
+            .eq("empireSlug", empireSlug)
+            .eq("ticker", ticker)
+            .gte("tradingDate", FLOW_COVERAGE_START),
         )
         .order("desc")
         .take(30),
@@ -82,8 +84,7 @@ export const get = query({
     return {
       ticker,
       companyName: membership.companyName,
-      window:
-        requestedWindow ?? (current === null ? null : { start: current.start, end: current.end }),
+      window: requestedWindow,
       brokerDays,
       marketDays,
       fetch: {

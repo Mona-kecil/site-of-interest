@@ -6,11 +6,11 @@ import { api, internal } from "./_generated/api";
 import schema from "./schema";
 
 const modules = import.meta.glob("./**/*.ts");
-const window = { start: "2026-09-04", end: "2026-09-17" };
+const window = { start: "2026-09-01", end: "2026-09-14" };
 const key = { empireSlug: "prajogo", ticker: "SINI" };
 const source = {
   provider: "sectors" as const,
-  endpoint: "/v2/broker-summary/SINI/?start=2026-09-04&end=2026-09-17",
+  endpoint: "/v2/broker-summary/SINI/?start=2026-09-01&end=2026-09-14",
   retrievedAt: "2026-09-17T05:00:00.000Z",
 };
 
@@ -100,9 +100,37 @@ test("persists an empty response and never claims that window again", async () =
   expect(view?.brokerDays).toEqual([]);
 });
 
+test("shows only observations from September 2026 onward and the completed window", async () => {
+  const t = await ready();
+  await t.run(async (ctx) => {
+    await ctx.db.insert("brokerDays", day("2026-08-28", 1000));
+    await ctx.db.insert("brokerDays", day("2026-09-01", 2000));
+    for (const tradingDate of ["2026-08-28", "2026-09-29"]) {
+      await ctx.db.insert("marketDays", {
+        ...key,
+        tradingDate,
+        open: null,
+        high: null,
+        low: null,
+        close: 100,
+        volume: 1000,
+        marketCap: 100_000,
+        source,
+      });
+    }
+  });
+  const before = await t.query(api.flow.get, { ...key, asOf: "2026-09-14T16:59:59.000Z" });
+  expect(before?.window).toBeNull();
+  expect(before?.brokerDays.map((row) => row.tradingDate)).toEqual(["2026-09-01"]);
+  expect(before?.marketDays.map((row) => row.tradingDate)).toEqual(["2026-09-29"]);
+
+  const after = await t.query(api.flow.get, { ...key, asOf: "2026-09-14T17:00:00.000Z" });
+  expect(after?.window).toEqual(window);
+});
+
 test("rejects a conflicting imported day without partial writes", async () => {
   const t = await ready();
-  await t.run((ctx) => ctx.db.insert("brokerDays", day("2026-09-16", 1000)));
+  await t.run((ctx) => ctx.db.insert("brokerDays", day("2026-09-10", 1000)));
   await t.mutation(internal.flow.claimWindow, { ...key, ...window, claimToken: "first" });
   await expect(
     t.mutation(internal.flow.storeWindow, {
@@ -110,7 +138,7 @@ test("rejects a conflicting imported day without partial writes", async () => {
       end: window.end,
       claimToken: "first",
       retrievedAt: source.retrievedAt,
-      days: [day("2026-09-15", 500), day("2026-09-16", 2000)],
+      days: [day("2026-09-09", 500), day("2026-09-10", 2000)],
     }),
   ).rejects.toThrow(/Conflicting stored broker day/);
   const rows = await t.run((ctx) =>
@@ -121,7 +149,7 @@ test("rejects a conflicting imported day without partial writes", async () => {
       )
       .take(14),
   );
-  expect(rows.map((row) => row.tradingDate)).toEqual(["2026-09-16"]);
+  expect(rows.map((row) => row.tradingDate)).toEqual(["2026-09-10"]);
   expect(rows[0].brokers[0].buy.value).toBe(1000);
   await t.mutation(internal.flow.failWindow, {
     ...key,
@@ -155,7 +183,7 @@ test("retries a failed window and ignores a stale claim token", async () => {
       end: window.end,
       claimToken: "first",
       retrievedAt: source.retrievedAt,
-      days: [day("2026-09-16", 1000)],
+      days: [day("2026-09-10", 1000)],
     }),
   ).toBe(false);
   expect(
@@ -164,7 +192,7 @@ test("retries a failed window and ignores a stale claim token", async () => {
       end: window.end,
       claimToken: "second",
       retrievedAt: source.retrievedAt,
-      days: [day("2026-09-16", 1000)],
+      days: [day("2026-09-10", 1000)],
     }),
   ).toBe(true);
   expect(
