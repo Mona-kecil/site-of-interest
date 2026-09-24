@@ -43,10 +43,15 @@ function brokerTotals(day: BrokerDay | undefined) {
   );
 }
 
-function observationLabel(market: MarketDay | undefined, broker: BrokerDay | undefined) {
+function observationLabel(
+  date: string,
+  market: MarketDay | undefined,
+  broker: BrokerDay | undefined,
+) {
   if (broker && broker.brokers.length === 0) return "No broker rows";
   if (market && broker) return "Market + broker";
-  if (market) return "Broker retention gap";
+  if (market && Number(date.slice(8, 10)) > 28) return "Broker collection skipped";
+  if (market) return "Broker not stored";
   if (broker) return "Market data gap";
   return "Exchange closure or retention gap";
 }
@@ -93,12 +98,12 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
   if (record.window === null) {
     return (
       <main className="route-state">
-        <p>Could not determine the latest 14-day broker window. Reload this page to try again.</p>
+        <p>The first broker window, September 1–14, becomes available on September 15.</p>
       </main>
     );
   }
 
-  const disclosedWindowEnd = record.window.end;
+  const viewedJakartaDate = jakartaDateFormat.format(new Date(asOf));
   const brokerByDate = new Map(record.brokerDays.map((day) => [day.tradingDate, day]));
   const marketByDate = new Map(record.marketDays.map((day) => [day.tradingDate, day]));
   const currentDates = datesInWindow(record.window);
@@ -129,9 +134,9 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
   async function loadLatest() {
     if (attempted.current) return;
     const now = new Date();
-    if (jakartaDateFormat.format(now) !== disclosedWindowEnd) {
+    if (jakartaDateFormat.format(now) !== viewedJakartaDate) {
       setAsOf(now.toISOString());
-      setRequestMessage("The Jakarta date changed. Review the new window before loading.");
+      setRequestMessage("The Jakarta date changed. Review the available window before loading.");
       return;
     }
     attempted.current = true;
@@ -204,8 +209,9 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
         <div className="flow-request">
           <p className="eyebrow">[on-demand collection / Sectors]</p>
           <p>
-            Broker request: {record.window.start} to {record.window.end}, the latest 14 Jakarta
-            calendar days. Existing market prices and volume are not refreshed by this action.
+            Broker request: {record.window.start} to {record.window.end}. Only completed monthly
+            windows for days 1–14 and 15–28 are collected. Days 29–31 are skipped. Existing market
+            prices and volume are not refreshed by this action.
           </p>
           <code className="flow-request-endpoint">{requestEndpoint}</code>
           <button
@@ -216,12 +222,12 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
             }
           >
             {isRequesting || record.fetch.status === "fetching"
-              ? "Loading latest window…"
+              ? "Loading completed window…"
               : record.fetch.status === "capped"
                 ? "Window request limit reached"
                 : hasAttempted
                   ? "Request attempted for this visit"
-                  : "Load latest 14 days (up to 1 Sectors credit)"}
+                  : "Load completed window (up to 1 Sectors credit)"}
           </button>
           {requestMessage && (
             <p className="flow-feedback" role="status">
@@ -238,7 +244,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
 
       <div className="flow-window-line">
         <span>
-          Current broker window / {record.window.start} to {record.window.end} /{" "}
+          Latest completed broker window / {record.window.start} to {record.window.end} /{" "}
           {record.fetch.status}
         </span>
         <span>
@@ -252,7 +258,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
         <section className="flow-empty">
           <p className="eyebrow">[coverage gap]</p>
           <h2>No market or broker observations are stored for {record.ticker}.</h2>
-          <p>Use the explicit load action above to request the latest bounded window.</p>
+          <p>Use the explicit load action above to request this completed monthly window.</p>
         </section>
       ) : (
         <>
@@ -288,7 +294,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                     <h2>Select a date</h2>
                   </div>
                   <span>
-                    {currentDates.length} current dates · {storedDates.length} earlier stored dates
+                    {currentDates.length} window dates · {storedDates.length} other stored dates
                   </span>
                 </div>
                 <p className="flow-help">
@@ -325,7 +331,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                                 onClick={() => setSelectedDate(date)}
                               >
                                 {date}
-                                {storedDates.includes(date) ? " · stored history" : ""}
+                                {storedDates.includes(date) ? " · outside selected window" : ""}
                               </button>
                             </th>
                             <td>{formatNumber(market?.close)}</td>
@@ -340,7 +346,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                               {formatNumber(dayTotals?.net)}
                             </td>
                             <td className={!market || !dayTotals ? "flow-gap" : undefined}>
-                              {observationLabel(market, broker)}
+                              {observationLabel(date, market, broker)}
                             </td>
                           </tr>
                         );
@@ -433,7 +439,8 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                 </dl>
                 <p className="flow-help">
                   The selected window spans calendar days. Dates with no stored observation can be
-                  exchange closures or provider retention gaps. No historical backfill runs here.
+                  exchange closures or provider retention gaps. Broker collection skips days 29–31.
+                  No historical backfill runs here.
                 </p>
               </section>
               <section className="flow-section">
@@ -460,7 +467,11 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                       <small>Retrieved {brokerDay.source.retrievedAt}</small>
                     </>
                   ) : (
-                    <p className="flow-gap">No stored broker source for this date.</p>
+                    <p className="flow-gap">
+                      {activeDate && Number(activeDate.slice(8, 10)) > 28
+                        ? "Broker collection is skipped on days 29–31."
+                        : "No stored broker source for this date."}
+                    </p>
                   )}
                 </div>
               </section>

@@ -6,7 +6,7 @@ for (const ticker of ["CUAN", "PTRO"]) {
     await page.getByRole("link", { name: `Open Flow for ${ticker}` }).click();
     await expect(page).toHaveURL(new RegExp(`/flow/${ticker}\\?empireSlug=prajogo$`));
     await expect(page.getByRole("heading", { level: 1, name: `${ticker} Flow` })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Load latest 14 days/ })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Load completed window/ })).toBeVisible();
 
     const date = await page
       .locator(".flow-daily-table tbody tr")
