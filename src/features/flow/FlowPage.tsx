@@ -1,6 +1,6 @@
-import { useRef, useState } from "react";
+import { useState } from "react";
 import { Link, getRouteApi } from "@tanstack/react-router";
-import { useAction, useQuery } from "convex/react";
+import { useQuery } from "convex/react";
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
 
@@ -10,25 +10,8 @@ type BrokerDay = FlowRecord["brokerDays"][number];
 type MarketDay = FlowRecord["marketDays"][number];
 
 const numberFormat = new Intl.NumberFormat("en-US", { maximumFractionDigits: 0 });
-const jakartaDateFormat = new Intl.DateTimeFormat("en-CA", {
-  timeZone: "Asia/Jakarta",
-  year: "numeric",
-  month: "2-digit",
-  day: "2-digit",
-});
-
 function formatNumber(value: number | null | undefined) {
   return value == null ? "—" : numberFormat.format(value);
-}
-
-function datesInWindow(window: { start: string; end: string }) {
-  const dates: string[] = [];
-  const cursor = new Date(`${window.end}T00:00:00Z`);
-  while (cursor.toISOString().slice(0, 10) >= window.start && dates.length < 14) {
-    dates.push(cursor.toISOString().slice(0, 10));
-    cursor.setUTCDate(cursor.getUTCDate() - 1);
-  }
-  return dates;
 }
 
 function brokerTotals(day: BrokerDay | undefined) {
@@ -63,14 +46,8 @@ export function FlowPage() {
 }
 
 function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: string }) {
-  const [asOf, setAsOf] = useState(() => new Date().toISOString());
-  const record = useQuery(api.flow.get, { empireSlug, ticker, asOf });
-  const fetchLatest = useAction(api.flowFetch.fetchLatest);
+  const record = useQuery(api.flow.get, { empireSlug, ticker });
   const [selectedDate, setSelectedDate] = useState("");
-  const [isRequesting, setIsRequesting] = useState(false);
-  const [requestMessage, setRequestMessage] = useState<string | null>(null);
-  const [hasAttempted, setHasAttempted] = useState(false);
-  const attempted = useRef(false);
 
   if (record === undefined) {
     return (
@@ -95,26 +72,12 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
     );
   }
 
-  if (record.window === null) {
-    return (
-      <main className="route-state">
-        <p>The first broker window, August 1–14, becomes available on August 15.</p>
-      </main>
-    );
-  }
-
-  const viewedJakartaDate = jakartaDateFormat.format(new Date(asOf));
   const brokerByDate = new Map(record.brokerDays.map((day) => [day.tradingDate, day]));
   const marketByDate = new Map(record.marketDays.map((day) => [day.tradingDate, day]));
-  const currentDates = datesInWindow(record.window);
-  const storedDates = [...new Set([...brokerByDate.keys(), ...marketByDate.keys()])]
-    .filter((date) => !currentDates.includes(date))
-    .sort((a, b) => b.localeCompare(a));
-  const dates = [...currentDates, ...storedDates];
-  const suggestedDate =
-    currentDates.find((date) => brokerByDate.has(date) || marketByDate.has(date)) ??
-    storedDates[0] ??
-    currentDates[0];
+  const dates = [...new Set([...brokerByDate.keys(), ...marketByDate.keys()])].sort((a, b) =>
+    b.localeCompare(a),
+  );
+  const suggestedDate = dates[0];
   const activeDate = dates.includes(selectedDate) ? selectedDate : suggestedDate;
   const brokerDay = activeDate === undefined ? undefined : brokerByDate.get(activeDate);
   const marketDay = activeDate === undefined ? undefined : marketByDate.get(activeDate);
@@ -125,67 +88,8 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
       (left, right) =>
         right.buy.value - left.buy.value || left.brokerCode.localeCompare(right.brokerCode),
     );
-  const brokerGapCount = currentDates.filter(
-    (date) => !brokerTotals(brokerByDate.get(date)),
-  ).length;
-  const marketGapCount = currentDates.filter((date) => !marketByDate.has(date)).length;
-  const requestEndpoint = `/v2/broker-summary/${encodeURIComponent(record.ticker)}/?start=${record.window.start}&end=${record.window.end}`;
-
-  async function loadLatest() {
-    if (attempted.current) return;
-    const now = new Date();
-    if (jakartaDateFormat.format(now) !== viewedJakartaDate) {
-      setAsOf(now.toISOString());
-      setRequestMessage("The Jakarta date changed. Review the available window before loading.");
-      return;
-    }
-    attempted.current = true;
-    setHasAttempted(true);
-    setIsRequesting(true);
-    setRequestMessage(null);
-    try {
-      const result = await fetchLatest({ empireSlug, ticker });
-      switch (result.status) {
-        case "fetched":
-          setRequestMessage("Sectors returned a new window. Stored observations are ready below.");
-          break;
-        case "stored":
-          setRequestMessage("This window was already stored. No new Sectors request was needed.");
-          break;
-        case "busy":
-          setRequestMessage(
-            "A request for this ticker is already running. Stored data will update when it finishes.",
-          );
-          break;
-        case "unavailable":
-          setRequestMessage("Sectors collection is not configured in this environment.");
-          break;
-        case "failed":
-          setRequestMessage(
-            "The request failed. Existing stored observations are still available.",
-          );
-          break;
-        case "capped":
-          setRequestMessage(
-            "This window reached its request limit. Stored observations remain available.",
-          );
-          break;
-        case "unknown":
-          setRequestMessage("This ticker is not in the selected Empire's listed company records.");
-          break;
-        default: {
-          const exhaustive: never = result.status;
-          return exhaustive;
-        }
-      }
-    } catch {
-      setRequestMessage(
-        "The request could not complete. Existing stored observations are still available.",
-      );
-    } finally {
-      setIsRequesting(false);
-    }
-  }
+  const brokerGapCount = dates.filter((date) => !brokerTotals(brokerByDate.get(date))).length;
+  const marketGapCount = dates.filter((date) => !marketByDate.has(date)).length;
 
   return (
     <main className="flow-page">
@@ -205,60 +109,18 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
             Compare the stored daily close and volume with each broker's reported activity. Broker
             codes identify exchange members, not the investors behind their trades.
           </p>
-        </div>
-        <div className="flow-request">
-          <p className="eyebrow">[on-demand collection / Sectors]</p>
-          <p>
-            Broker request: {record.window.start} to {record.window.end}. Only completed monthly
-            windows for days 1–14 and 15–28 are collected. Days 29–31 are skipped. Existing market
-            prices and volume are not refreshed by this action.
+          <p className="flow-intro">
+            This view uses stored observations. Broker coverage follows days 1–14 and 15–28 of each
+            month; days 29–31 are skipped.
           </p>
-          <code className="flow-request-endpoint">{requestEndpoint}</code>
-          <button
-            type="button"
-            onClick={loadLatest}
-            disabled={
-              hasAttempted || record.fetch.status === "fetching" || record.fetch.status === "capped"
-            }
-          >
-            {isRequesting || record.fetch.status === "fetching"
-              ? "Loading completed window…"
-              : record.fetch.status === "capped"
-                ? "Window request limit reached"
-                : hasAttempted
-                  ? "Request attempted for this visit"
-                  : "Load completed window (up to 1 Sectors credit)"}
-          </button>
-          {requestMessage && (
-            <p className="flow-feedback" role="status">
-              {requestMessage}
-            </p>
-          )}
-          {record.fetch.status === "failed" && record.fetch.error && (
-            <p className="flow-error" role="alert">
-              {record.fetch.error}
-            </p>
-          )}
         </div>
       </header>
-
-      <div className="flow-window-line">
-        <span>
-          Latest completed broker window / {record.window.start} to {record.window.end} /{" "}
-          {record.fetch.status}
-        </span>
-        <span>
-          {record.fetch.retrievedAt
-            ? `Last retrieved ${record.fetch.retrievedAt}`
-            : "No on-demand retrieval yet"}
-        </span>
-      </div>
 
       {record.brokerDays.length === 0 && record.marketDays.length === 0 ? (
         <section className="flow-empty">
           <p className="eyebrow">[coverage gap]</p>
           <h2>No market or broker observations are stored for {record.ticker}.</h2>
-          <p>Use the explicit load action above to request this completed monthly window.</p>
+          <p>Check back after the next data update.</p>
         </section>
       ) : (
         <>
@@ -293,9 +155,7 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                     <p className="eyebrow">[01 / daily observations]</p>
                     <h2>Select a date</h2>
                   </div>
-                  <span>
-                    {currentDates.length} window dates · {storedDates.length} other stored dates
-                  </span>
+                  <span>{dates.length} stored dates</span>
                 </div>
                 <p className="flow-help">
                   Choose a date to inspect independent market and broker records. A missing row is a
@@ -331,7 +191,6 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                                 onClick={() => setSelectedDate(date)}
                               >
                                 {date}
-                                {storedDates.includes(date) ? " · outside selected window" : ""}
                               </button>
                             </th>
                             <td>{formatNumber(market?.close)}</td>
@@ -429,18 +288,17 @@ function FlowWorkspace({ empireSlug, ticker }: { empireSlug: string; ticker: str
                     <dd>{record.marketDays.length}</dd>
                   </div>
                   <div>
-                    <dt>Current dates without broker rows</dt>
+                    <dt>Stored dates without broker rows</dt>
                     <dd>{brokerGapCount}</dd>
                   </div>
                   <div>
-                    <dt>Current dates without market rows</dt>
+                    <dt>Stored dates without market rows</dt>
                     <dd>{marketGapCount}</dd>
                   </div>
                 </dl>
                 <p className="flow-help">
-                  The selected window spans calendar days. Dates with no stored observation can be
-                  exchange closures or provider retention gaps. Broker collection skips days 29–31.
-                  No historical backfill runs here.
+                  Missing observations can reflect exchange closures or provider gaps. Broker
+                  collection skips days 29–31. Opening this page does not request new data.
                 </p>
               </section>
               <section className="flow-section">

@@ -6,7 +6,8 @@ for (const ticker of ["CUAN", "PTRO"]) {
     await page.getByRole("link", { name: `Open Flow for ${ticker}` }).click();
     await expect(page).toHaveURL(new RegExp(`/flow/${ticker}\\?empireSlug=prajogo$`));
     await expect(page.getByRole("heading", { level: 1, name: `${ticker} Flow` })).toBeVisible();
-    await expect(page.getByRole("button", { name: /Load completed window/ })).toBeVisible();
+    await expect(page.getByText("This view uses stored observations.", { exact: false })).toBeVisible();
+    await expect(page.getByRole("button", { name: /Load completed window/ })).toHaveCount(0);
 
     const date = await page
       .locator(".flow-daily-table tbody tr")

@@ -2239,7 +2239,6 @@ a:focus-visible {
 }
 
 .flow-header,
-.flow-window-line,
 .flow-metrics,
 .flow-grid,
 .flow-empty {
@@ -2249,10 +2248,6 @@ a:focus-visible {
 }
 
 .flow-header {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(300px, 390px);
-  align-items: end;
-  gap: clamp(28px, 5vw, 80px);
   border-bottom: 1px solid var(--line);
   padding-bottom: 32px;
 }
@@ -2262,38 +2257,6 @@ a:focus-visible {
 .flow-header h1 { margin: 8px 0 4px; font-size: clamp(40px, 5vw, 68px); font-weight: 500; letter-spacing: -0.06em; }
 .flow-company-name { margin: 0; color: #e2e7dc; font-size: 18px; }
 .flow-intro { max-width: 700px; margin: 22px 0 0; color: #aeb8af; font-size: 13px; line-height: 1.65; }
-
-.flow-request { border-left: 1px solid var(--line); padding-left: 24px; }
-.flow-request .eyebrow { margin: 0; }
-.flow-request > p:not(.eyebrow) { color: #b6c0b5; font-size: 13px; line-height: 1.6; }
-.flow-request-endpoint { display: block; overflow-wrap: anywhere; margin: 0 0 16px; color: var(--blue); font: 11px "DM Mono", monospace; }
-.flow-request button {
-  width: 100%;
-  min-height: 45px;
-  border: 1px solid var(--acid);
-  border-radius: 0;
-  padding: 10px 14px;
-  background: var(--acid);
-  color: var(--ink);
-  font: 12px "DM Mono", monospace;
-  text-align: left;
-  cursor: pointer;
-}
-.flow-request button:hover:not(:disabled) { background: #e0ff7a; }
-.flow-request button:disabled { opacity: 0.6; cursor: progress; }
-.flow-request .flow-feedback { margin-bottom: 0; color: var(--acid); font: 11px "DM Mono", monospace; line-height: 1.6; }
-.flow-request .flow-error { margin-bottom: 0; color: #ff9f91; font: 11px "DM Mono", monospace; line-height: 1.6; }
-
-.flow-window-line {
-  display: flex;
-  justify-content: space-between;
-  flex-wrap: wrap;
-  gap: 8px 24px;
-  border-bottom: 1px solid var(--line);
-  padding: 15px 0;
-  color: #a8b1a8;
-  font: 11px "DM Mono", monospace;
-}
 
 .flow-metrics {
   display: grid;
@@ -2357,8 +2320,6 @@ a:focus-visible {
 
 @media (max-width: 680px) {
   .flow-page { padding: 25px 15px 60px; }
-  .flow-header { grid-template-columns: 1fr; }
-  .flow-request { border-left: 0; border-top: 1px solid var(--line); padding: 22px 0 0; }
   .flow-metrics { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .flow-metrics > div { padding-bottom: 20px; }
   .flow-metrics dd { font-size: 22px; }
