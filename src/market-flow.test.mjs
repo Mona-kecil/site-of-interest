@@ -174,6 +174,30 @@ test("rejects duplicate broker rows within one ticker and trading date", () => {
   }, context), /duplicate broker DX/);
 });
 
+test("preserves a day with an unidentified aggregate as a broker coverage gap", () => {
+  const aggregate = {
+    broker_code: "--",
+    bfreq: 15,
+    blot: 100,
+    bval: 20_000,
+    bavg_per_share: 200,
+    sfreq: 15,
+    slot: 100,
+    sval: 20_000,
+    savg_per_share: 200,
+    nlot: 0,
+    nval: 0,
+    navg_per_share: null,
+  };
+  const response = { symbol: "BRPT.JK", data: [{ date: "2026-08-24", summary: [aggregate] }] };
+  const [day] = parseBrokerDays(response, { ...context, ticker: "BRPT" });
+  assert.deepEqual(day.brokers, []);
+  assert.throws(() => parseBrokerDays({
+    ...response,
+    data: [{ date: "2026-08-24", summary: [{ ...aggregate, nval: 1 }] }],
+  }, { ...context, ticker: "BRPT" }), /non-neutral unidentified broker row/);
+});
+
 test("keeps broker registry metadata separate from ticker behavior", () => {
   const registry = parseBrokerRegistry([{
     code: "AD",

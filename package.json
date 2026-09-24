@@ -10,11 +10,12 @@
     "typecheck": "tsc -b",
     "lint": "vp lint 'src/**/*.{ts,tsx}' convex vite.config.ts",
     "format:check": "vp fmt 'src/**/*.{ts,tsx}' convex vite.config.ts --check",
-    "test": "vp test run && npm run test:legacy",
+    "test": "vp test run && npm run test:convex && npm run test:legacy",
+    "test:convex": "vitest run --config vitest.convex.config.ts",
     "test:e2e": "playwright test",
     "test:legacy": "node --test 'src/**/*.test.mjs'",
     "convex:dev": "convex dev",
-    "convex:seed": "convex run seed:replacePrajogo",
+    "convex:seed": "node scripts/seed-prajogo.mjs",
     "sync:sectors": "node scripts/sync-sectors.mjs",
     "sync:flow": "node scripts/sync-market-flow.mjs",
     "import:broker": "node scripts/import-broker-days.mjs",
@@ -34,14 +35,18 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
+    "@edge-runtime/vm": "^5.0.0",
     "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
+    "@types/node": "^26.6.2",
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.1.1",
+    "convex-test": "^0.0.59",
     "jsdom": "^27.0.0",
     "typescript": "^5.9.3",
-    "vite-plus": "^0.3.3"
+    "vite-plus": "^0.3.3",
+    "vitest": "^4.1.11"
   }
 }

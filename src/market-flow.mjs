@@ -136,7 +136,7 @@ function brokerSide(row, prefix, path) {
 function brokerRow(raw, path) {
   const row = record(raw, path);
   const brokerCode = string(row.broker_code, `${path}.broker_code`).toUpperCase();
-  if (!/^[A-Z0-9]{2}$/.test(brokerCode)) throw new Error(`${path}.broker_code must contain two letters or digits`);
+  if (brokerCode !== "--" && !/^[A-Z0-9]{2}$/.test(brokerCode)) throw new Error(`${path}.broker_code must contain two letters or digits`);
   return {
     brokerCode,
     buy: brokerSide(row, "b", path),
@@ -162,11 +162,18 @@ export function parseBrokerDays(raw, context) {
     if (dates.has(tradingDate)) throw new Error(`broker summary contains duplicate date ${tradingDate}`);
     dates.add(tradingDate);
     const brokerCodes = new Set();
-    const brokers = array(day.summary, `broker summary.data[${dayIndex}].summary`).map((rawBroker, brokerIndex) => {
+    const brokers = array(day.summary, `broker summary.data[${dayIndex}].summary`).flatMap((rawBroker, brokerIndex) => {
       const broker = brokerRow(rawBroker, `broker summary.data[${dayIndex}].summary[${brokerIndex}]`);
+      if (broker.brokerCode === "--") {
+        // Sectors sometimes reports a day total in place of identifiable broker rows.
+        if (broker.buy.frequency !== broker.sell.frequency || broker.buy.lots !== broker.sell.lots || broker.buy.value !== broker.sell.value || broker.net.lots !== 0 || broker.net.value !== 0) {
+          throw new Error(`broker summary ${tradingDate} has a non-neutral unidentified broker row`);
+        }
+        return [];
+      }
       if (brokerCodes.has(broker.brokerCode)) throw new Error(`broker summary ${tradingDate} contains duplicate broker ${broker.brokerCode}`);
       brokerCodes.add(broker.brokerCode);
-      return broker;
+      return [broker];
     }).sort((first, second) => first.brokerCode.localeCompare(second.brokerCode));
     return {
       schemaVersion: 1,

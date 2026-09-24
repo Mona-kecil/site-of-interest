@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { internalMutation } from "./_generated/server";
 import { brokerDayInput, brokerSignalInput } from "./schema";
+import { sameBrokerRows } from "./brokerRows";
 
 export const importDays = internalMutation({
   args: {
@@ -41,7 +42,7 @@ export const importDays = internalMutation({
       if (existingDay === null) {
         await ctx.db.insert("brokerDays", day);
         createdDays++;
-      } else if (JSON.stringify(existingDay.brokers) !== JSON.stringify(day.brokers)) {
+      } else if (!sameBrokerRows(existingDay.brokers, day.brokers)) {
         throw new Error(`Conflicting broker day ${day.ticker} ${day.tradingDate}`);
       } else {
         existingDays++;

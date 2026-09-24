@@ -287,11 +287,13 @@ export default defineSchema({
     gap: v.union(v.string(), v.null()),
     volume: v.number(),
     baselineAverage: v.union(v.number(), v.null()),
-    baselineDays: v.array(v.object({
-      tradingDate: v.string(),
-      volume: v.number(),
-      source: flowSource,
-    })),
+    baselineDays: v.array(
+      v.object({
+        tradingDate: v.string(),
+        volume: v.number(),
+        source: flowSource,
+      }),
+    ),
     source: flowSource,
   })
     .index("by_empire", ["empireSlug"])

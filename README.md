@@ -23,7 +23,7 @@ context. The feed also includes matched September 2026 news. Recent stored broke
 and market days cover all 10 listed Prajogo companies.
 Selected date ranges without stored days show a coverage gap.
 
-Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment:
+Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment. The command loads the corpus first, then imports broker days in small local batches. It makes no Sectors requests:
 
 ```sh
 npm run convex:seed
@@ -65,15 +65,20 @@ npm run build:market-snapshot
 npm run convex:seed
 ```
 
-The snapshot keeps the latest 14-calendar-day window per ticker. It does not claim
-that an uncollected ticker had no broker activity.
+The broker snapshot keeps all stored broker days. It does not claim that an
+uncollected ticker had no broker activity. Local seeding imports these days in
+small batches because the full snapshot exceeds one Convex mutation's time limit.
 
 The market snapshot keeps up to 40 stored days per ticker and generates recent
 volume comparisons against the prior 20 stored trading days. The original SINI
 observation for 2026-09-08 differs from a later provider response in open, high,
 and low only. See [the data-conflict record](docs/data-conflicts.md).
 
-The collector fetches bounded broker-summary windows and stores each returned trading day under `data/market-flow/brokers/`. The React interface reads Convex records. Opening a company page does not call Sectors. The checked-in snapshot contains all 114 stored broker days, and an operator-only command can import later local windows without replacing the Empire.
+The collector fetches bounded broker-summary windows and stores each returned trading day under `data/market-flow/brokers/`. The React interface reads Convex records. Opening a company page does not call Sectors. The checked-in snapshot contains all 352 stored broker days, and an operator-only command can import later local windows without replacing the Empire.
+
+The August 1–September 14 broker prefill used 30 Sectors credits for the 10 Prajogo tickers. August 29–31 were outside the selected broker windows; Sectors omitted SINI on September 8 and returned only an unidentified aggregate for BRPT on August 24. The market observations were already stored.
+
+From a company page, **Flow** opens `/flow/$ticker` and shows stored broker days beside stored market price and volume from August 2026 onward. It only reads Convex data; the browser has no Sectors fetch action. A researcher can inspect daily values, missing coverage, and source records without spending credits. An operator chooses and collects broker windows for days 1–14 and 15–28 with the CLI, then imports the stored days into Convex. Days 29–31 are skipped. Reimporting the Prajogo corpus preserves matching broker days and rejects conflicting snapshot rows.
 
 To refresh only price and volume history, pass `--market-only` to the collector. For broker data alone, pass `--broker-only`. Remote calls require an explicit `--max-credits=N`; the default is zero. If a provider response conflicts with an immutable stored row, the collector stops. After inspecting the conflict, pass `--skip-conflicts` to keep the original row and continue with the other dates.
 
