@@ -47,4 +47,4 @@ A researcher sees price and volume measurements against explicit historical base
 
 `src/market-signals.mjs` calculates the versioned ratio. `scripts/build-market-snapshot.mjs` rebuilds the imported snapshot from validated local observations without an API call. The feed shows the ratio, observation volume, baseline average, all 20 baseline rows, and their source paths. The company view shows stored price and volume history.
 
-The market collector used at most 10 credits for the 2026-08-01 through 2026-09-23 window. Sectors returned data through 2026-09-22. A provider disagreement on SINI's 2026-09-08 open, high, and low remains unresolved; both responses agree on close, volume, and market cap. See [the data-conflict record](../data-conflicts.md).
+The market collector used at most 10 credits for the 2026-08-01 through 2026-09-23 window. Sectors returned data through 2026-09-22. A 2026-10-02 refresh used 10 credits and extended market data through 2026-10-01. A provider disagreement on SINI's 2026-09-08 open, high, and low remains unresolved; both responses agree on close, volume, and market cap. See [the data-conflict record](../data-conflicts.md).

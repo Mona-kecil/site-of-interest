@@ -74,9 +74,9 @@ volume comparisons against the prior 20 stored trading days. The original SINI
 observation for 2026-09-08 differs from a later provider response in open, high,
 and low only. See [the data-conflict record](docs/data-conflicts.md).
 
-The collector fetches bounded broker-summary windows and stores each returned trading day under `data/market-flow/brokers/`. The React interface reads Convex records. Opening a company page does not call Sectors. The checked-in snapshot contains all 352 stored broker days, and an operator-only command can import later local windows without replacing the Empire.
+The collector fetches bounded broker-summary windows and stores each returned trading day under `data/market-flow/brokers/`. The React interface reads Convex records. Opening a company page does not call Sectors. The checked-in snapshot contains all 403 stored broker days, and an operator-only command can import later local windows without replacing the Empire.
 
-The August 1–September 14 broker prefill used 30 Sectors credits for the 10 Prajogo tickers. August 29–31 were outside the selected broker windows; Sectors omitted SINI on September 8 and returned only an unidentified aggregate for BRPT on August 24. The market observations were already stored.
+The August 1–September 14 broker prefill used 30 Sectors credits for the 10 Prajogo tickers. August 29–31 were outside the selected broker windows; Sectors omitted SINI on September 8 and returned only an unidentified aggregate for BRPT on August 24. The market observations were already stored. On 2026-10-02, the September 15–28 broker window used 11 credits and market days from September 23 through October 1 used 10 credits. Sectors returned no SINI broker rows for September 28.
 
 From a company page, **Flow** opens `/flow/$ticker` and shows stored broker days beside stored market price and volume from August 2026 onward. It only reads Convex data; the browser has no Sectors fetch action. A researcher can inspect daily values, missing coverage, and source records without spending credits. An operator chooses and collects broker windows for days 1–14 and 15–28 with the CLI, then imports the stored days into Convex. Days 29–31 are skipped. Reimporting the Prajogo corpus preserves matching broker days and rejects conflicting snapshot rows.
 
