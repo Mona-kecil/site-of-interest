@@ -13,7 +13,7 @@
     "test": "vp test run && npm run test:convex && npm run test:legacy",
     "test:convex": "vitest run --config vitest.convex.config.ts",
     "test:e2e": "playwright test",
-    "test:legacy": "node --test 'src/**/*.test.mjs'",
+    "test:legacy": "node --test 'src/**/*.test.mjs' 'scripts/**/*.test.mjs'",
     "convex:dev": "convex dev",
     "convex:seed": "node scripts/seed-prajogo.mjs",
     "sync:sectors": "node scripts/sync-sectors.mjs",

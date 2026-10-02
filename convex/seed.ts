@@ -1,4 +1,4 @@
-import { mutation } from "./_generated/server";
+import { internalMutation } from "./_generated/server";
 import { type Infer } from "convex/values";
 import assertions from "../data/empires/prajogo/assertions.json";
 import coverage from "../data/empires/prajogo/coverage.json";
@@ -171,7 +171,7 @@ function parseFact(value: unknown): CompanyFact {
   }
 }
 
-export const replacePrajogo = mutation({
+export const replacePrajogo = internalMutation({
   args: { deferBrokerImport: v.optional(v.boolean()) },
   returns: v.object({
     slug: v.string(),

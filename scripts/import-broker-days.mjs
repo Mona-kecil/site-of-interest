@@ -4,6 +4,7 @@ import { resolve } from "node:path";
 import { promisify } from "node:util";
 import { buildBrokerBuyShare } from "../src/broker-signals.mjs";
 import { loadBrokerHistory, normalizeTicker, splitDateRange } from "../src/market-flow.mjs";
+import { getSeedDeployment } from "./seed-deployment.mjs";
 
 const run = promisify(execFile);
 const root = resolve(import.meta.dirname, "..");
@@ -56,22 +57,15 @@ for (const ticker of requested) {
     });
   }
 }
-console.log(`Local broker import: ${window === null ? "all stored history" : `${window.start} to ${window.end}`}; ${requested.length} tickers; ${records.length} stored days; 0 Sectors credits.`);
+console.log(`Broker import: ${window === null ? "all stored history" : `${window.start} to ${window.end}`}; ${requested.length} tickers; ${records.length} stored days; 0 Sectors credits.`);
 if (!options.has("apply")) {
-  console.log("Dry run only. Add --apply to import into the local Convex deployment.");
+  console.log("Dry run only. Add --apply to import into the configured Convex deployment.");
   process.exit(0);
 }
 
 const environment = await readFile(resolve(root, ".env.local"), "utf8");
-const deployment = /^CONVEX_DEPLOYMENT=(local:[^\s#]+)/m.exec(environment)?.[1];
-if (
-  !deployment ||
-  /^CONVEX_DEPLOY_KEY=/m.test(environment) ||
-  (process.env.CONVEX_DEPLOYMENT && process.env.CONVEX_DEPLOYMENT !== deployment) ||
-  process.env.CONVEX_DEPLOY_KEY
-) {
-  throw new Error("This command only imports into a local Convex deployment without a deploy key");
-}
+const deployment = getSeedDeployment(environment, process.env);
+console.log(`Importing into Convex deployment: ${deployment}`);
 await run(process.execPath, ["scripts/build-broker-snapshot.mjs"], { cwd: root, maxBuffer: 1024 * 1024 });
 let createdDays = 0;
 let existingDays = 0;
@@ -79,7 +73,7 @@ let createdSignals = 0;
 for (let index = 0; index < records.length; index += 2) {
   const { stdout } = await run(
     "npx",
-    ["convex", "run", "--deployment", "local", "brokerImport:importDays", JSON.stringify({ records: records.slice(index, index + 2) })],
+    ["convex", "run", "brokerImport:importDays", JSON.stringify({ records: records.slice(index, index + 2) })],
     { cwd: root, maxBuffer: 1024 * 1024 },
   );
   const result = JSON.parse(stdout);

@@ -1,18 +1,11 @@
 import { spawn } from "node:child_process";
 import { readFile } from "node:fs/promises";
 import { resolve } from "node:path";
+import { getSeedDeployment } from "./seed-deployment.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const environment = await readFile(resolve(root, ".env.local"), "utf8");
-const deployment = /^CONVEX_DEPLOYMENT=(local:[^\s#]+)/m.exec(environment)?.[1];
-if (
-  !deployment ||
-  /^CONVEX_DEPLOY_KEY=/m.test(environment) ||
-  (process.env.CONVEX_DEPLOYMENT && process.env.CONVEX_DEPLOYMENT !== deployment) ||
-  process.env.CONVEX_DEPLOY_KEY
-) {
-  throw new Error("This command only seeds a local Convex deployment without a deploy key");
-}
+const deployment = getSeedDeployment(environment, process.env);
 
 async function run(command, args) {
   await new Promise((resolveRun, rejectRun) => {
@@ -25,5 +18,6 @@ async function run(command, args) {
   });
 }
 
-await run("npx", ["convex", "run", "--deployment", "local", "seed:replacePrajogo", JSON.stringify({ deferBrokerImport: true })]);
+console.log(`Seeding Convex deployment: ${deployment}`);
+await run("npx", ["convex", "run", "seed:replacePrajogo", JSON.stringify({ deferBrokerImport: true })]);
 await run(process.execPath, ["scripts/import-broker-days.mjs", "--all", "--apply"]);

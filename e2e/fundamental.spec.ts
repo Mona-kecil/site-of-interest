@@ -38,7 +38,7 @@ test("keeps date controls in place and shows uncollected domains honestly", asyn
   await page.getByLabel("To", { exact: true }).fill("2025-12-31");
   await expect(page.locator(".today-inspector-row").first()).toBeVisible();
   await page.getByRole("button", { name: "Show more records" }).click();
-  expect(await page.locator(".today-inspector-row").count()).toBeGreaterThan(50);
+  await expect.poll(() => page.locator(".today-inspector-row").count()).toBeGreaterThan(50);
   await page
     .getByRole("region", { name: "Filter records" })
     .getByRole("button", { name: "broker", exact: true })
