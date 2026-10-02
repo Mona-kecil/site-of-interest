@@ -8,11 +8,8 @@ import manifest from "../data/empires/prajogo/manifest.json";
 import memberships from "../data/empires/prajogo/memberships.json";
 import relationships from "../data/empires/prajogo/relationships.json";
 import sources from "../data/empires/prajogo/sources.json";
-import brokerSnapshot from "../data/broker-snapshot.json";
-import marketSnapshot from "../data/market-snapshot.json";
 import newsSnapshot from "../data/news-snapshot.json";
-import { brokerDayInput, companyFact, membershipEvidence } from "./schema";
-import { sameBrokerRows } from "./brokerRows";
+import { companyFact, membershipEvidence } from "./schema";
 import { v } from "convex/values";
 import { buildFundamentalSignals } from "../src/features/today/fundamental-rules";
 
@@ -21,9 +18,6 @@ const empireTables: Array<
   | "companyCoverage"
   | "companyFacts"
   | "fundamentalSignals"
-  | "brokerSignals"
-  | "marketDays"
-  | "marketSignals"
   | "newsRecords"
   | "newsCoverage"
   | "empireMemberships"
@@ -35,9 +29,6 @@ const empireTables: Array<
   "companyCoverage",
   "companyFacts",
   "fundamentalSignals",
-  "brokerSignals",
-  "marketDays",
-  "marketSignals",
   "newsRecords",
   "newsCoverage",
   "empireMemberships",
@@ -172,7 +163,7 @@ function parseFact(value: unknown): CompanyFact {
 }
 
 export const replacePrajogo = internalMutation({
-  args: { deferBrokerImport: v.optional(v.boolean()) },
+  args: {},
   returns: v.object({
     slug: v.string(),
     entities: v.number(),
@@ -182,16 +173,10 @@ export const replacePrajogo = internalMutation({
     sources: v.number(),
     facts: v.number(),
     signals: v.number(),
-    brokerDays: v.number(),
-    brokerSignals: v.number(),
-    marketDays: v.number(),
-    marketSignals: v.number(),
     newsRecords: v.number(),
     coverage: v.number(),
   }),
-  handler: async (ctx, { deferBrokerImport }) => {
-    if (brokerSnapshot.schemaVersion !== 1) throw new Error("Unsupported broker snapshot version");
-    if (marketSnapshot.schemaVersion !== 1) throw new Error("Unsupported market snapshot version");
+  handler: async (ctx) => {
     if (newsSnapshot.schemaVersion !== 1) throw new Error("Unsupported news snapshot version");
     const existingEmpire = await ctx.db
       .query("empires")
@@ -316,78 +301,6 @@ export const replacePrajogo = internalMutation({
       signalCount += signals.length;
     }
 
-    if (!deferBrokerImport) {
-      for (const day of brokerSnapshot.days) {
-        if (day.kind !== "broker_day" || day.source.provider !== "sectors") {
-          throw new Error("Invalid broker snapshot day");
-        }
-        const storedDay: Infer<typeof brokerDayInput> = {
-          empireSlug: slug,
-          ticker: day.ticker,
-          tradingDate: day.tradingDate,
-          brokers: day.brokers,
-          source: { ...day.source, provider: "sectors" },
-        };
-        const existingDay = await ctx.db
-          .query("brokerDays")
-          .withIndex("by_empire_and_ticker_and_trading_date", (index) =>
-            index
-              .eq("empireSlug", slug)
-              .eq("ticker", day.ticker)
-              .eq("tradingDate", day.tradingDate),
-          )
-          .unique();
-        if (existingDay === null) {
-          await ctx.db.insert("brokerDays", storedDay);
-        } else if (!sameBrokerRows(existingDay.brokers, day.brokers)) {
-          throw new Error(`Conflicting stored broker day ${day.ticker} ${day.tradingDate}`);
-        }
-      }
-      for (const signal of brokerSnapshot.signals) {
-        if (signal.metricId !== "broker_buy_share" || signal.source.provider !== "sectors") {
-          throw new Error("Invalid broker snapshot signal");
-        }
-        await ctx.db.insert("brokerSignals", {
-          ...signal,
-          metricId: "broker_buy_share",
-          unit: "%",
-          source: { ...signal.source, provider: "sectors" },
-        });
-      }
-    }
-
-    for (const day of marketSnapshot.days) {
-      if (day.kind !== "market_day" || day.source.provider !== "sectors") {
-        throw new Error("Invalid market snapshot day");
-      }
-      await ctx.db.insert("marketDays", {
-        empireSlug: slug,
-        ticker: day.ticker,
-        tradingDate: day.tradingDate,
-        open: day.open,
-        high: day.high,
-        low: day.low,
-        close: day.close,
-        volume: day.volume,
-        marketCap: day.marketCap,
-        source: { ...day.source, provider: "sectors" },
-      });
-    }
-    for (const signal of marketSnapshot.signals) {
-      if (signal.metricId !== "relative_volume_20" || signal.source.provider !== "sectors") {
-        throw new Error("Invalid market snapshot signal");
-      }
-      await ctx.db.insert("marketSignals", {
-        ...signal,
-        metricId: "relative_volume_20",
-        unit: "x",
-        source: { ...signal.source, provider: "sectors" },
-        baselineDays: signal.baselineDays.map((day) => ({
-          ...day,
-          source: { ...day.source, provider: "sectors" },
-        })),
-      });
-    }
     for (const record of newsSnapshot.records) {
       if (record.provider !== "sectors" || record.matchRule !== "provider_symbol_exact") {
         throw new Error("Invalid news snapshot record");
@@ -426,10 +339,6 @@ export const replacePrajogo = internalMutation({
       sources: sources.length,
       facts: facts.length,
       signals: signalCount,
-      brokerDays: deferBrokerImport ? 0 : brokerSnapshot.days.length,
-      brokerSignals: deferBrokerImport ? 0 : brokerSnapshot.signals.length,
-      marketDays: marketSnapshot.days.length,
-      marketSignals: marketSnapshot.signals.length,
       newsRecords: newsSnapshot.records.length,
       coverage: coverage.length,
     };

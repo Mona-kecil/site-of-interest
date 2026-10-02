@@ -23,7 +23,7 @@ Users can drag and pin nodes, release them with Reflow, switch to a focus orbit,
 Each listed-company profile groups normalized Sectors facts into:
 
 - current and previous P/E values;
-- latest market and financial metrics;
+- latest profile and financial metrics;
 - five annual financial periods;
 - year-over-year annual changes with their formula and source periods;
 - provider-reported ratios and quarterly growth values;

@@ -6,7 +6,7 @@ Status: planned after the first-Empire exit check in [the ticket sequence](READM
 
 A researcher can inspect the provider-backed conglomerate ticker universe, filter measured signals by either of two imported conglomerates, and open the same context views for both.
 
-Start this ticket only after the Prajogo journey includes fundamental, broker, and market measurements, sourced Empire context, and the first-Empire news empty state or exact matches. Import one second Empire to test reuse. Do not turn this ticket into a full-universe daily market or broker collection job.
+Start this ticket only after the Prajogo journey includes fundamental measurements, sourced Empire context, and the news empty state or exact matches. Import one second Empire to test reuse.
 
 ## User path
 
@@ -33,7 +33,7 @@ Start this ticket only after the Prajogo journey includes fundamental, broker, a
 
 - **What's happening?** filters signals by stored Empire membership.
 - Every researched ticker belongs to at least one sourced registry entry.
-- Duplicate membership across conglomerates does not duplicate the company identity or its price collection.
+- Duplicate membership across conglomerates does not duplicate the company identity or its fundamental facts.
 - A registry entry records its provider, retrieval date, and coverage state.
 - Every listed membership traces to an imported affiliate response or a separately cited company-report group label.
 - Removing a ticker from the latest affiliate result creates a reviewable coverage change. It does not silently delete historical membership evidence.

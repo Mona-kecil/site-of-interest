@@ -10,22 +10,16 @@
     "typecheck": "tsc -b",
     "lint": "vp lint 'src/**/*.{ts,tsx}' convex vite.config.ts",
     "format:check": "vp fmt 'src/**/*.{ts,tsx}' convex vite.config.ts --check",
-    "test": "vp test run && npm run test:convex && npm run test:legacy",
-    "test:convex": "vitest run --config vitest.convex.config.ts",
+    "test": "vp test run && npm run test:legacy",
     "test:e2e": "playwright test",
     "test:legacy": "node --test 'src/**/*.test.mjs' 'scripts/**/*.test.mjs'",
     "convex:dev": "convex dev",
     "convex:seed": "node scripts/seed-prajogo.mjs",
     "sync:sectors": "node scripts/sync-sectors.mjs",
-    "sync:flow": "node scripts/sync-market-flow.mjs",
-    "import:broker": "node scripts/import-broker-days.mjs",
-    "build:broker-snapshot": "node scripts/build-broker-snapshot.mjs",
-    "build:market-snapshot": "node scripts/build-market-snapshot.mjs",
     "sync:news": "node scripts/sync-news.mjs",
     "analyze:empire": "node scripts/analyze-empire.mjs data/empires/prajogo",
     "validate": "node scripts/validate-corpus.mjs data/empires/prajogo",
-    "validate:docs": "node scripts/validate-product-docs.mjs",
-    "validate:flow": "node scripts/validate-market-flow.mjs"
+    "validate:docs": "node scripts/validate-product-docs.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.38",
@@ -35,7 +29,6 @@
     "react-dom": "^19.3.0"
   },
   "devDependencies": {
-    "@edge-runtime/vm": "^5.0.0",
     "@playwright/test": "^1.63.0",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.3",
@@ -43,7 +36,6 @@
     "@types/react": "^19.2.14",
     "@types/react-dom": "^19.2.3",
     "@vitejs/plugin-react": "^6.1.1",
-    "convex-test": "^0.0.59",
     "jsdom": "^27.0.0",
     "typescript": "^5.9.3",
     "vite-plus": "^0.3.3",

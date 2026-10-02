@@ -7,8 +7,6 @@ import {
   deriveCycleState,
   formatCompanyValue,
 } from "./company-model";
-import { BrokerFlow } from "./BrokerFlow";
-import { MarketContext } from "./MarketContext";
 import { CompanyNews } from "./CompanyNews";
 
 const route = getRouteApi("/company/$ticker");
@@ -89,14 +87,6 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
           </div>
           <h2>{company.name}</h2>
           <p className="company-summary">{company.summary}</p>
-          <Link
-            className="company-flow-link"
-            to="/flow/$ticker"
-            params={{ ticker: company.ticker }}
-            search={{ empireSlug }}
-          >
-            Open Flow for {company.ticker} →
-          </Link>
         </div>
         <aside className="cycle-lens">
           <p className="eyebrow">[growth state / reported values]</p>
@@ -146,8 +136,6 @@ function CompanyRecord({ ticker, empireSlug }: { ticker: string; empireSlug: str
       </dl>
 
       <div className="company-grid">
-        <BrokerFlow empireSlug={empireSlug} ticker={company.ticker} />
-        <MarketContext empireSlug={empireSlug} ticker={company.ticker} />
         <CompanyNews empireSlug={empireSlug} ticker={company.ticker} />
         <section className="company-card financial-history">
           <header>

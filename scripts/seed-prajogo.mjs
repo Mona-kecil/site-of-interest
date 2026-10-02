@@ -19,5 +19,4 @@ async function run(command, args) {
 }
 
 console.log(`Seeding Convex deployment: ${deployment}`);
-await run("npx", ["convex", "run", "seed:replacePrajogo", JSON.stringify({ deferBrokerImport: true })]);
-await run(process.execPath, ["scripts/import-broker-days.mjs", "--all", "--apply"]);
+await run("npx", ["convex", "run", "seed:replacePrajogo", "{}"]);

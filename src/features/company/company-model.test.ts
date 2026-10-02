@@ -68,7 +68,7 @@ describe("company measurements", () => {
     expect(deriveAnnualComparisons([])).toEqual([]);
   });
 
-  it("formats market values without losing their sign", () => {
+  it("formats company values without losing their sign", () => {
     expect(formatCompanyValue(17_406_187_500_000, "IDR")).toBe("Rp17.41tn");
     expect(formatCompanyValue(-43_087_994_671, "IDR")).toBe("−Rp43.09bn");
     expect(formatCompanyValue(46.6259, "percent")).toBe("46.63%");

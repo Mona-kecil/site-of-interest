@@ -23,7 +23,7 @@ test("compares one definition and period, then opens its provider evidence", asy
   await expect(page.getByRole("link", { name: /prajogo Empire/i })).toBeVisible();
 });
 
-test("keeps date controls in place and shows uncollected domains honestly", async ({ page }) => {
+test("keeps date controls in place and exposes only fundamental and news filters", async ({ page }) => {
   await page.goto("/happening");
   const initialTop = await page.getByLabel("From").boundingBox();
   await page.getByRole("button", { name: "Today", exact: true }).click();
@@ -39,59 +39,9 @@ test("keeps date controls in place and shows uncollected domains honestly", asyn
   await expect(page.locator(".today-inspector-row").first()).toBeVisible();
   await page.getByRole("button", { name: "Show more records" }).click();
   await expect.poll(() => page.locator(".today-inspector-row").count()).toBeGreaterThan(50);
-  await page
-    .getByRole("region", { name: "Filter records" })
-    .getByRole("button", { name: "broker", exact: true })
-    .click();
-  await expect(
-    page.getByText(
-      "No stored broker records match this range. An empty range is a coverage gap, not zero activity.",
-    ),
-  ).toBeVisible();
-});
-
-test("opens a broker measurement and its exact trading-day rows", async ({ page }) => {
-  await page.goto("/happening");
-  await page
-    .getByRole("region", { name: "Filter records" })
-    .getByRole("button", { name: "broker", exact: true })
-    .click();
-  const firstDate = await page
-    .locator(".today-inspector-row time")
-    .first()
-    .getAttribute("dateTime");
-  expect(firstDate).toMatch(/^\d{4}-\d{2}-\d{2}$/);
-  await expect(
-    page.getByRole("heading", { name: `All broker rows on ${firstDate}` }),
-  ).toBeVisible();
-  await expect(
-    page.getByText("broker buy value / sum of all broker buy values × 100"),
-  ).toBeVisible();
-  await page.getByRole("link", { name: "Open Empire context" }).click();
-  await page.getByRole("link", { name: "Return to record" }).click();
-  await expect(page.getByRole("heading", { name: `All broker rows on ${firstDate}` })).toBeVisible();
-  await page.getByRole("link", { name: "Open full company record" }).click();
-  await expect(page.getByRole("heading", { name: "Broker flow" })).toBeVisible();
-  await expect(page.getByText(/Previous-session baseline: \d+ of 60 stored sessions/)).toBeVisible();
-  await expect(page.getByText("Sectors /v2/broker-summary/")).toBeVisible();
-});
-
-test("opens a relative-volume measurement with its 20 prior days", async ({ page }) => {
-  await page.goto("/happening");
-  await page
-    .getByRole("region", { name: "Filter records" })
-    .getByRole("button", { name: "market", exact: true })
-    .click();
-  await expect(page.getByRole("heading", { name: "Baseline inputs" })).toBeVisible();
-  await expect(page.getByText("20 of 20 prior stored trading days")).toBeVisible();
-  await expect(
-    page
-      .locator(".today-detail-section")
-      .filter({ hasText: "Baseline inputs" })
-      .locator("tbody tr"),
-  ).toHaveCount(20);
-  await page.getByRole("link", { name: "Open full company record" }).click();
-  await expect(page.getByRole("heading", { name: "Market context" })).toBeVisible();
+  const filters = page.getByRole("region", { name: "Filter records" });
+  await expect(filters.getByRole("button", { name: "broker", exact: true })).toHaveCount(0);
+  await expect(filters.getByRole("button", { name: "market", exact: true })).toHaveCount(0);
 });
 
 test("opens matched news without adding an interpretation", async ({ page }) => {

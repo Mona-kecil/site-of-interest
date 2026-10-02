@@ -35,7 +35,6 @@ An authenticated researcher saves signals and news, then writes a private conclu
 - Public profiles or shared cases
 - Automated trade instructions
 - AI-written conclusions
-- Brokerage integration
 
 ## Verification
 

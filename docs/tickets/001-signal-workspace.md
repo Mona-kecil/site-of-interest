@@ -1,6 +1,6 @@
 # Signal workspace
 
-Status: implemented for fundamental measurements. Broker, market, and news tabs state that those records are not collected in this slice.
+Status: implemented for fundamental measurements and exact ticker news matches. Both record kinds expose sources and import coverage.
 
 ## Outcome
 
@@ -17,7 +17,7 @@ A researcher opens **What's happening?**, chooses a time frame, sees reproducibl
 
 - Add `/happening` as the default route, with Today, Yesterday, and custom date-range controls.
 - Use a stable split layout with the record list on the left and a persistent detail inspector on the right.
-- Pin the selected record above an All, Fundamental, Market, and Broker lens control in the inspector.
+- Pin the selected record above the company's fundamental measurement list in the inspector.
 - Define the stored measured-signal contract and a TypeScript rule registry.
 - Use one numeric calculation supported by the current company facts as the first rule.
 - Apply the rule to every eligible company. Do not select a demonstration ticker.
@@ -37,8 +37,6 @@ A researcher opens **What's happening?**, chooses a time frame, sees reproducibl
 ## Non-goals
 
 - Empire graph redesign
-- Broker or market collection
-- News
 - Personalized ranking
 
 ## Verification

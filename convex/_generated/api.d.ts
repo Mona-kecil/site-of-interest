@@ -8,16 +8,11 @@
  * @module
  */
 
-import type * as brokerImport from "../brokerImport.js";
-import type * as brokerRows from "../brokerRows.js";
-import type * as brokerSignals from "../brokerSignals.js";
 import type * as companies from "../companies.js";
 import type * as empireDirectory from "../empireDirectory.js";
 import type * as empires from "../empires.js";
-import type * as flow from "../flow.js";
 import type * as focus from "../focus.js";
 import type * as fundamentalSignals from "../fundamentalSignals.js";
-import type * as marketSignals from "../marketSignals.js";
 import type * as news from "../news.js";
 import type * as seed from "../seed.js";
 
@@ -28,16 +23,11 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  brokerImport: typeof brokerImport;
-  brokerRows: typeof brokerRows;
-  brokerSignals: typeof brokerSignals;
   companies: typeof companies;
   empireDirectory: typeof empireDirectory;
   empires: typeof empires;
-  flow: typeof flow;
   focus: typeof focus;
   fundamentalSignals: typeof fundamentalSignals;
-  marketSignals: typeof marketSignals;
   news: typeof news;
   seed: typeof seed;
 }>;

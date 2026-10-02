@@ -3,19 +3,11 @@ import { Link, getRouteApi } from "@tanstack/react-router";
 import { usePaginatedQuery, useQuery } from "convex/react";
 import type { Doc } from "../../../convex/_generated/dataModel";
 import { api } from "../../../convex/_generated/api";
-import { BrokerFlow } from "../company/BrokerFlow";
-import { MarketContext } from "../company/MarketContext";
 
 type Signal = Doc<"fundamentalSignals">;
-type BrokerSignal = Doc<"brokerSignals">;
-type MarketSignal = Doc<"marketSignals">;
 type NewsRecord = Doc<"newsRecords">;
-type FeedItem =
-  | { kind: "fundamental"; signal: Signal }
-  | { kind: "broker"; signal: BrokerSignal }
-  | { kind: "market"; signal: MarketSignal }
-  | { kind: "news"; signal: NewsRecord };
-type Lens = "all" | "fundamental" | "market" | "broker" | "news";
+type FeedItem = { kind: "fundamental"; signal: Signal } | { kind: "news"; signal: NewsRecord };
+type Lens = "all" | "fundamental" | "news";
 type Sort = "newest" | "lowest" | "highest";
 const route = getRouteApi("/happening");
 
@@ -38,7 +30,6 @@ function formatValue(signal: Signal) {
 }
 
 function SignalDetail({ signal }: { signal: Signal }) {
-  const [lens, setLens] = useState<"all" | "fundamental" | "market" | "broker">("all");
   const [expandedId, setExpandedId] = useState(signal.stableId);
   const detail = useQuery(api.fundamentalSignals.detail, {
     empireSlug: signal.empireSlug,
@@ -114,66 +105,46 @@ function SignalDetail({ signal }: { signal: Signal }) {
             <h3>Company records</h3>
             <p>Source-backed measurements for {record.ticker}</p>
           </div>
-          <div className="today-lens-tabs" aria-label="Company measurement lens">
-            {(["all", "fundamental", "market", "broker"] as const).map((option) => (
-              <button
-                type="button"
-                key={option}
-                className={lens === option ? "is-active" : ""}
-                onClick={() => setLens(option)}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
         </div>
-        {(lens === "all" || lens === "fundamental") && (
-          <div className="today-lens-sections">
-            <section>
-              <h4>All fundamental measurements</h4>
-              {companySignals === undefined ? (
-                <p className="today-empty">Loading company measurements…</p>
-              ) : (
-                <dl>
-                  {companySignals
-                    .slice()
-                    .sort(
-                      (a, b) =>
-                        b.period.localeCompare(a.period) ||
-                        a.metricLabel.localeCompare(b.metricLabel),
-                    )
-                    .map((item) => (
-                      <button
-                        type="button"
-                        className="today-company-measurement"
-                        key={item.stableId}
-                        onClick={() => setExpandedId(item.stableId)}
-                      >
-                        <span>
-                          {item.metricLabel} · {item.period}
-                        </span>
-                        <strong>{formatValue(item)}</strong>
-                      </button>
-                    ))}
-                </dl>
-              )}
-            </section>
-            <p className="today-detail-footnote">
-              <Link
-                to="/empire/$empireSlug/company/$ticker"
-                params={{ empireSlug: record.empireSlug, ticker: record.ticker }}
-              >
-                Open full company record →
-              </Link>
-            </p>
-          </div>
-        )}
-        {(lens === "all" || lens === "broker") && (
-          <BrokerFlow empireSlug={record.empireSlug} ticker={record.ticker} />
-        )}
-        {(lens === "all" || lens === "market") && (
-          <MarketContext empireSlug={record.empireSlug} ticker={record.ticker} />
-        )}
+        <div className="today-lens-sections">
+          <section>
+            <h4>All fundamental measurements</h4>
+            {companySignals === undefined ? (
+              <p className="today-empty">Loading company measurements…</p>
+            ) : (
+              <dl>
+                {companySignals
+                  .slice()
+                  .sort(
+                    (a, b) =>
+                      b.period.localeCompare(a.period) ||
+                      a.metricLabel.localeCompare(b.metricLabel),
+                  )
+                  .map((item) => (
+                    <button
+                      type="button"
+                      className="today-company-measurement"
+                      key={item.stableId}
+                      onClick={() => setExpandedId(item.stableId)}
+                    >
+                      <span>
+                        {item.metricLabel} · {item.period}
+                      </span>
+                      <strong>{formatValue(item)}</strong>
+                    </button>
+                  ))}
+              </dl>
+            )}
+          </section>
+          <p className="today-detail-footnote">
+            <Link
+              to="/empire/$empireSlug/company/$ticker"
+              params={{ empireSlug: record.empireSlug, ticker: record.ticker }}
+            >
+              Open full company record →
+            </Link>
+          </p>
+        </div>
       </section>
       <p className="today-detail-footnote">
         Values and gaps as recorded. No interpretation or recommendation.
@@ -183,224 +154,6 @@ function SignalDetail({ signal }: { signal: Signal }) {
           to="/empire/$slug"
           params={{ slug: record.empireSlug }}
           search={{ ticker: record.ticker, originKind: "fundamental", originId: record.stableId }}
-        >
-          Open Empire context →
-        </Link>
-      </p>
-    </div>
-  );
-}
-
-function BrokerSignalDetail({ signal }: { signal: BrokerSignal }) {
-  const detail = useQuery(api.brokerSignals.detail, {
-    empireSlug: signal.empireSlug,
-    stableId: signal.stableId,
-  });
-  const record = detail?.signal ?? signal;
-  const rows = detail?.day.brokers.slice().sort((a, b) => b.buy.value - a.buy.value);
-  return (
-    <div className="today-detail">
-      <div className="today-detail-heading">
-        <div>
-          <p className="eyebrow">Recorded broker measurement</p>
-          <h2>{record.ticker}</h2>
-          <p>
-            {record.companyName} · {record.empireSlug}
-          </p>
-        </div>
-        <span className="today-kind kind-broker">broker</span>
-      </div>
-      <section className="today-detail-primary">
-        <span>
-          {record.metricLabel} · {record.tradingDate}
-        </span>
-        <strong>{record.value.toFixed(2)}%</strong>
-        <p>
-          Broker {record.brokerCode} · {record.observedBrokers} observed brokers
-        </p>
-      </section>
-      <section className="today-detail-section">
-        <h3>Calculation · {record.ruleVersion}</h3>
-        <code>{record.formula}</code>
-        <dl>
-          <div>
-            <dt>{record.brokerCode} buy value</dt>
-            <dd>{record.buyValue.toLocaleString("en-US")} IDR</dd>
-          </div>
-          <div>
-            <dt>All observed broker buy value</dt>
-            <dd>{record.totalBuyValue.toLocaleString("en-US")} IDR</dd>
-          </div>
-          <div>
-            <dt>{record.brokerCode} sell value</dt>
-            <dd>{record.sellValue.toLocaleString("en-US")} IDR</dd>
-          </div>
-          <div>
-            <dt>{record.brokerCode} net value</dt>
-            <dd>{record.netValue.toLocaleString("en-US")} IDR</dd>
-          </div>
-        </dl>
-      </section>
-      <section className="today-detail-section">
-        <h3>All broker rows on {record.tradingDate}</h3>
-        {rows === undefined ? (
-          <p>Loading source rows…</p>
-        ) : (
-          <div className="financial-table-wrap">
-            <table>
-              <thead>
-                <tr>
-                  <th>Broker</th>
-                  <th>Buy value</th>
-                  <th>Sell value</th>
-                  <th>Net value</th>
-                  <th>Buy lots</th>
-                  <th>Sell lots</th>
-                </tr>
-              </thead>
-              <tbody>
-                {rows.map((row) => (
-                  <tr key={row.brokerCode}>
-                    <th>{row.brokerCode}</th>
-                    <td>{row.buy.value.toLocaleString("en-US")}</td>
-                    <td>{row.sell.value.toLocaleString("en-US")}</td>
-                    <td>{row.net.value.toLocaleString("en-US")}</td>
-                    <td>{row.buy.lots.toLocaleString("en-US")}</td>
-                    <td>{row.sell.lots.toLocaleString("en-US")}</td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </section>
-      <section className="today-detail-section">
-        <h3>Source</h3>
-        <p>
-          Sectors · {record.source.endpoint} · retrieved {record.source.retrievedAt}
-        </p>
-      </section>
-      <p className="today-detail-footnote">
-        <Link
-          to="/empire/$empireSlug/company/$ticker"
-          params={{ empireSlug: record.empireSlug, ticker: record.ticker }}
-        >
-          Open full company record →
-        </Link>
-      </p>
-      <p className="today-detail-footnote">
-        A broker code identifies an exchange member, not the beneficial investor. No interpretation
-        or recommendation.
-      </p>
-      <p className="today-detail-footnote">
-        <Link
-          to="/empire/$slug"
-          params={{ slug: record.empireSlug }}
-          search={{ ticker: record.ticker, originKind: "broker", originId: record.stableId }}
-        >
-          Open Empire context →
-        </Link>
-      </p>
-    </div>
-  );
-}
-
-function MarketSignalDetail({ signal }: { signal: MarketSignal }) {
-  const detail = useQuery(api.marketSignals.detail, {
-    empireSlug: signal.empireSlug,
-    stableId: signal.stableId,
-  });
-  const record = detail?.signal ?? signal;
-  return (
-    <div className="today-detail">
-      <div className="today-detail-heading">
-        <div>
-          <p className="eyebrow">Recorded market measurement</p>
-          <h2>{record.ticker}</h2>
-          <p>
-            {record.companyName} · {record.empireSlug}
-          </p>
-        </div>
-        <span className="today-kind kind-market">market</span>
-      </div>
-      <section className="today-detail-primary">
-        <span>
-          {record.metricLabel} · {record.tradingDate}
-        </span>
-        <strong>{record.value === null ? "Data gap" : `${record.value.toFixed(2)}x`}</strong>
-        <p>
-          {record.gap ?? "Observation-day volume divided by the previous 20 stored trading days"}
-        </p>
-      </section>
-      <section className="today-detail-section">
-        <h3>Calculation · {record.ruleVersion}</h3>
-        <code>{record.formula}</code>
-        <dl>
-          <div>
-            <dt>Observation-day volume</dt>
-            <dd>{record.volume.toLocaleString("en-US")} shares</dd>
-          </div>
-          <div>
-            <dt>Prior 20-day average</dt>
-            <dd>{record.baselineAverage?.toLocaleString("en-US") ?? "—"} shares</dd>
-          </div>
-          <div>
-            <dt>Baseline coverage</dt>
-            <dd>{record.baselineDays.length} of 20 prior stored trading days</dd>
-          </div>
-        </dl>
-      </section>
-      <section className="today-detail-section">
-        <h3>Baseline inputs</h3>
-        <div className="financial-table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date</th>
-                <th>Volume</th>
-                <th>Source</th>
-              </tr>
-            </thead>
-            <tbody>
-              {record.baselineDays.map((day) => (
-                <tr key={day.tradingDate}>
-                  <th>{day.tradingDate}</th>
-                  <td>{day.volume.toLocaleString("en-US")}</td>
-                  <td>{day.source.endpoint}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </section>
-      <section className="today-detail-section">
-        <h3>Observation source</h3>
-        <p>
-          Sectors · {record.source.endpoint} · retrieved {record.source.retrievedAt}
-        </p>
-        {detail && (
-          <p>
-            Close: {detail.day.close.toLocaleString("en-US")} IDR · volume:{" "}
-            {detail.day.volume.toLocaleString("en-US")} shares
-          </p>
-        )}
-      </section>
-      <p className="today-detail-footnote">
-        <Link
-          to="/empire/$empireSlug/company/$ticker"
-          params={{ empireSlug: record.empireSlug, ticker: record.ticker }}
-        >
-          Open full company record →
-        </Link>
-      </p>
-      <p className="today-detail-footnote">
-        Measured values only. No interpretation or recommendation.
-      </p>
-      <p className="today-detail-footnote">
-        <Link
-          to="/empire/$slug"
-          params={{ slug: record.empireSlug }}
-          search={{ ticker: record.ticker, originKind: "market", originId: record.stableId }}
         >
           Open Empire context →
         </Link>
@@ -466,7 +219,8 @@ function NewsDetail({ record }: { record: NewsRecord }) {
         </p>
       </section>
       <p className="today-detail-footnote">
-        A news item and a market move appearing near each other do not establish causation.
+        An exact ticker match links the article to a company; it does not verify the article’s
+        claims.
       </p>
       <p className="today-detail-footnote">
         <Link
@@ -505,30 +259,12 @@ export function TodayPage() {
     api.fundamentalSignals.detail,
     focus?.kind === "fundamental" ? { empireSlug: focus.empireSlug, stableId: focus.id } : "skip",
   );
-  const focusedBroker = useQuery(
-    api.brokerSignals.detail,
-    focus?.kind === "broker" ? { empireSlug: focus.empireSlug, stableId: focus.id } : "skip",
-  );
-  const focusedMarket = useQuery(
-    api.marketSignals.detail,
-    focus?.kind === "market" ? { empireSlug: focus.empireSlug, stableId: focus.id } : "skip",
-  );
   const focusedNews = useQuery(
     api.news.detail,
     focus?.kind === "news" ? { empireSlug: focus.empireSlug, stableId: focus.id } : "skip",
   );
   const feed = usePaginatedQuery(
     api.fundamentalSignals.list,
-    range.start <= range.end ? { start: range.start, end: range.end } : "skip",
-    { initialNumItems: 50 },
-  );
-  const brokerFeed = usePaginatedQuery(
-    api.brokerSignals.list,
-    range.start <= range.end ? { start: range.start, end: range.end } : "skip",
-    { initialNumItems: 50 },
-  );
-  const marketFeed = usePaginatedQuery(
-    api.marketSignals.list,
     range.start <= range.end ? { start: range.start, end: range.end } : "skip",
     { initialNumItems: 50 },
   );
@@ -558,14 +294,6 @@ export function TodayPage() {
       (metric === "all" || item.metricId === metric) &&
       (period === "all" || item.period === period),
   );
-  const brokerItems = brokerFeed.results.filter(
-    (item) =>
-      (empire === "all" || item.empireSlug === empire) && metric === "all" && period === "all",
-  );
-  const marketItems = marketFeed.results.filter(
-    (item) =>
-      (empire === "all" || item.empireSlug === empire) && metric === "all" && period === "all",
-  );
   const newsItems = newsFeed.results.filter(
     (item) =>
       (empire === "all" || item.empireSlug === empire) && metric === "all" && period === "all",
@@ -574,12 +302,6 @@ export function TodayPage() {
     ...(kind === "all" || kind === "fundamental"
       ? fundamentalItems.map((signal): FeedItem => ({ kind: "fundamental", signal }))
       : []),
-    ...(kind === "all" || kind === "broker"
-      ? brokerItems.map((signal): FeedItem => ({ kind: "broker", signal }))
-      : []),
-    ...(kind === "all" || kind === "market"
-      ? marketItems.map((signal): FeedItem => ({ kind: "market", signal }))
-      : []),
     ...(kind === "all" || kind === "news"
       ? newsItems.map((signal): FeedItem => ({ kind: "news", signal }))
       : []),
@@ -587,19 +309,13 @@ export function TodayPage() {
   const focusedItem: FeedItem | undefined =
     focus?.kind === "fundamental" && focusedFundamental
       ? { kind: "fundamental", signal: focusedFundamental.signal }
-      : focus?.kind === "broker" && focusedBroker
-        ? { kind: "broker", signal: focusedBroker.signal }
-        : focus?.kind === "market" && focusedMarket
-          ? { kind: "market", signal: focusedMarket.signal }
-          : focus?.kind === "news" && focusedNews
-            ? { kind: "news", signal: focusedNews }
-            : undefined;
+      : focus?.kind === "news" && focusedNews
+        ? { kind: "news", signal: focusedNews }
+        : undefined;
   const focusedDate = focusedItem
     ? focusedItem.kind === "fundamental"
       ? focusedItem.signal.asOf
-      : focusedItem.kind === "news"
-        ? focusedItem.signal.publishedAt.slice(0, 10)
-        : focusedItem.signal.tradingDate
+      : focusedItem.signal.publishedAt.slice(0, 10)
     : undefined;
   if (
     focusedItem &&
@@ -622,18 +338,8 @@ export function TodayPage() {
       if (b.signal.value === null) return -1;
       return sort === "lowest" ? a.signal.value - b.signal.value : b.signal.value - a.signal.value;
     }
-    const aDate =
-      a.kind === "fundamental"
-        ? a.signal.asOf
-        : a.kind === "news"
-          ? a.signal.publishedAt
-          : a.signal.tradingDate;
-    const bDate =
-      b.kind === "fundamental"
-        ? b.signal.asOf
-        : b.kind === "news"
-          ? b.signal.publishedAt
-          : b.signal.tradingDate;
+    const aDate = a.kind === "fundamental" ? a.signal.asOf : a.signal.publishedAt;
+    const bDate = b.kind === "fundamental" ? b.signal.asOf : b.signal.publishedAt;
     return bDate.localeCompare(aDate) || a.signal.stableId.localeCompare(b.signal.stableId);
   });
   const selected = items.find((item) => item.signal.stableId === selectedId) ?? items[0];
@@ -650,11 +356,11 @@ export function TodayPage() {
     <main className="today-page">
       <header className="today-header">
         <div>
-          <p className="eyebrow">Market intelligence / source-backed records</p>
+          <p className="eyebrow">Company research / source-backed records</p>
           <h1>What’s happening?</h1>
           <p className="today-intro">
-            Fundamental measurements, market and broker activity, and matched news from Sectors.
-            Dates are provider fact, trading, or publication dates. Interpret the records yourself.
+            Fundamental measurements and matched news from Sectors. Dates are provider fact or
+            publication dates. Each record includes its sources and coverage gaps.
           </p>
         </div>
       </header>
@@ -706,7 +412,7 @@ export function TodayPage() {
           </label>
         </div>
         <div className="today-kind-filters">
-          {(["all", "fundamental", "market", "broker", "news"] as const).map((option) => (
+          {(["all", "fundamental", "news"] as const).map((option) => (
             <button
               type="button"
               key={option}
@@ -787,11 +493,7 @@ export function TodayPage() {
         </label>
         <span className="today-result-count">
           {items.length} shown
-          {!comparable &&
-          (feed.status !== "Exhausted" ||
-            brokerFeed.status !== "Exhausted" ||
-            marketFeed.status !== "Exhausted" ||
-            newsFeed.status !== "Exhausted")
+          {!comparable && (feed.status !== "Exhausted" || newsFeed.status !== "Exhausted")
             ? " · more available"
             : ""}
         </span>
@@ -820,19 +522,11 @@ export function TodayPage() {
               onClick={() => setSelectedId(item.signal.stableId)}
             >
               <time
-                dateTime={
-                  item.kind === "fundamental"
-                    ? item.signal.asOf
-                    : item.kind === "news"
-                      ? item.signal.publishedAt
-                      : item.signal.tradingDate
-                }
+                dateTime={item.kind === "fundamental" ? item.signal.asOf : item.signal.publishedAt}
               >
                 {item.kind === "fundamental"
                   ? item.signal.asOf
-                  : item.kind === "news"
-                    ? item.signal.publishedAt.slice(0, 10)
-                    : item.signal.tradingDate}
+                  : item.signal.publishedAt.slice(0, 10)}
               </time>
               <div className="today-item-identity">
                 <span className={`today-kind kind-${item.kind}`}>{item.kind}</span>
@@ -849,33 +543,15 @@ export function TodayPage() {
               <div className="today-measurement">
                 <span>
                   {item.kind === "news" ? item.signal.title : item.signal.metricLabel} ·{" "}
-                  {item.kind === "news"
-                    ? "published article"
-                    : item.kind === "fundamental"
-                      ? item.signal.period
-                      : item.kind === "broker"
-                        ? item.signal.brokerCode
-                        : "20-day baseline"}
+                  {item.kind === "news" ? "published article" : item.signal.period}
                 </span>
                 <strong>
-                  {item.kind === "news"
-                    ? item.signal.sourceName
-                    : item.kind === "fundamental"
-                      ? formatValue(item.signal)
-                      : item.kind === "broker"
-                        ? `${item.signal.value.toFixed(2)}%`
-                        : item.signal.value === null
-                          ? "Data gap"
-                          : `${item.signal.value.toFixed(2)}x`}
+                  {item.kind === "news" ? item.signal.sourceName : formatValue(item.signal)}
                 </strong>
                 <small>
                   {item.kind === "news"
                     ? "Exact provider ticker match"
-                    : item.kind === "fundamental"
-                      ? (item.signal.gap ?? item.signal.sector)
-                      : item.kind === "broker"
-                        ? `${item.signal.observedBrokers} brokers observed`
-                        : (item.signal.gap ?? "20 prior stored trading days")}
+                    : (item.signal.gap ?? item.signal.sector)}
                 </small>
               </div>
             </button>
@@ -887,34 +563,12 @@ export function TodayPage() {
                 ? "Loading records…"
                 : kind === "news"
                   ? "No imported news matches this range. This does not mean there was no news."
-                  : kind === "broker"
-                    ? "No stored broker records match this range. An empty range is a coverage gap, not zero activity."
-                    : kind === "market"
-                      ? "No stored market records match this range. An empty range is a coverage gap, not zero activity."
-                      : "No records match this range and filter."}
+                  : "No records match this range and filter."}
             </p>
           )}
           {!comparable && feed.status === "CanLoadMore" && (
             <button type="button" className="today-load-more" onClick={() => feed.loadMore(50)}>
               Show more records
-            </button>
-          )}
-          {kind !== "fundamental" && brokerFeed.status === "CanLoadMore" && (
-            <button
-              type="button"
-              className="today-load-more"
-              onClick={() => brokerFeed.loadMore(50)}
-            >
-              Show more broker records
-            </button>
-          )}
-          {kind !== "fundamental" && marketFeed.status === "CanLoadMore" && (
-            <button
-              type="button"
-              className="today-load-more"
-              onClick={() => marketFeed.loadMore(50)}
-            >
-              Show more market records
             </button>
           )}
           {kind !== "fundamental" && newsFeed.status === "CanLoadMore" && (
@@ -927,10 +581,6 @@ export function TodayPage() {
           {selected ? (
             selected.kind === "fundamental" ? (
               <SignalDetail key={selected.signal.stableId} signal={selected.signal} />
-            ) : selected.kind === "broker" ? (
-              <BrokerSignalDetail key={selected.signal.stableId} signal={selected.signal} />
-            ) : selected.kind === "market" ? (
-              <MarketSignalDetail key={selected.signal.stableId} signal={selected.signal} />
             ) : (
               <NewsDetail key={selected.signal.stableId} record={selected.signal} />
             )

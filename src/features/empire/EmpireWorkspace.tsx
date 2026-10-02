@@ -14,7 +14,7 @@ interface EmpireWorkspaceProps {
   graph: EmpireGraph;
   empireSlug: string;
   initialEntityId?: string;
-  origin?: { kind: "fundamental" | "broker" | "market" | "news"; id: string };
+  origin?: { kind: "fundamental" | "news"; id: string };
 }
 
 const views: ReadonlyArray<{ id: EmpireView; label: string }> = [

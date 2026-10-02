@@ -37,7 +37,7 @@ The corpus uses normalized collections:
 - `entities.json` stores people, business-group classifications, and legal entities returned by Sectors. Private and listed entities may carry an `empire` or `boundary` scope role.
 - `relationships.json` stores ownership, group-membership, and inferred-affiliation edges with their corresponding scope.
 - `assertions.json` attaches each edge to a Sectors response field.
-- `facts.json` stores market metrics, annual financials, valuation periods, derived signals, and data gaps.
+- `facts.json` stores profile metrics, annual financials, valuation periods, derived signals, and data gaps.
 - `sources.json` records the exact API requests.
 - `coverage.json` records checked areas and the next Sectors request to make.
 
