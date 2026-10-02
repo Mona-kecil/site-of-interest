@@ -1,0 +1,51 @@
+{
+  "results": [
+    {
+      "symbol": "ADRO.JK",
+      "company_name": "Alamtri Resources Indonesia Tbk",
+      "query_values": {
+        "indices": [
+          "IDXHIDIV20",
+          "LQ45",
+          "KOMPAS100",
+          "IDX30",
+          "IDXG30",
+          "IDXVESTA28",
+          "JII70",
+          "FTSE",
+          "IDXV30"
+        ],
+        "market_cap": 69409191022000
+      }
+    },
+    {
+      "symbol": "BBCA.JK",
+      "company_name": "PT Bank Central Asia Tbk.",
+      "query_values": {
+        "indices": [
+          "IDXHIDIV20",
+          "LQ45",
+          "KOMPAS100",
+          "IDXQ30",
+          "IDXESGL",
+          "IDX30",
+          "ECONOMIC30",
+          "IDXG30",
+          "FTSE",
+          "SRIKEHATI"
+        ],
+        "market_cap": 732253797000000
+      }
+    }
+  ],
+  "pagination": {
+    "total_count": 2,
+    "showing": 2,
+    "limit": 200,
+    "offset": 0,
+    "has_next": false,
+    "has_previous": false,
+    "next_offset": null,
+    "previous_offset": null
+  }
+}

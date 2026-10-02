@@ -17,6 +17,8 @@
     "convex:seed": "node scripts/seed-prajogo.mjs",
     "sync:sectors": "node scripts/sync-sectors.mjs",
     "sync:news": "node scripts/sync-news.mjs",
+    "sync:universe": "node scripts/sync-universe.mjs",
+    "validate:universe": "node scripts/validate-universe.mjs",
     "analyze:empire": "node scripts/analyze-empire.mjs data/empires/prajogo",
     "validate": "node scripts/validate-corpus.mjs data/empires/prajogo",
     "validate:docs": "node scripts/validate-product-docs.mjs"
