@@ -36,7 +36,6 @@ A researcher compares fundamental measurements across listed companies without r
 
 - Price targets or fair values
 - AI-selected peers
-- Market or broker measurements
 
 ## Verification
 

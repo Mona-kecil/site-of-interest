@@ -1,6 +1,6 @@
 # Empire context
 
-Status: implemented for the Prajogo corpus. Fundamental, broker, market, and news details link to the graph with the relevant listed company selected. The graph shows a link back to the exact originating record. The Convex graph read stops with an error if any of its four record groups exceeds 500 rows, so it cannot silently truncate a larger Empire.
+Status: implemented for the Prajogo corpus. Fundamental and news details link to the graph with the relevant listed company selected. The graph shows a link back to the exact originating record. The Convex graph read stops with an error if any of its four record groups exceeds 500 rows, so it cannot silently truncate a larger Empire.
 
 ## Outcome
 
@@ -36,7 +36,7 @@ A researcher opens a signal, company, or news item and sees where its subject si
 
 - Making the graph the home page
 - Cross-Empire identity merging
-- News, market, or broker calculations inside graph components
+- Fundamental or news calculations inside graph components
 
 ## Verification
 
