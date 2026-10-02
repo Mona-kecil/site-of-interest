@@ -2,14 +2,14 @@
 
 import { convexTest } from "convex-test";
 import { expect, test } from "vitest";
-import { api } from "./_generated/api";
+import { internal } from "./_generated/api";
 import schema from "./schema";
 
 const modules = import.meta.glob("./**/*.ts");
 
 test("corpus replacement retains broker days imported after the snapshot", async () => {
   const t = convexTest(schema, modules);
-  await t.mutation(api.seed.replacePrajogo, {});
+  await t.mutation(internal.seed.replacePrajogo, {});
 
   await t.run(async (ctx) => {
     await ctx.db.insert("brokerDays", {
@@ -25,7 +25,7 @@ test("corpus replacement retains broker days imported after the snapshot", async
     });
   });
 
-  await t.mutation(api.seed.replacePrajogo, {});
+  await t.mutation(internal.seed.replacePrajogo, {});
 
   const retained = await t.run(async (ctx) => {
     const day = await ctx.db
