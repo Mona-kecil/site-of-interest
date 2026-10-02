@@ -3,7 +3,7 @@
 `npm run sync:universe -- --max-credits=50 --dry-run` prints the plan without requests; remove `--dry-run` to sync, use `--refresh` to bypass `.cache/sectors`, or set a cap of 0 to use only cached pages.
 The CLI validates all pages before replacing `data/universe/`; `npm run validate:universe` checks the stored snapshot.
 
-- `sources.json`: `[{ id, title, provider: "sectors", endpoint, retrievedAt, credits }]`, one source per page, with credits charged for this run (cache hits cost 0).
+- `sources.json`: `[{ id, title, provider: "sectors", endpoint, retrievedAt, credits }]`, one source per page, with credits charged for this run (cache hits cost 0 and keep the cache file time as `retrievedAt`).
 - `companies.json`: `[{ symbol, name, sector, subSector, industry, subIndustry, listingBoard, listingDate, indices, affiliates, current: { marketCap, freeFloat, peTtm, pbMrq, psTtm, roeTtm, roaTtm, yieldTtm, dividendTtm, payoutRatio, totalAssetsMrq, totalEquityMrq, totalRevenueMrq, earningsMrq, employees }, sourceIds: { [groupId]: sourceId } }]`.
 - `years.json`: `[{ symbol, year, values: { [yearFieldKey]: number | null }, sourceIds: { [groupId]: sourceId } }]` for 2019 through 2025.
 - `quarters.json`: `[{ symbol, quarter, values: { [quarterFieldKey]: number | null }, sourceIds: { [groupId]: sourceId } }]` for Q3-2024, Q4-2024, Q1-2025, Q2-2025, Q3-2025, Q4-2025, Q1-2026, Q2-2026.

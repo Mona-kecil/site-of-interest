@@ -1,5 +1,5 @@
 import { createHash, randomUUID } from "node:crypto";
-import { mkdir, readFile, rename, unlink, writeFile } from "node:fs/promises";
+import { mkdir, readFile, rename, stat, unlink, writeFile } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
 
 async function apiKeyFromEnvironment(root) {
@@ -64,8 +64,9 @@ export async function createSectorsClient({
     if (target && !refresh) {
       try {
         const cached = JSON.parse(await readFile(target, "utf8"));
+        const retrievedAt = (await stat(target)).mtime.toISOString();
         stats.cachedCalls += 1;
-        return { body: cached, usage: { remoteCalls: 0, cachedCalls: 1, credits: 0 } };
+        return { body: cached, usage: { remoteCalls: 0, cachedCalls: 1, credits: 0, retrievedAt } };
       } catch (error) {
         if (error.code !== "ENOENT") throw error;
       }

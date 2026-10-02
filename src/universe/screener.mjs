@@ -5,9 +5,9 @@ export function holderKey(name) {
   return name.toLowerCase().replace(/[^\p{L}\p{N}\s]/gu, "").replace(/\s+/g, " ").trim().replace(/^pt /, "").replace(/ tbk$/, "");
 }
 
-function holderKind(key) {
-  if (/^(public|public shareholders|public float|masyarakat)(?:\s+(?:below|less than|under)?\s*5)?$/.test(key)) return "public";
-  if (/^(treasury(?: stock| stocks| shares)?|saham treasuri|saham treasury)$/.test(key)) return "treasury";
+export function holderKind(key) {
+  if (/^(?:other )?(?:public|public shareholders|public float|masyarakat)(?: foreign| domestic|\s+(?:below|less than|under)?\s*5)?$/.test(key)) return "public";
+  if (/(?:^|\s)(?:treasury(?: stock| stocks| shares)?|saham treasuri|saham treasury)$/.test(key)) return "treasury";
   return "entity";
 }
 

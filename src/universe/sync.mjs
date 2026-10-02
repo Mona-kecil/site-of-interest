@@ -46,7 +46,7 @@ export async function syncUniverse({ root, maxCredits, refresh = false, dryRun =
         if (error instanceof SyntaxError) throw new Error(`${group.id} offset ${offset}: non-JSON response or cache entry; universe files were not written`, { cause: error });
         throw error;
       }
-      const page = parseScreenerPage(response.body, { group, retrievedAt: now(), credits: response.usage.credits });
+      const page = parseScreenerPage(response.body, { group, retrievedAt: response.usage.retrievedAt ?? now(), credits: response.usage.credits });
       if (page.offset !== offset) throw new Error(`${group.id} returned offset ${page.offset}, expected ${offset}`);
       if (totalCount === undefined) {
         totalCount = page.totalCount;

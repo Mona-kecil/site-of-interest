@@ -1,7 +1,7 @@
 import assert from "node:assert/strict";
 import test from "node:test";
 import { buildQueryGroups } from "./groups.mjs";
-import { holderKey, mergeScreenerPages, parseScreenerPage } from "./screener.mjs";
+import { holderKey, holderKind, mergeScreenerPages, parseScreenerPage } from "./screener.mjs";
 import { fixtureGroup, fixtureResponse, fixtures, retrievedAt } from "./test-fixtures.mjs";
 
 test("normalizes the probe page, retaining the bank, nulls, and public and treasury holdings", () => {
@@ -88,4 +88,9 @@ test("missing keys, duplicate symbols, malformed pages and broken pagination fai
   const stuck = fixtureResponse(group, { totalCount: 201 });
   stuck.pagination.next_offset = 0;
   assert.throws(() => parseScreenerPage(stuck, { group, retrievedAt }), /pagination did not advance/);
+});
+
+test("holder kinds separate public and treasury labels from companies named Public", () => {
+  const kinds = ["Public", "Other Public", "Public (Foreign)", "Treasury Stock", "PT Lautan Luas Tbk (Treasury)", "Bangkok Bank Public Company Limited", "PT Dwimuria Investama Andalan"].map((name) => holderKind(holderKey(name)));
+  assert.deepEqual(kinds, ["public", "public", "public", "treasury", "treasury", "entity", "entity"]);
 });

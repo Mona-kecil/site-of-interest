@@ -24,10 +24,9 @@ test("caches Sectors responses and accounts for credits once", async () => {
     assert.deepEqual(first.stats, { remoteCalls: 1, cachedCalls: 0, credits: 2 });
 
     const second = await createSectorsClient({ apiKey: "test-key", cacheDirectory: directory, fetchImpl });
-    assert.deepEqual(await second.requestWithUsage("/v2/example/", 2), {
-      body: { ok: true },
-      usage: { remoteCalls: 0, cachedCalls: 1, credits: 0 },
-    });
+    const { body, usage: { retrievedAt, ...usage } } = await second.requestWithUsage("/v2/example/", 2);
+    assert.deepEqual({ body, usage }, { body: { ok: true }, usage: { remoteCalls: 0, cachedCalls: 1, credits: 0 } });
+    assert.ok(Date.parse(retrievedAt) <= Date.now(), "cache hits report when the response was stored");
     assert.deepEqual(second.stats, { remoteCalls: 0, cachedCalls: 1, credits: 0 });
     assert.equal(calls, 1);
   } finally {

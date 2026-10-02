@@ -93,6 +93,7 @@ test("sync writes six validated files, reuses the cache for zero credits, and re
   const cached = await syncUniverse({ ...options, maxCredits: 0, createClient: (settings) => createSectorsClient({ ...settings, apiKey: "offline-test-key", fetchImpl: () => assert.fail("cached sync must not fetch") }) });
   assert.equal(cached.manifest.credits, 0);
   assert.ok(cached.sources.every(({ credits }) => credits === 0));
+  assert.ok(cached.sources.every(({ retrievedAt: cachedAt }) => cachedAt !== retrievedAt && !Number.isNaN(Date.parse(cachedAt))), "cache hits keep the cache file time");
   assert.match(logs.at(-1), new RegExp(`0 remote calls / ${pages} cache hits / 0 actual credits`));
   logs.length = 0;
   await syncUniverse({ ...options, refresh: true });
