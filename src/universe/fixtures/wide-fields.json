@@ -1,0 +1,104 @@
+{
+  "results": [
+    {
+      "symbol": "ADRO.JK",
+      "company_name": "Alamtri Resources Indonesia Tbk",
+      "query_values": {
+        "sub_sector": "Oil, Gas & Coal",
+        "roe_ttm": 0.108691525501839,
+        "free_cash_flow[2025]": -3830373181440,
+        "total_debt[2025]": 13745052085440,
+        "major_shareholders_name": [
+          {
+            "name": "PT Adaro Strategic Investment",
+            "share_value": 33849475455000,
+            "share_amount": 14045425500,
+            "share_percentage": "0.48768"
+          },
+          {
+            "name": "Public",
+            "share_value": 28029115534360,
+            "share_amount": 11630338396,
+            "share_percentage": "0.40382"
+          },
+          {
+            "name": "Garibaldi Thohir",
+            "share_value": 4763684831100,
+            "share_amount": 1976632710,
+            "share_percentage": "0.06863"
+          }
+        ],
+        "free_float": 0.40382,
+        "market_cap": 69409191022000
+      }
+    },
+    {
+      "symbol": "BBCA.JK",
+      "company_name": "PT Bank Central Asia Tbk.",
+      "query_values": {
+        "sub_sector": "Banks",
+        "roe_ttm": 0.214714061275701,
+        "free_cash_flow[2025]": 75057575000000,
+        "total_debt[2025]": 2395446000000,
+        "major_shareholders_name": [
+          {
+            "name": "PT Dwimuria Investama Andalan",
+            "share_value": 406379700000000,
+            "share_amount": 67729950000,
+            "share_percentage": "0.54942"
+          },
+          {
+            "name": "Public",
+            "share_value": 330188553948000,
+            "share_amount": 55031425658,
+            "share_percentage": "0.44642"
+          },
+          {
+            "name": "Treasury Stock",
+            "share_value": 2599792200000,
+            "share_amount": 433298700,
+            "share_percentage": "0.00351"
+          }
+        ],
+        "free_float": 0.44642,
+        "market_cap": 732253797000000
+      }
+    },
+    {
+      "symbol": "MGLV.JK",
+      "company_name": "PT Panca Anugrah Wisesa Tbk",
+      "query_values": {
+        "sub_sector": "Household Goods",
+        "roe_ttm": null,
+        "free_cash_flow[2025]": -32952264316,
+        "total_debt[2025]": 16361068,
+        "major_shareholders_name": [
+          {
+            "name": "PT Nextier Datamate Center",
+            "share_value": 19166392500000,
+            "share_amount": 1277759500,
+            "share_percentage": "0.6708"
+          },
+          {
+            "name": "Public",
+            "share_value": 9406858665000,
+            "share_amount": 627123911,
+            "share_percentage": "0.3292"
+          }
+        ],
+        "free_float": 0.3292,
+        "market_cap": 28573251165000
+      }
+    }
+  ],
+  "pagination": {
+    "total_count": 3,
+    "showing": 3,
+    "limit": 200,
+    "offset": 0,
+    "has_next": false,
+    "has_previous": false,
+    "next_offset": null,
+    "previous_offset": null
+  }
+}
