@@ -5,7 +5,7 @@ test("screens the IDX universe and opens a bank check's sourced calculation", as
   await expect(page.getByRole("heading", { name: "Universe", exact: true })).toBeVisible();
   const rows = page.locator(".universe-table tbody tr");
   await expect.poll(() => rows.count()).toBeGreaterThan(900);
-  await page.getByLabel("Sub-sector", { exact: true }).selectOption("Banks");
+  await page.getByRole("combobox", { name: "Sub-sector" }).selectOption("Banks");
   await page.getByRole("tab", { name: "Banks", exact: true }).click();
   await expect(rows).toHaveCount(48);
   const npl = page.getByRole("button", { name: /^\w+ NPL ratio$/ });

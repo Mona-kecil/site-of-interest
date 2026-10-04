@@ -53,10 +53,10 @@ function divide(numerator, denominator, name, positive = false) {
 
 const sum = (values) => values.reduce((total, value) => total + value, 0);
 const reported = (key) => calculate("FY2025", [annual(key)], ([value]) => ({ value }));
-const threeYearRatio = (numerator, denominator, name) => calculate(
+const threeYearRatio = (numerator, denominator, name, numeratorValue = (value) => value) => calculate(
   "FY2023–FY2025",
   [...recentYears.map((year) => annual(numerator, year)), ...recentYears.map((year) => annual(denominator, year))],
-  (values) => divide(sum(values.slice(0, 3)), sum(values.slice(3)), name, true),
+  (values) => divide(sum(values.slice(0, 3).map(numeratorValue)), sum(values.slice(3)), name, true),
 );
 
 function historyRatio(key, currentKey) {
@@ -122,8 +122,8 @@ export const CHECKS = Object.freeze([
   },
   {
     id: "reinvestment_rate", label: "Reinvestment rate", question: "How much operating cash goes back into capex?", unit: "percent", appliesTo: "nonFinancial",
-    formula: "sum(capital_expenditure[2023..2025]) / sum(operating_cash_flow[2023..2025]); uses stored signed capex (ASII reports positive outflows; some companies report negative outflows); requires all inputs and positive CFO sum",
-    compute: threeYearRatio("capitalExpenditure", "operatingCashFlow", "Operating cash flow sum"),
+    formula: "sum(|capital_expenditure[2023..2025]|) / sum(operating_cash_flow[2023..2025]); capex is an outflow reported with either sign (the provider's free_cash_flow equals CFO − |capex| either way), so its absolute value is used; requires all inputs and positive CFO sum",
+    compute: threeYearRatio("capitalExpenditure", "operatingCashFlow", "Operating cash flow sum", Math.abs),
   },
   {
     id: "share_dilution", label: "Share dilution", question: "How much has the share count changed in five years?", unit: "percent", appliesTo: "all",

@@ -141,11 +141,11 @@ test("dividend null years count as not reported and stay null in evidence", () =
   assert.match(CHECKS.find(({ id }) => id === "dividend_years").formula, /null year counts as not reported/);
 });
 
-test("reinvestment retains a negative capex report's sign", () => {
+test("reinvestment treats a negative capex report as the same outflow", () => {
   const data = fixture();
   for (const year of [2023, 2024, 2025]) data.years.get(year).values.capitalExpenditure *= -1;
   const row = compute("reinvestment_rate", data);
-  assert.equal(row.value, -0.2);
+  assert.equal(row.value, 0.2);
   assert.equal(row.inputs[0].value, -2);
 });
 

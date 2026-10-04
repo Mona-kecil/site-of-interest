@@ -64,7 +64,7 @@
       "question": "How much operating cash goes back into capex?",
       "unit": "percent",
       "appliesTo": "nonFinancial",
-      "formula": "sum(capital_expenditure[2023..2025]) / sum(operating_cash_flow[2023..2025]); uses stored signed capex (ASII reports positive outflows; some companies report negative outflows); requires all inputs and positive CFO sum"
+      "formula": "sum(|capital_expenditure[2023..2025]|) / sum(operating_cash_flow[2023..2025]); capex is an outflow reported with either sign (the provider's free_cash_flow equals CFO − |capex| either way), so its absolute value is used; requires all inputs and positive CFO sum"
     },
     {
       "id": "share_dilution",
@@ -1054,7 +1054,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.3225806451612903,
+      "percentile": 0.22580645161290322,
       "peerCount": 63
     },
     {
@@ -2499,7 +2499,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5555555555555556,
+      "percentile": 0.5079365079365079,
       "peerCount": 64
     },
     {
@@ -3100,7 +3100,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.23076923076923078,
+      "percentile": 0.19230769230769232,
       "peerCount": 27
     },
     {
@@ -5332,7 +5332,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": -0.0638656495569638,
+      "value": 0.45287001108091746,
       "gap": null,
       "inputs": [
         {
@@ -5378,7 +5378,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.04838709677419355,
+      "percentile": 0.45161290322580644,
       "peerCount": 63
     },
     {
@@ -6858,7 +6858,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.6388888888888888,
+      "percentile": 0.6111111111111112,
       "peerCount": 73
     },
     {
@@ -7438,7 +7438,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7619047619047619,
+      "percentile": 0.7301587301587301,
       "peerCount": 64
     },
     {
@@ -8004,7 +8004,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.4126984126984127,
+      "percentile": 0.3492063492063492,
       "peerCount": 64
     },
     {
@@ -9705,7 +9705,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.46257528085340704,
+      "value": 1.027107610971963,
       "gap": null,
       "inputs": [
         {
@@ -9751,7 +9751,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5555555555555556,
+      "percentile": 0.7222222222222222,
       "peerCount": 73
     },
     {
@@ -12023,7 +12023,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5161290322580645,
+      "percentile": 0.4032258064516129,
       "peerCount": 63
     },
     {
@@ -13183,7 +13183,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7638888888888888,
+      "percentile": 0.75,
       "peerCount": 73
     },
     {
@@ -13777,7 +13777,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.2698412698412698,
       "peerCount": 64
     },
     {
@@ -14392,7 +14392,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.2857142857142857,
+      "percentile": 0.23809523809523808,
       "peerCount": 22
     },
     {
@@ -15506,7 +15506,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": -0.6718340633940397,
+      "value": 1.4106201644141012,
       "gap": null,
       "inputs": [
         {
@@ -15552,7 +15552,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.7777777777777778,
       "peerCount": 64
     },
     {
@@ -16747,7 +16747,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.027777777777777776,
+      "percentile": 0,
       "peerCount": 73
     },
     {
@@ -22556,7 +22556,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7258064516129032,
+      "percentile": 0.6451612903225806,
       "peerCount": 63
     },
     {
@@ -23090,7 +23090,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.4918293984557332,
+      "value": 0.7701103778182392,
       "gap": null,
       "inputs": [
         {
@@ -23136,7 +23136,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5645161290322581,
+      "percentile": 0.7096774193548387,
       "peerCount": 63
     },
     {
@@ -23702,7 +23702,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5694444444444444,
+      "percentile": 0.5277777777777778,
       "peerCount": 73
     },
     {
@@ -24275,7 +24275,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.36507936507936506,
+      "percentile": 0.30158730158730157,
       "peerCount": 64
     },
     {
@@ -26022,7 +26022,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5833333333333334,
+      "percentile": 0.5416666666666666,
       "peerCount": 73
     },
     {
@@ -26595,7 +26595,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.2826086956521739,
+      "percentile": 0.2608695652173913,
       "peerCount": 47
     },
     {
@@ -27136,7 +27136,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 1.0297144202650372,
+      "value": 1.0298063399454334,
       "gap": null,
       "inputs": [
         {
@@ -27182,7 +27182,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.75,
+      "percentile": 0.7361111111111112,
       "peerCount": 73
     },
     {
@@ -28384,7 +28384,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.6923076923076923,
+      "percentile": 0.6153846153846154,
       "peerCount": 14
     },
     {
@@ -28978,7 +28978,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.6507936507936508,
+      "percentile": 0.5873015873015873,
       "peerCount": 64
     },
     {
@@ -31948,7 +31948,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.4666666666666667,
+      "percentile": 0.4,
       "peerCount": 31
     },
     {
@@ -34158,7 +34158,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.06666666666666667,
+      "percentile": 0,
       "peerCount": 16
     },
     {
@@ -36193,7 +36193,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Retailing",
       "period": "FY2023–FY2025",
-      "value": 0.06039625344246805,
+      "value": 0.42443732454898503,
       "gap": null,
       "inputs": [
         {
@@ -36239,7 +36239,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.07692307692307693,
+      "percentile": 0.5,
       "peerCount": 27
     },
     {
@@ -38851,7 +38851,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.17391304347826086,
+      "percentile": 0.13043478260869565,
       "peerCount": 47
     },
     {
@@ -42707,7 +42707,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.3055555555555556,
+      "percentile": 0.25,
       "peerCount": 73
     },
     {
@@ -46024,7 +46024,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.38461538461538464,
+      "percentile": 0.34615384615384615,
       "peerCount": 27
     },
     {
@@ -46940,7 +46940,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Services",
       "period": "FY2023–FY2025",
-      "value": -2.7903495387438517,
+      "value": 2.7903495387438517,
       "gap": null,
       "inputs": [
         {
@@ -46986,7 +46986,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.8666666666666667,
       "peerCount": 16
     },
     {
@@ -48160,7 +48160,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5138888888888888,
+      "percentile": 0.4861111111111111,
       "peerCount": 73
     },
     {
@@ -48754,7 +48754,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.8,
+      "percentile": 0.7333333333333333,
       "peerCount": 16
     },
     {
@@ -50823,7 +50823,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Apparel & Luxury Goods",
       "period": "FY2023–FY2025",
-      "value": 0.19869261385631293,
+      "value": 0.2560604805592927,
       "gap": null,
       "inputs": [
         {
@@ -50869,7 +50869,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.3076923076923077,
+      "percentile": 0.23076923076923078,
       "peerCount": 14
     },
     {
@@ -52029,7 +52029,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.4230769230769231,
+      "percentile": 0.38461538461538464,
       "peerCount": 27
     },
     {
@@ -52616,7 +52616,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5666666666666667,
+      "percentile": 0.5,
       "peerCount": 31
     },
     {
@@ -56032,7 +56032,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5238095238095238,
+      "percentile": 0.47619047619047616,
       "peerCount": 64
     },
     {
@@ -58355,7 +58355,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": -0.40985663981831105,
+      "value": 0.40985663981831105,
       "gap": null,
       "inputs": [
         {
@@ -58401,7 +58401,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.42857142857142855,
       "peerCount": 8
     },
     {
@@ -64292,7 +64292,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.09523809523809523,
+      "percentile": 0.031746031746031744,
       "peerCount": 64
     },
     {
@@ -64865,7 +64865,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.34782608695652173,
+      "percentile": 0.32608695652173914,
       "peerCount": 47
     },
     {
@@ -69225,7 +69225,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5333333333333333,
+      "percentile": 0.4,
       "peerCount": 16
     },
     {
@@ -69759,7 +69759,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 1.6117605670814246,
+      "value": 1.61181190992943,
       "gap": null,
       "inputs": [
         {
@@ -69805,7 +69805,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.8571428571428571,
+      "percentile": 0.8412698412698413,
       "peerCount": 64
     },
     {
@@ -73619,7 +73619,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": 5.752862031191135,
+      "value": 5.883197238221742,
       "gap": null,
       "inputs": [
         {
@@ -74574,7 +74574,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.8017683862998226,
+      "value": 1.3320316269383454,
       "gap": null,
       "inputs": [
         {
@@ -74620,7 +74620,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7083333333333334,
+      "percentile": 0.7777777777777778,
       "peerCount": 73
     },
     {
@@ -75175,7 +75175,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Logistics & Deliveries",
       "period": "FY2023–FY2025",
-      "value": -0.12842775292321432,
+      "value": 1.0128194359799454,
       "gap": null,
       "inputs": [
         {
@@ -75221,7 +75221,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.6190476190476191,
       "peerCount": 22
     },
     {
@@ -75794,7 +75794,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.14285714285714285,
+      "percentile": 0.09523809523809523,
       "peerCount": 22
     },
     {
@@ -76367,7 +76367,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.26666666666666666,
+      "percentile": 0.2,
       "peerCount": 31
     },
     {
@@ -76940,7 +76940,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.26666666666666666,
+      "percentile": 0.06666666666666667,
       "peerCount": 16
     },
     {
@@ -79514,7 +79514,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.8888888888888888,
+      "percentile": 0.875,
       "peerCount": 73
     },
     {
@@ -80034,7 +80034,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Media & Entertainment",
       "period": "FY2023–FY2025",
-      "value": 0.44799591064144223,
+      "value": 0.45964410433937625,
       "gap": null,
       "inputs": [
         {
@@ -83530,7 +83530,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.6612903225806451,
+      "percentile": 0.5645161290322581,
       "peerCount": 63
     },
     {
@@ -86732,7 +86732,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": 1.2147922079350746,
+      "value": 2.341062838137602,
       "gap": null,
       "inputs": [
         {
@@ -86778,7 +86778,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7142857142857143,
+      "percentile": 0.8571428571428571,
       "peerCount": 8
     },
     {
@@ -90102,7 +90102,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7361111111111112,
+      "percentile": 0.7083333333333334,
       "peerCount": 73
     },
     {
@@ -91856,7 +91856,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.30434782608695654,
+      "percentile": 0.2826086956521739,
       "peerCount": 47
     },
     {
@@ -94020,7 +94020,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.2222222222222222,
+      "percentile": 0.1746031746031746,
       "peerCount": 64
     },
     {
@@ -94989,7 +94989,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.6451612903225806,
+      "percentile": 0.5483870967741935,
       "peerCount": 63
     },
     {
@@ -96156,7 +96156,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.09722222222222222,
+      "percentile": 0.06944444444444445,
       "peerCount": 73
     },
     {
@@ -99886,7 +99886,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.5642942156604952,
+      "value": 0.5643431469749848,
       "gap": null,
       "inputs": [
         {
@@ -99932,7 +99932,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.42857142857142855,
+      "percentile": 0.38095238095238093,
       "peerCount": 64
     },
     {
@@ -101085,7 +101085,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.9333333333333333,
+      "percentile": 0.9,
       "peerCount": 31
     },
     {
@@ -102075,7 +102075,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.24193548387096775,
+      "percentile": 0.14516129032258066,
       "peerCount": 63
     },
     {
@@ -102662,7 +102662,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.15873015873015872,
+      "percentile": 0.1111111111111111,
       "peerCount": 64
     },
     {
@@ -103843,7 +103843,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.7580645161290323,
+      "percentile": 0.7258064516129032,
       "peerCount": 63
     },
     {
@@ -105576,7 +105576,7 @@
           "sourceId": "universe-03-0"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.46153846153846156,
       "peerCount": 27
     },
     {
@@ -111924,7 +111924,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.12346492276041246,
+      "value": 0.2748041924818303,
       "gap": null,
       "inputs": [
         {
@@ -111970,7 +111970,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.11290322580645161,
+      "percentile": 0.1774193548387097,
       "peerCount": 63
     },
     {
@@ -116371,7 +116371,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.7222222222222222,
+      "percentile": 0.6944444444444444,
       "peerCount": 73
     },
     {
@@ -117531,7 +117531,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.16666666666666666,
+      "percentile": 0.1,
       "peerCount": 31
     },
     {
@@ -118104,7 +118104,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8225806451612904,
+      "percentile": 0.8064516129032258,
       "peerCount": 63
     },
     {
@@ -118712,7 +118712,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.041666666666666664,
+      "percentile": 0.013888888888888888,
       "peerCount": 73
     },
     {
@@ -119260,7 +119260,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Transportation Infrastructure",
       "period": "FY2023–FY2025",
-      "value": 1.5815421999052308,
+      "value": 2.413331613218975,
       "gap": null,
       "inputs": [
         {
@@ -119872,7 +119872,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.2361111111111111,
+      "percentile": 0.18055555555555555,
       "peerCount": 73
     },
     {
@@ -121011,7 +121011,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.3548387096774194,
+      "percentile": 0.25806451612903225,
       "peerCount": 63
     },
     {
@@ -122171,7 +122171,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.43333333333333335,
       "peerCount": 31
     },
     {
@@ -125064,7 +125064,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.3387096774193548,
+      "percentile": 0.24193548387096775,
       "peerCount": 63
     },
     {
@@ -126210,7 +126210,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.46774193548387094,
+      "percentile": 0.3709677419354839,
       "peerCount": 63
     },
     {
@@ -127405,7 +127405,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8666666666666667,
+      "percentile": 0.8,
       "peerCount": 16
     },
     {
@@ -128586,7 +128586,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.4782608695652174,
       "peerCount": 47
     },
     {
@@ -129732,7 +129732,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8064516129032258,
+      "percentile": 0.7903225806451613,
       "peerCount": 63
     },
     {
@@ -130305,7 +130305,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.1527777777777778,
+      "percentile": 0.1111111111111111,
       "peerCount": 73
     },
     {
@@ -134470,7 +134470,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.3695652173913043,
+      "percentile": 0.34782608695652173,
       "peerCount": 47
     },
     {
@@ -138249,7 +138249,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6825396825396826,
+      "percentile": 0.6190476190476191,
       "peerCount": 64
     },
     {
@@ -139384,7 +139384,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Consumer Services",
       "period": "FY2023–FY2025",
-      "value": 0.020882939658195758,
+      "value": 0.035454264751890875,
       "gap": null,
       "inputs": [
         {
@@ -139430,7 +139430,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.03333333333333333,
+      "percentile": 0,
       "peerCount": 31
     },
     {
@@ -141757,7 +141757,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.2222222222222222,
+      "percentile": 0,
       "peerCount": 10
     },
     {
@@ -142298,7 +142298,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": 0.08247729273615388,
+      "value": 0.19712473660694654,
       "gap": null,
       "inputs": [
         {
@@ -142344,7 +142344,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.10869565217391304,
+      "percentile": 0.1956521739130435,
       "peerCount": 47
     },
     {
@@ -143539,7 +143539,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.16666666666666666,
+      "percentile": 0.125,
       "peerCount": 73
     },
     {
@@ -144692,7 +144692,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.12903225806451613,
+      "percentile": 0.03225806451612903,
       "peerCount": 63
     },
     {
@@ -145265,7 +145265,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.13043478260869565,
+      "percentile": 0.08695652173913043,
       "peerCount": 47
     },
     {
@@ -147436,7 +147436,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8571428571428571,
+      "percentile": 0.7142857142857143,
       "peerCount": 8
     },
     {
@@ -148016,7 +148016,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6984126984126984,
+      "percentile": 0.6349206349206349,
       "peerCount": 64
     },
     {
@@ -150364,7 +150364,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.1935483870967742,
+      "percentile": 0.0967741935483871,
       "peerCount": 63
     },
     {
@@ -151545,7 +151545,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.4838709677419355,
+      "percentile": 0.3870967741935484,
       "peerCount": 63
     },
     {
@@ -152111,7 +152111,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8387096774193549,
+      "percentile": 0.8225806451612904,
       "peerCount": 63
     },
     {
@@ -152712,7 +152712,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6349206349206349,
+      "percentile": 0.5714285714285714,
       "peerCount": 64
     },
     {
@@ -154424,7 +154424,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8,
+      "percentile": 0.7,
       "peerCount": 11
     },
     {
@@ -154944,7 +154944,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.0021397185374370698,
+      "value": 0.0034915251482245005,
       "gap": null,
       "inputs": [
         {
@@ -154990,7 +154990,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.031746031746031744,
+      "percentile": 0,
       "peerCount": 64
     },
     {
@@ -155570,7 +155570,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6,
+      "percentile": 0.5333333333333333,
       "peerCount": 16
     },
     {
@@ -156192,7 +156192,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.2,
+      "percentile": 0.13333333333333333,
       "peerCount": 31
     },
     {
@@ -157946,7 +157946,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.25,
+      "percentile": 0.19444444444444445,
       "peerCount": 73
     },
     {
@@ -159686,7 +159686,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.23809523809523808,
+      "percentile": 0.19047619047619047,
       "peerCount": 64
     },
     {
@@ -160259,7 +160259,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.45652173913043476,
+      "percentile": 0.43478260869565216,
       "peerCount": 47
     },
     {
@@ -161433,7 +161433,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.043478260869565216,
+      "percentile": 0.021739130434782608,
       "peerCount": 47
     },
     {
@@ -163250,7 +163250,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8,
+      "percentile": 0.7666666666666667,
       "peerCount": 31
     },
     {
@@ -163851,7 +163851,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.7142857142857143,
+      "percentile": 0.6666666666666666,
       "peerCount": 64
     },
     {
@@ -165584,7 +165584,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.4444444444444444,
+      "percentile": 0.4166666666666667,
       "peerCount": 73
     },
     {
@@ -166157,7 +166157,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.18181818181818182,
+      "percentile": 0.09090909090909091,
       "peerCount": 12
     },
     {
@@ -166737,7 +166737,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6153846153846154,
+      "percentile": 0.5769230769230769,
       "peerCount": 27
     },
     {
@@ -167946,7 +167946,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.46153846153846156,
+      "percentile": 0.38461538461538464,
       "peerCount": 14
     },
     {
@@ -168512,7 +168512,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.3194444444444444,
+      "percentile": 0.2638888888888889,
       "peerCount": 73
     },
     {
@@ -169085,7 +169085,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.05555555555555555,
+      "percentile": 0.027777777777777776,
       "peerCount": 73
     },
     {
@@ -169672,7 +169672,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8666666666666667,
+      "percentile": 0.8333333333333334,
       "peerCount": 31
     },
     {
@@ -170252,7 +170252,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6153846153846154,
+      "percentile": 0.5384615384615384,
       "peerCount": 14
     },
     {
@@ -172579,7 +172579,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6290322580645161,
+      "percentile": 0.532258064516129,
       "peerCount": 63
     },
     {
@@ -175447,7 +175447,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.01394190741146108,
+      "value": 0.17286798451902535,
       "gap": null,
       "inputs": [
         {
@@ -175493,7 +175493,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.07936507936507936,
+      "percentile": 0.09523809523809523,
       "peerCount": 64
     },
     {
@@ -176066,7 +176066,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.45161290322580644,
+      "percentile": 0.3548387096774194,
       "peerCount": 63
     },
     {
@@ -179479,7 +179479,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": -0.032661115958430596,
+      "value": 0.6856865237095245,
       "gap": null,
       "inputs": [
         {
@@ -179525,7 +179525,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.06451612903225806,
+      "percentile": 0.6612903225806451,
       "peerCount": 63
     },
     {
@@ -180671,7 +180671,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.6805555555555556,
+      "percentile": 0.6527777777777778,
       "peerCount": 73
     },
     {
@@ -182151,7 +182151,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.875,
+      "percentile": 0.8611111111111112,
       "peerCount": 73
     },
     {
@@ -185044,7 +185044,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.12698412698412698,
+      "percentile": 0.07936507936507936,
       "peerCount": 64
     },
     {
@@ -186218,7 +186218,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5972222222222222,
+      "percentile": 0.5555555555555556,
       "peerCount": 73
     },
     {
@@ -186819,7 +186819,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.7333333333333333,
+      "percentile": 0.6666666666666666,
       "peerCount": 16
     },
     {
@@ -189132,7 +189132,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.2,
+      "percentile": 0,
       "peerCount": 6
     },
     {
@@ -190285,7 +190285,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.1956521739130435,
+      "percentile": 0.15217391304347827,
       "peerCount": 47
     },
     {
@@ -191427,7 +191427,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Consumer Services",
       "period": "FY2023–FY2025",
-      "value": 3.12217324027152,
+      "value": 3.261552909243215,
       "gap": null,
       "inputs": [
         {
@@ -191473,7 +191473,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8333333333333334,
+      "percentile": 0.8,
       "peerCount": 31
     },
     {
@@ -192605,7 +192605,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5806451612903226,
+      "percentile": 0.4838709677419355,
       "peerCount": 63
     },
     {
@@ -194984,7 +194984,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": 0.5088016409859256,
+      "value": 0.529194701498455,
       "gap": null,
       "inputs": [
         {
@@ -195030,7 +195030,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5217391304347826,
+      "percentile": 0.5,
       "peerCount": 47
     },
     {
@@ -196703,7 +196703,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": 15.047302904564315,
+      "value": 19.077731673582296,
       "gap": null,
       "inputs": [
         {
@@ -197269,7 +197269,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.010808497045561666,
+      "value": 0.010812847216159722,
       "gap": null,
       "inputs": [
         {
@@ -197315,7 +197315,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.047619047619047616,
+      "percentile": 0.015873015873015872,
       "peerCount": 64
     },
     {
@@ -198436,7 +198436,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.3568300642535785,
+      "value": 0.3569536476888901,
       "gap": null,
       "inputs": [
         {
@@ -198482,7 +198482,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.31746031746031744,
+      "percentile": 0.25396825396825395,
       "peerCount": 64
     },
     {
@@ -200809,7 +200809,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.7096774193548387,
+      "percentile": 0.6129032258064516,
       "peerCount": 63
     },
     {
@@ -205783,7 +205783,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5333333333333333,
+      "percentile": 0.4666666666666667,
       "peerCount": 16
     },
     {
@@ -206967,7 +206967,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Staples Retailing",
       "period": "FY2023–FY2025",
-      "value": 0.053093340101784896,
+      "value": 0.3819798581206362,
       "gap": null,
       "inputs": [
         {
@@ -207013,7 +207013,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.36363636363636365,
       "peerCount": 12
     },
     {
@@ -207547,7 +207547,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Goods",
       "period": "FY2023–FY2025",
-      "value": 0.10484286385705402,
+      "value": 0.10485225786548354,
       "gap": null,
       "inputs": [
         {
@@ -207593,7 +207593,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.2222222222222222,
+      "percentile": 0.14814814814814814,
       "peerCount": 28
     },
     {
@@ -208728,7 +208728,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 1.8602751915242228,
+      "value": 2.27443110109822,
       "gap": null,
       "inputs": [
         {
@@ -209308,7 +209308,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.6568753159101283,
+      "value": 0.6569613516512353,
       "gap": null,
       "inputs": [
         {
@@ -209354,7 +209354,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5079365079365079,
+      "percentile": 0.4603174603174603,
       "peerCount": 64
     },
     {
@@ -212226,7 +212226,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.391304347826087,
+      "percentile": 0.3695652173913043,
       "peerCount": 47
     },
     {
@@ -215688,7 +215688,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.7354993457635195,
+      "value": 0.7355814502540188,
       "gap": null,
       "inputs": [
         {
@@ -215734,7 +215734,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.5396825396825397,
+      "percentile": 0.49206349206349204,
       "peerCount": 64
     },
     {
@@ -216300,7 +216300,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.8,
+      "percentile": 0.7333333333333333,
       "peerCount": 16
     },
     {
@@ -219207,7 +219207,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.14516129032258066,
+      "percentile": 0.04838709677419355,
       "peerCount": 63
     },
     {
@@ -221520,7 +221520,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0.4583333333333333,
+      "percentile": 0.4305555555555556,
       "peerCount": 73
     },
     {
@@ -222054,7 +222054,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": -0.019723339896096617,
+      "value": 0.22253314848498484,
       "gap": null,
       "inputs": [
         {
@@ -222100,7 +222100,7 @@
           "sourceId": "universe-03-200"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.20833333333333334,
       "peerCount": 73
     },
     {
@@ -222715,7 +222715,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3611111111111111,
+      "percentile": 0.3055555555555556,
       "peerCount": 73
     },
     {
@@ -223829,7 +223829,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Goods",
       "period": "FY2023–FY2025",
-      "value": 0.08678697400444717,
+      "value": 0.14307049014148093,
       "gap": null,
       "inputs": [
         {
@@ -224968,7 +224968,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Goods",
       "period": "FY2023–FY2025",
-      "value": 0.03593524222704962,
+      "value": 0.035944400075396524,
       "gap": null,
       "inputs": [
         {
@@ -230304,7 +230304,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7777777777777778,
+      "percentile": 0.7638888888888888,
       "peerCount": 73
     },
     {
@@ -230884,7 +230884,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.0967741935483871,
+      "percentile": 0.016129032258064516,
       "peerCount": 63
     },
     {
@@ -232051,7 +232051,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7692307692307693,
+      "percentile": 0.6923076923076923,
       "peerCount": 14
     },
     {
@@ -239463,7 +239463,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.375,
+      "percentile": 0.3472222222222222,
       "peerCount": 73
     },
     {
@@ -240602,7 +240602,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6739130434782609,
+      "percentile": 0.6521739130434783,
       "peerCount": 47
     },
     {
@@ -245843,7 +245843,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.5333333333333333,
+      "percentile": 0.4666666666666667,
       "peerCount": 16
     },
     {
@@ -247031,7 +247031,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4166666666666667,
+      "percentile": 0.3888888888888889,
       "peerCount": 73
     },
     {
@@ -248764,7 +248764,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.20634920634920634,
+      "percentile": 0.15873015873015872,
       "peerCount": 64
     },
     {
@@ -249291,7 +249291,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": -0.20571769077548335,
+      "value": 0.693419939493065,
       "gap": null,
       "inputs": [
         {
@@ -249337,7 +249337,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.03225806451612903,
+      "percentile": 0.6774193548387096,
       "peerCount": 63
     },
     {
@@ -249903,7 +249903,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.8666666666666667,
+      "percentile": 0.8,
       "peerCount": 16
     },
     {
@@ -252757,7 +252757,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Healthcare Equipment & Providers",
       "period": "FY2023–FY2025",
-      "value": -0.854857449943017,
+      "value": 0.854857449943017,
       "gap": null,
       "inputs": [
         {
@@ -252803,7 +252803,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.26666666666666666,
       "peerCount": 16
     },
     {
@@ -253372,7 +253372,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": -0.34046642000294464,
+      "value": 0.34046642000294464,
       "gap": null,
       "inputs": [
         {
@@ -253418,7 +253418,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.3225806451612903,
       "peerCount": 63
     },
     {
@@ -254578,7 +254578,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.23333333333333334,
+      "percentile": 0.16666666666666666,
       "peerCount": 31
     },
     {
@@ -256079,7 +256079,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6129032258064516,
+      "percentile": 0.5161290322580645,
       "peerCount": 63
     },
     {
@@ -256673,7 +256673,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4782608695652174,
+      "percentile": 0.45652173913043476,
       "peerCount": 47
     },
     {
@@ -258420,7 +258420,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.26666666666666666,
       "peerCount": 31
     },
     {
@@ -259007,7 +259007,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4,
+      "percentile": 0.26666666666666666,
       "peerCount": 16
     },
     {
@@ -260680,7 +260680,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Transportation Infrastructure",
       "period": "FY2023–FY2025",
-      "value": 0.07048956386977105,
+      "value": 0.07050024448157557,
       "gap": null,
       "inputs": [
         {
@@ -261879,7 +261879,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.021739130434782608,
+      "percentile": 0,
       "peerCount": 47
     },
     {
@@ -264758,7 +264758,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.2777777777777778,
       "peerCount": 73
     },
     {
@@ -265338,7 +265338,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7333333333333333,
+      "percentile": 0.7,
       "peerCount": 31
     },
     {
@@ -266519,7 +266519,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.5967741935483871,
+      "percentile": 0.5,
       "peerCount": 63
     },
     {
@@ -267088,7 +267088,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Telecommunication",
       "period": "FY2023–FY2025",
-      "value": 0.47723063542379146,
+      "value": 1.2359691758532239,
       "gap": null,
       "inputs": [
         {
@@ -267134,7 +267134,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4666666666666667,
+      "percentile": 0.8666666666666667,
       "peerCount": 16
     },
     {
@@ -268860,7 +268860,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.32608695652173914,
+      "percentile": 0.30434782608695654,
       "peerCount": 47
     },
     {
@@ -271180,7 +271180,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.19047619047619047,
+      "percentile": 0.14285714285714285,
       "peerCount": 22
     },
     {
@@ -272340,7 +272340,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3492063492063492,
+      "percentile": 0.2857142857142857,
       "peerCount": 64
     },
     {
@@ -273535,7 +273535,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6,
+      "percentile": 0.5,
       "peerCount": 11
     },
     {
@@ -274111,7 +274111,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Retailing",
       "period": "FY2023–FY2025",
-      "value": 0.6653970075473454,
+      "value": 0.8004172301750692,
       "gap": null,
       "inputs": [
         {
@@ -274157,7 +274157,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.5769230769230769,
+      "percentile": 0.6153846153846154,
       "peerCount": 27
     },
     {
@@ -274744,7 +274744,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.09090909090909091,
+      "percentile": 0,
       "peerCount": 12
     },
     {
@@ -275338,7 +275338,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.19444444444444445,
+      "percentile": 0.1527777777777778,
       "peerCount": 73
     },
     {
@@ -278150,7 +278150,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Services",
       "period": "FY2023–FY2025",
-      "value": 0.05392926855074036,
+      "value": 0.18917399932848397,
       "gap": null,
       "inputs": [
         {
@@ -278196,7 +278196,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.13333333333333333,
+      "percentile": 0.2,
       "peerCount": 16
     },
     {
@@ -278804,7 +278804,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.8095238095238095,
+      "percentile": 0.7936507936507936,
       "peerCount": 64
     },
     {
@@ -279345,7 +279345,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Consumer Services",
       "period": "FY2023–FY2025",
-      "value": -8.908488329844305,
+      "value": 8.985278041440951,
       "gap": null,
       "inputs": [
         {
@@ -279391,7 +279391,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.9333333333333333,
       "peerCount": 31
     },
     {
@@ -279957,7 +279957,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.9,
+      "percentile": 0.8666666666666667,
       "peerCount": 31
     },
     {
@@ -280558,7 +280558,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4027777777777778,
+      "percentile": 0.375,
       "peerCount": 73
     },
     {
@@ -284597,7 +284597,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.42857142857142855,
+      "percentile": 0.38095238095238093,
       "peerCount": 22
     },
     {
@@ -287483,7 +287483,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.1746031746031746,
+      "percentile": 0.12698412698412698,
       "peerCount": 64
     },
     {
@@ -289543,7 +289543,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.13333333333333333,
       "peerCount": 16
     },
     {
@@ -296320,7 +296320,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.19230769230769232,
+      "percentile": 0.11538461538461539,
       "peerCount": 27
     },
     {
@@ -298046,7 +298046,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.20967741935483872,
+      "percentile": 0.11290322580645161,
       "peerCount": 63
     },
     {
@@ -298619,7 +298619,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6944444444444444,
+      "percentile": 0.6805555555555556,
       "peerCount": 73
     },
     {
@@ -299740,7 +299740,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Consumer Services",
       "period": "FY2023–FY2025",
-      "value": 2.1777936179616737,
+      "value": 2.2706854822732745,
       "gap": null,
       "inputs": [
         {
@@ -299786,7 +299786,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7666666666666667,
+      "percentile": 0.7333333333333333,
       "peerCount": 31
     },
     {
@@ -301540,7 +301540,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.38095238095238093,
+      "percentile": 0.31746031746031744,
       "peerCount": 64
     },
     {
@@ -302155,7 +302155,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3709677419354839,
+      "percentile": 0.27419354838709675,
       "peerCount": 63
     },
     {
@@ -303944,7 +303944,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6333333333333333,
+      "percentile": 0.6,
       "peerCount": 31
     },
     {
@@ -304517,7 +304517,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.2692307692307692,
+      "percentile": 0.23076923076923078,
       "peerCount": 27
     },
     {
@@ -307667,7 +307667,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 1.3064015011503378,
+      "value": 1.306476823242351,
       "gap": null,
       "inputs": [
         {
@@ -307713,7 +307713,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7936507936507936,
+      "percentile": 0.7619047619047619,
       "peerCount": 64
     },
     {
@@ -308848,7 +308848,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 1.574399655067157,
+      "value": 1.7800757386757708,
       "gap": null,
       "inputs": [
         {
@@ -308894,7 +308894,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.8412698412698413,
+      "percentile": 0.873015873015873,
       "peerCount": 64
     },
     {
@@ -310669,7 +310669,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.19047619047619047,
+      "percentile": 0.14285714285714285,
       "peerCount": 64
     },
     {
@@ -311634,7 +311634,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Media & Entertainment",
       "period": "FY2023–FY2025",
-      "value": 0.06328636755742141,
+      "value": 0.2700224718705556,
       "gap": null,
       "inputs": [
         {
@@ -311680,7 +311680,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.1111111111111111,
+      "percentile": 0.2222222222222222,
       "peerCount": 10
     },
     {
@@ -314052,7 +314052,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Pharmaceuticals & Health Care Research",
       "period": "FY2023–FY2025",
-      "value": 0.16314442082409877,
+      "value": 0.6283160703785788,
       "gap": null,
       "inputs": [
         {
@@ -314098,7 +314098,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4,
+      "percentile": 0.8,
       "peerCount": 11
     },
     {
@@ -315887,7 +315887,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.49206349206349204,
+      "percentile": 0.4444444444444444,
       "peerCount": 64
     },
     {
@@ -320371,7 +320371,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.4666666666666667,
+      "percentile": 0.3333333333333333,
       "peerCount": 16
     },
     {
@@ -322030,7 +322030,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 1.557192528878376,
+      "value": 1.9640914755034435,
       "gap": null,
       "inputs": [
         {
@@ -322645,7 +322645,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Services",
       "period": "FY2023–FY2025",
-      "value": 0.6588717290044255,
+      "value": 0.8867950665902715,
       "gap": null,
       "inputs": [
         {
@@ -322691,7 +322691,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.7333333333333333,
+      "percentile": 0.6666666666666666,
       "peerCount": 16
     },
     {
@@ -324459,7 +324459,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.13333333333333333,
+      "percentile": 0,
       "peerCount": 16
     },
     {
@@ -325573,7 +325573,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.2299068866759267,
+      "value": 0.7525925138335271,
       "gap": null,
       "inputs": [
         {
@@ -325619,7 +325619,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.2638888888888889,
+      "percentile": 0.6666666666666666,
       "peerCount": 73
     },
     {
@@ -326213,7 +326213,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.2857142857142857,
       "peerCount": 22
     },
     {
@@ -326793,7 +326793,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.09523809523809523,
+      "percentile": 0.047619047619047616,
       "peerCount": 22
     },
     {
@@ -327914,7 +327914,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Retailing",
       "period": "FY2023–FY2025",
-      "value": 32.86784555394658,
+      "value": 32.980049129634565,
       "gap": null,
       "inputs": [
         {
@@ -328540,7 +328540,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.21739130434782608,
+      "percentile": 0.17391304347826086,
       "peerCount": 47
     },
     {
@@ -329148,7 +329148,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.9032258064516129,
+      "percentile": 0.8870967741935484,
       "peerCount": 63
     },
     {
@@ -329756,7 +329756,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.16129032258064516,
+      "percentile": 0.06451612903225806,
       "peerCount": 63
     },
     {
@@ -332649,7 +332649,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.2608695652173913,
+      "percentile": 0.2391304347826087,
       "peerCount": 47
     },
     {
@@ -333788,7 +333788,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.2222222222222222,
+      "percentile": 0.16666666666666666,
       "peerCount": 73
     },
     {
@@ -334396,7 +334396,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.6,
+      "percentile": 0.5333333333333333,
       "peerCount": 16
     },
     {
@@ -336779,7 +336779,7 @@
           "sourceId": "universe-03-400"
         }
       ],
-      "percentile": 0.2727272727272727,
+      "percentile": 0.18181818181818182,
       "peerCount": 12
     },
     {
@@ -337907,7 +337907,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Logistics & Deliveries",
       "period": "FY2023–FY2025",
-      "value": 1.5362363706874391,
+      "value": 1.5494149287320524,
       "gap": null,
       "inputs": [
         {
@@ -340600,7 +340600,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.75,
+      "percentile": 0.625,
       "peerCount": 9
     },
     {
@@ -341194,7 +341194,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5555555555555556,
+      "percentile": 0.4444444444444444,
       "peerCount": 10
     },
     {
@@ -341714,7 +341714,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Technology Hardware & Equipment",
       "period": "FY2023–FY2025",
-      "value": 0.016385622828239948,
+      "value": 0.049733038922670725,
       "gap": null,
       "inputs": [
         {
@@ -341760,7 +341760,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.2,
       "peerCount": 6
     },
     {
@@ -342969,7 +342969,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6666666666666666,
+      "percentile": 0.6,
       "peerCount": 16
     },
     {
@@ -344779,7 +344779,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6,
+      "percentile": 0.5333333333333333,
       "peerCount": 16
     },
     {
@@ -348002,7 +348002,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.3279896773518103,
+      "value": 0.32799196407967984,
       "gap": null,
       "inputs": [
         {
@@ -348048,7 +348048,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.2857142857142857,
+      "percentile": 0.2222222222222222,
       "peerCount": 64
     },
     {
@@ -348621,7 +348621,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.7419354838709677,
+      "percentile": 0.6935483870967742,
       "peerCount": 63
     },
     {
@@ -349215,7 +349215,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.15384615384615385,
+      "percentile": 0.07692307692307693,
       "peerCount": 14
     },
     {
@@ -349749,7 +349749,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Services",
       "period": "FY2023–FY2025",
-      "value": 0.05863715987339587,
+      "value": 0.4916364896419253,
       "gap": null,
       "inputs": [
         {
@@ -349795,7 +349795,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.2,
+      "percentile": 0.4666666666666667,
       "peerCount": 16
     },
     {
@@ -350329,7 +350329,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Nondurable Household Products",
       "period": "FY2023–FY2025",
-      "value": 0.6930220126861292,
+      "value": 0.7716850166310115,
       "gap": null,
       "inputs": [
         {
@@ -350375,7 +350375,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.625,
+      "percentile": 0.75,
       "peerCount": 9
     },
     {
@@ -352129,7 +352129,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5333333333333333,
+      "percentile": 0.4666666666666667,
       "peerCount": 31
     },
     {
@@ -353236,7 +353236,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.17798472572457524,
+      "value": 0.2670500444537779,
       "gap": null,
       "inputs": [
         {
@@ -353282,7 +353282,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.20833333333333334,
+      "percentile": 0.2361111111111111,
       "peerCount": 73
     },
     {
@@ -353855,7 +353855,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5238095238095238,
+      "percentile": 0.47619047619047616,
       "peerCount": 22
     },
     {
@@ -357342,7 +357342,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3888888888888889,
+      "percentile": 0.3611111111111111,
       "peerCount": 73
     },
     {
@@ -357915,7 +357915,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.125,
+      "percentile": 0.09722222222222222,
       "peerCount": 73
     },
     {
@@ -361624,7 +361624,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.23445219511346754,
+      "value": 0.4220966901901933,
       "gap": null,
       "inputs": [
         {
@@ -361670,7 +361670,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.25806451612903225,
+      "percentile": 0.43548387096774194,
       "peerCount": 63
     },
     {
@@ -365213,7 +365213,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.1111111111111111,
+      "percentile": 0.08333333333333333,
       "peerCount": 73
     },
     {
@@ -366988,7 +366988,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3472222222222222,
+      "percentile": 0.2916666666666667,
       "peerCount": 73
     },
     {
@@ -368134,7 +368134,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.2,
+      "percentile": 0.06666666666666667,
       "peerCount": 16
     },
     {
@@ -373066,7 +373066,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.13333333333333333,
+      "percentile": 0.06666666666666667,
       "peerCount": 31
     },
     {
@@ -374581,7 +374581,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.18055555555555555,
+      "percentile": 0.1388888888888889,
       "peerCount": 73
     },
     {
@@ -376894,7 +376894,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.1,
+      "percentile": 0.03333333333333333,
       "peerCount": 31
     },
     {
@@ -377495,7 +377495,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.8611111111111112,
+      "percentile": 0.8472222222222222,
       "peerCount": 73
     },
     {
@@ -379836,7 +379836,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.2698412698412698,
+      "percentile": 0.20634920634920634,
       "peerCount": 64
     },
     {
@@ -382163,7 +382163,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6774193548387096,
+      "percentile": 0.5806451612903226,
       "peerCount": 63
     },
     {
@@ -383836,7 +383836,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Consumer Services",
       "period": "FY2023–FY2025",
-      "value": 0.05724410957154716,
+      "value": 0.5983943902339918,
       "gap": null,
       "inputs": [
         {
@@ -383882,7 +383882,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.06666666666666667,
+      "percentile": 0.5333333333333333,
       "peerCount": 31
     },
     {
@@ -385657,7 +385657,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6,
+      "percentile": 0.5666666666666667,
       "peerCount": 31
     },
     {
@@ -386803,7 +386803,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.2391304347826087,
+      "percentile": 0.21739130434782608,
       "peerCount": 47
     },
     {
@@ -387369,7 +387369,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3076923076923077,
+      "percentile": 0.2692307692307692,
       "peerCount": 27
     },
     {
@@ -389894,7 +389894,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4722222222222222,
+      "percentile": 0.4444444444444444,
       "peerCount": 73
     },
     {
@@ -391093,7 +391093,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.36666666666666664,
+      "percentile": 0.3,
       "peerCount": 31
     },
     {
@@ -391961,7 +391961,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": 17.287400180057066,
+      "value": 17.627799319330492,
       "gap": null,
       "inputs": [
         {
@@ -393114,7 +393114,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Apparel & Luxury Goods",
       "period": "FY2023–FY2025",
-      "value": 0.04278039431063536,
+      "value": 0.2713002903185383,
       "gap": null,
       "inputs": [
         {
@@ -393160,7 +393160,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.3076923076923077,
       "peerCount": 14
     },
     {
@@ -396654,7 +396654,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5714285714285714,
+      "percentile": 0.5238095238095238,
       "peerCount": 22
     },
     {
@@ -399554,7 +399554,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.26666666666666666,
+      "percentile": 0.13333333333333333,
       "peerCount": 16
     },
     {
@@ -400661,7 +400661,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Healthcare Equipment & Providers",
       "period": "FY2023–FY2025",
-      "value": -0.26850142619964057,
+      "value": 1.7261787007664182,
       "gap": null,
       "inputs": [
         {
@@ -400707,7 +400707,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.06666666666666667,
+      "percentile": 0.6,
       "peerCount": 16
     },
     {
@@ -401241,7 +401241,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.45621984140756483,
+      "value": 0.4562343380483717,
       "gap": null,
       "inputs": [
         {
@@ -401287,7 +401287,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5416666666666666,
+      "percentile": 0.5138888888888888,
       "peerCount": 73
     },
     {
@@ -401814,7 +401814,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.012440183720727136,
+      "value": 1.1672147775597415,
       "gap": null,
       "inputs": [
         {
@@ -401860,7 +401860,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.06349206349206349,
+      "percentile": 0.7142857142857143,
       "peerCount": 64
     },
     {
@@ -403027,7 +403027,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3064516129032258,
+      "percentile": 0.20967741935483872,
       "peerCount": 63
     },
     {
@@ -403607,7 +403607,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.7,
+      "percentile": 0.6666666666666666,
       "peerCount": 31
     },
     {
@@ -404215,7 +404215,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4603174603174603,
+      "percentile": 0.4126984126984127,
       "peerCount": 64
     },
     {
@@ -404809,7 +404809,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4444444444444444,
+      "percentile": 0.3968253968253968,
       "peerCount": 64
     },
     {
@@ -408261,7 +408261,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.7903225806451613,
+      "percentile": 0.7741935483870968,
       "peerCount": 63
     },
     {
@@ -410609,7 +410609,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3,
+      "percentile": 0.23333333333333334,
       "peerCount": 31
     },
     {
@@ -413572,7 +413572,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.43478260869565216,
+      "percentile": 0.41304347826086957,
       "peerCount": 47
     },
     {
@@ -414732,7 +414732,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4,
+      "percentile": 0.3333333333333333,
       "peerCount": 31
     },
     {
@@ -416479,7 +416479,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.746031746031746,
+      "percentile": 0.6984126984126984,
       "peerCount": 64
     },
     {
@@ -417080,7 +417080,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.34615384615384615,
+      "percentile": 0.3076923076923077,
       "peerCount": 27
     },
     {
@@ -417660,7 +417660,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.36363636363636365,
+      "percentile": 0.2727272727272727,
       "peerCount": 12
     },
     {
@@ -418208,7 +418208,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Media & Entertainment",
       "period": "FY2023–FY2025",
-      "value": -0.17011346649975415,
+      "value": 0.17011346649975415,
       "gap": null,
       "inputs": [
         {
@@ -418254,7 +418254,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.1111111111111111,
       "peerCount": 10
     },
     {
@@ -419414,7 +419414,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.41304347826086957,
+      "percentile": 0.391304347826087,
       "peerCount": 47
     },
     {
@@ -419987,7 +419987,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.47619047619047616,
+      "percentile": 0.42857142857142855,
       "peerCount": 22
     },
     {
@@ -420560,7 +420560,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.08695652173913043,
+      "percentile": 0.06521739130434782,
       "peerCount": 47
     },
     {
@@ -423235,7 +423235,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.07692307692307693,
+      "percentile": 0,
       "peerCount": 14
     },
     {
@@ -423776,7 +423776,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.16773426773169753,
+      "value": 0.48321954630162606,
       "gap": null,
       "inputs": [
         {
@@ -423822,7 +423822,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.14285714285714285,
+      "percentile": 0.36507936507936506,
       "peerCount": 64
     },
     {
@@ -426114,7 +426114,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6190476190476191,
+      "percentile": 0.5555555555555556,
       "peerCount": 64
     },
     {
@@ -426701,7 +426701,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.7301587301587301,
+      "percentile": 0.6825396825396826,
       "peerCount": 64
     },
     {
@@ -427274,7 +427274,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.06521739130434782,
+      "percentile": 0.043478260869565216,
       "peerCount": 47
     },
     {
@@ -427808,7 +427808,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": -0.6134421745068046,
+      "value": 0.6188705760563715,
       "gap": null,
       "inputs": [
         {
@@ -427854,7 +427854,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0,
+      "percentile": 0.5217391304347826,
       "peerCount": 47
     },
     {
@@ -429028,7 +429028,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.22580645161290322,
+      "percentile": 0.12903225806451613,
       "peerCount": 63
     },
     {
@@ -430209,7 +430209,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4,
+      "percentile": 0.3333333333333333,
       "peerCount": 16
     },
     {
@@ -430782,7 +430782,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.47619047619047616,
+      "percentile": 0.42857142857142855,
       "peerCount": 64
     },
     {
@@ -431924,7 +431924,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Transportation",
       "period": "FY2023–FY2025",
-      "value": 0.14402598496696817,
+      "value": 0.37036229387431635,
       "gap": null,
       "inputs": [
         {
@@ -433130,7 +433130,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4666666666666667,
+      "percentile": 0.4,
       "peerCount": 16
     },
     {
@@ -433738,7 +433738,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.4722222222222222,
       "peerCount": 73
     },
     {
@@ -434912,7 +434912,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.15217391304347827,
+      "percentile": 0.10869565217391304,
       "peerCount": 47
     },
     {
@@ -436086,7 +436086,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.625,
+      "percentile": 0.5972222222222222,
       "peerCount": 73
     },
     {
@@ -437267,7 +437267,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.4444444444444444,
+      "percentile": 0.3333333333333333,
       "peerCount": 10
     },
     {
@@ -438469,7 +438469,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.4,
       "peerCount": 11
     },
     {
@@ -439035,7 +439035,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.23809523809523808,
+      "percentile": 0.19047619047619047,
       "peerCount": 22
     },
     {
@@ -442310,7 +442310,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.43548387096774194,
+      "percentile": 0.3387096774193548,
       "peerCount": 63
     },
     {
@@ -442876,7 +442876,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6666666666666666,
+      "percentile": 0.6333333333333333,
       "peerCount": 31
     },
     {
@@ -443456,7 +443456,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.7777777777777778,
+      "percentile": 0.746031746031746,
       "peerCount": 64
     },
     {
@@ -444036,7 +444036,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5714285714285714,
+      "percentile": 0.5238095238095238,
       "peerCount": 64
     },
     {
@@ -445203,7 +445203,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.2,
       "peerCount": 16
     },
     {
@@ -446363,7 +446363,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.532258064516129,
+      "percentile": 0.41935483870967744,
       "peerCount": 63
     },
     {
@@ -446904,7 +446904,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Goods",
       "period": "FY2023–FY2025",
-      "value": 14.855537625359707,
+      "value": 17.759321424976612,
       "gap": null,
       "inputs": [
         {
@@ -447558,7 +447558,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.8548387096774194,
+      "percentile": 0.8387096774193549,
       "peerCount": 63
     },
     {
@@ -448078,7 +448078,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.4123389803133914,
+      "value": 0.8661092649210375,
       "gap": null,
       "inputs": [
         {
@@ -448124,7 +448124,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.5,
+      "percentile": 0.7580645161290323,
       "peerCount": 63
     },
     {
@@ -450489,7 +450489,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Retailing",
       "period": "FY2023–FY2025",
-      "value": 0.0937438417589252,
+      "value": 0.14304162584217703,
       "gap": null,
       "inputs": [
         {
@@ -450535,7 +450535,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.11538461538461539,
+      "percentile": 0.15384615384615385,
       "peerCount": 27
     },
     {
@@ -451108,7 +451108,7 @@
           "sourceId": "universe-03-600"
         }
       ],
-      "percentile": 0.6935483870967742,
+      "percentile": 0.5967741935483871,
       "peerCount": 63
     },
     {
@@ -451674,7 +451674,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.2777777777777778,
+      "percentile": 0.2222222222222222,
       "peerCount": 73
     },
     {
@@ -452247,7 +452247,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.5277777777777778,
+      "percentile": 0.5,
       "peerCount": 73
     },
     {
@@ -453386,7 +453386,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.38095238095238093,
+      "percentile": 0.3333333333333333,
       "peerCount": 22
     },
     {
@@ -454514,7 +454514,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.10250613859318386,
+      "value": 0.31621457078485393,
       "gap": null,
       "inputs": [
         {
@@ -454560,7 +454560,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.1388888888888889,
+      "percentile": 0.3333333333333333,
       "peerCount": 73
     },
     {
@@ -455734,7 +455734,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.8472222222222222,
+      "percentile": 0.8333333333333334,
       "peerCount": 73
     },
     {
@@ -457428,7 +457428,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": 0.06009080555517942,
+      "value": 0.0979683749932174,
       "gap": null,
       "inputs": [
         {
@@ -457474,7 +457474,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.42857142857142855,
+      "percentile": 0.14285714285714285,
       "peerCount": 8
     },
     {
@@ -458040,7 +458040,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.8253968253968254,
+      "percentile": 0.8095238095238095,
       "peerCount": 64
     },
     {
@@ -460381,7 +460381,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.43333333333333335,
+      "percentile": 0.36666666666666664,
       "peerCount": 31
     },
     {
@@ -460975,7 +460975,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6666666666666666,
+      "percentile": 0.6031746031746031,
       "peerCount": 64
     },
     {
@@ -463323,7 +463323,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.15384615384615385,
+      "percentile": 0.07692307692307693,
       "peerCount": 27
     },
     {
@@ -463917,7 +463917,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6666666666666666,
+      "percentile": 0.6,
       "peerCount": 16
     },
     {
@@ -465636,7 +465636,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.06944444444444445,
+      "percentile": 0.041666666666666664,
       "peerCount": 73
     },
     {
@@ -469165,7 +469165,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.4861111111111111,
+      "percentile": 0.4583333333333333,
       "peerCount": 73
     },
     {
@@ -469727,7 +469727,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": 0.003987014373697973,
+      "value": 0.016450125971479785,
       "gap": null,
       "inputs": [
         {
@@ -469773,7 +469773,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.2857142857142857,
+      "percentile": 0,
       "peerCount": 8
     },
     {
@@ -470996,7 +470996,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.8870967741935484,
+      "percentile": 0.8709677419354839,
       "peerCount": 63
     },
     {
@@ -471523,7 +471523,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Apparel & Luxury Goods",
       "period": "FY2023–FY2025",
-      "value": 0.20680682939008252,
+      "value": 0.9839950033954143,
       "gap": null,
       "inputs": [
         {
@@ -471569,7 +471569,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.38461538461538464,
+      "percentile": 0.7692307692307693,
       "peerCount": 14
     },
     {
@@ -472156,7 +472156,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.5483870967741935,
+      "percentile": 0.46774193548387094,
       "peerCount": 63
     },
     {
@@ -473889,7 +473889,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.08064516129032258,
+      "percentile": 0,
       "peerCount": 63
     },
     {
@@ -475632,7 +475632,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.8372110795497636,
+      "value": 1.568535792199502,
       "gap": null,
       "inputs": [
         {
@@ -475678,7 +475678,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.5873015873015873,
+      "percentile": 0.8253968253968254,
       "peerCount": 64
     },
     {
@@ -479568,7 +479568,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6111111111111112,
+      "percentile": 0.5694444444444444,
       "peerCount": 73
     },
     {
@@ -480675,7 +480675,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.34997166296456883,
+      "value": 0.34999235819275026,
       "gap": null,
       "inputs": [
         {
@@ -480721,7 +480721,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.30158730158730157,
+      "percentile": 0.23809523809523808,
       "peerCount": 64
     },
     {
@@ -481287,7 +481287,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.2903225806451613,
+      "percentile": 0.16129032258064516,
       "peerCount": 63
     },
     {
@@ -481870,7 +481870,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Properties & Real Estate",
       "period": "FY2023–FY2025",
-      "value": 1.1995984573813123,
+      "value": 1.200553236227389,
       "gap": null,
       "inputs": [
         {
@@ -481916,7 +481916,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6521739130434783,
+      "percentile": 0.6739130434782609,
       "peerCount": 47
     },
     {
@@ -485979,7 +485979,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": 0.3129219501530389,
+      "value": 1.0582630083078268,
       "gap": null,
       "inputs": [
         {
@@ -486025,7 +486025,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.25396825396825395,
+      "percentile": 0.6507936507936508,
       "peerCount": 64
     },
     {
@@ -487118,7 +487118,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Oil, Gas & Coal",
       "period": "FY2023–FY2025",
-      "value": -0.0054789245535009695,
+      "value": 0.028754402519893363,
       "gap": null,
       "inputs": [
         {
@@ -487164,7 +487164,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.015873015873015872,
+      "percentile": 0.047619047619047616,
       "peerCount": 64
     },
     {
@@ -489498,7 +489498,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.23076923076923078,
+      "percentile": 0.15384615384615385,
       "peerCount": 14
     },
     {
@@ -490113,7 +490113,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.1774193548387097,
+      "percentile": 0.08064516129032258,
       "peerCount": 63
     },
     {
@@ -492120,7 +492120,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.0159845959957015,
+      "value": 0.31382861887892277,
       "gap": null,
       "inputs": [
         {
@@ -492166,7 +492166,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.013888888888888888,
+      "percentile": 0.3194444444444444,
       "peerCount": 73
     },
     {
@@ -493878,7 +493878,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6666666666666666,
+      "percentile": 0.6388888888888888,
       "peerCount": 73
     },
     {
@@ -494444,7 +494444,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.3870967741935484,
+      "percentile": 0.2903225806451613,
       "peerCount": 63
     },
     {
@@ -495604,7 +495604,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6190476190476191,
+      "percentile": 0.5714285714285714,
       "peerCount": 22
     },
     {
@@ -496806,7 +496806,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.047619047619047616,
+      "percentile": 0,
       "peerCount": 22
     },
     {
@@ -500275,7 +500275,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Industrial Goods",
       "period": "FY2023–FY2025",
-      "value": 0.05963546655088617,
+      "value": 0.18828285736319525,
       "gap": null,
       "inputs": [
         {
@@ -500321,7 +500321,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.14814814814814814,
+      "percentile": 0.2222222222222222,
       "peerCount": 28
     },
     {
@@ -502732,7 +502732,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.873015873015873,
+      "percentile": 0.8571428571428571,
       "peerCount": 64
     },
     {
@@ -506574,7 +506574,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.5384615384615384,
+      "percentile": 0.46153846153846156,
       "peerCount": 14
     },
     {
@@ -508275,7 +508275,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.24717475284421173,
+      "value": 0.5836404013662078,
       "gap": null,
       "inputs": [
         {
@@ -508321,7 +508321,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.2916666666666667,
+      "percentile": 0.5833333333333334,
       "peerCount": 73
     },
     {
@@ -510423,7 +510423,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.7,
+      "percentile": 0.6,
       "peerCount": 11
     },
     {
@@ -514307,7 +514307,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.4032258064516129,
+      "percentile": 0.3064516129032258,
       "peerCount": 63
     },
     {
@@ -514848,7 +514848,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 0.07122109330170003,
+      "value": 0.07122436160945943,
       "gap": null,
       "inputs": [
         {
@@ -514894,7 +514894,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.08333333333333333,
+      "percentile": 0.05555555555555555,
       "peerCount": 73
     },
     {
@@ -515488,7 +515488,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.1111111111111111,
+      "percentile": 0.06349206349206349,
       "peerCount": 64
     },
     {
@@ -516662,7 +516662,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.8709677419354839,
+      "percentile": 0.8548387096774194,
       "peerCount": 63
     },
     {
@@ -521878,7 +521878,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Holding & Investment Companies",
       "period": "FY2023–FY2025",
-      "value": -0.10175150853931221,
+      "value": 0.10175150853931221,
       "gap": null,
       "inputs": [
         {
@@ -521924,7 +521924,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.14285714285714285,
+      "percentile": 0.2857142857142857,
       "peerCount": 8
     },
     {
@@ -523337,7 +523337,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Media & Entertainment",
       "period": "FY2023–FY2025",
-      "value": 0.19840178184537097,
+      "value": 0.43815654157675926,
       "gap": null,
       "inputs": [
         {
@@ -523383,7 +523383,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.3333333333333333,
+      "percentile": 0.5555555555555556,
       "peerCount": 10
     },
     {
@@ -525777,7 +525777,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.7741935483870968,
+      "percentile": 0.7419354838709677,
       "peerCount": 63
     },
     {
@@ -531538,7 +531538,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.24588617920091702,
+      "value": 1.621729169898839,
       "gap": null,
       "inputs": [
         {
@@ -531584,7 +531584,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.27419354838709675,
+      "percentile": 0.9032258064516129,
       "peerCount": 63
     },
     {
@@ -532758,7 +532758,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6031746031746031,
+      "percentile": 0.5396825396825397,
       "peerCount": 64
     },
     {
@@ -533893,7 +533893,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": 0.34426242467739077,
+      "value": 0.6580788798781642,
       "gap": null,
       "inputs": [
         {
@@ -533939,7 +533939,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.41935483870967744,
+      "percentile": 0.6290322580645161,
       "peerCount": 63
     },
     {
@@ -535992,7 +535992,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.3968253968253968,
+      "percentile": 0.3333333333333333,
       "peerCount": 64
     },
     {
@@ -537725,7 +537725,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.6527777777777778,
+      "percentile": 0.625,
       "peerCount": 73
     },
     {
@@ -539205,7 +539205,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.4305555555555556,
+      "percentile": 0.4027777777777778,
       "peerCount": 73
     },
     {
@@ -540045,7 +540045,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Food & Beverage",
       "period": "FY2023–FY2025",
-      "value": -0.22464801385799688,
+      "value": 0.2851721668905381,
       "gap": null,
       "inputs": [
         {
@@ -540091,7 +540091,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.016129032258064516,
+      "percentile": 0.1935483870967742,
       "peerCount": 63
     },
     {
@@ -541771,7 +541771,7 @@
       "checkId": "reinvestment_rate",
       "subSector": "Basic Materials",
       "period": "FY2023–FY2025",
-      "value": 1.6336684998906308,
+      "value": 2.1310516226328677,
       "gap": null,
       "inputs": [
         {
@@ -541817,7 +541817,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.8333333333333334,
+      "percentile": 0.8888888888888888,
       "peerCount": 73
     },
     {
@@ -542425,7 +542425,7 @@
           "sourceId": "universe-03-800"
         }
       ],
-      "percentile": 0.46153846153846156,
+      "percentile": 0.4230769230769231,
       "peerCount": 27
     },
     {

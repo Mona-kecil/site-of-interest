@@ -3,6 +3,8 @@ import { definitions } from "../src/universe/checks.mjs";
 import { query } from "./_generated/server";
 import { universeCheckInput, universeCheckResult, universeCheckSummary } from "./schema";
 
+// The IDX lists about 960 companies; the cap keeps the screener read bounded.
+const maxCompanies = 1500;
 const nullableNumber = v.union(v.number(), v.null());
 const nullableText = v.union(v.string(), v.null());
 const definition = v.object({
@@ -35,7 +37,7 @@ export const screen = query({
     }),
   ),
   handler: async (ctx) => {
-    const companies = await ctx.db.query("companies").withIndex("by_symbol").collect();
+    const companies = await ctx.db.query("companies").withIndex("by_symbol").take(maxCompanies);
     return companies.map((company) => ({
       symbol: company.symbol,
       name: company.name,
