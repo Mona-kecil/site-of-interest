@@ -96,6 +96,18 @@ afterEach(() => {
 });
 
 describe("Universe page", () => {
+  it("combines the verdict filter with search", () => {
+    useQuery.mockReturnValue([companies[0], { ...companies[1], peTtm: 100 }]);
+    render(<UniversePage />);
+    fireEvent.change(screen.getByLabelText("Verdict"), { target: { value: "flags" } });
+    expect(screen.getByRole("status")).toHaveTextContent("1 of 2 companies");
+    expect(screen.getByRole("link", { name: "CASH" })).toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "BANK" })).not.toBeInTheDocument();
+    fireEvent.change(screen.getByLabelText("Search companies"), { target: { value: "BANK" } });
+    expect(screen.getByRole("status")).toHaveTextContent("0 of 2 companies");
+    fireEvent.change(screen.getByLabelText("Verdict"), { target: { value: "" } });
+    expect(screen.getByRole("status")).toHaveTextContent("1 of 2 companies");
+  });
   it("filters a bank, switches lenses, sorts and opens its sourced formula", () => {
     useQuery.mockImplementation((_query: unknown, args: { checkId?: string }) =>
       args.checkId ? detail : companies,
@@ -175,7 +187,7 @@ describe("Ideas page", () => {
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent(
       "Cash conversion: 1.00×; meets pass >= 0.80×",
     );
-    expect(screen.queryByRole("link", { name: "SMALL", exact: true })).not.toBeInTheDocument();
+    expect(screen.queryByRole("link", { name: "SMALL" })).not.toBeInTheDocument();
     fireEvent.click(
       within(ideas).getByRole("button", { name: "Show all 14 worth a look companies" }),
     );
@@ -183,7 +195,7 @@ describe("Ideas page", () => {
     const flags = screen.getByRole("region", { name: "Red flags · 1" });
     expect(flags).toHaveTextContent("Priced for perfection");
     expect(flags).toHaveTextContent("Current P/E: 100.00×; flags > 50.00×");
-    expect(within(flags).getByRole("link", { name: "FLAG", exact: true })).toHaveAttribute(
+    expect(within(flags).getByRole("link", { name: "FLAG" })).toHaveAttribute(
       "href",
       "/company/FLAG",
     );

@@ -40,7 +40,7 @@ test("contains Ideas cards and expanded rules at 390 pixels", async ({ page }) =
 
 test("screens the IDX universe and opens a bank check's sourced calculation", async ({ page }) => {
   await page.goto("/universe");
-  await expect(page.getByRole("heading", { name: "Universe", exact: true })).toBeVisible();
+  await expect(page.getByRole("heading", { name: "Screener", exact: true })).toBeVisible();
   const rows = page.locator(".universe-table tbody tr");
   await expect.poll(() => rows.count()).toBeGreaterThan(900);
   await page.getByRole("combobox", { name: "Sub-sector" }).selectOption("Banks");
@@ -74,6 +74,17 @@ test("contains horizontal table scrolling at 390 pixels and exposes gaps on focu
   const gap = page.locator(".universe-cell[aria-describedby]").first();
   await gap.focus();
   await expect(gap.locator("..").getByRole("tooltip")).toBeVisible();
+});
+
+test("filters the screener by verdict alongside company search", async ({ page }) => {
+  await page.goto("/universe");
+  await page.getByLabel("Search companies").fill("TLKM");
+  await page.getByRole("combobox", { name: "Verdict", exact: true }).selectOption("idea");
+  await expect(page.locator(".universe-table tbody tr")).toHaveCount(1);
+  await page.getByRole("combobox", { name: "Verdict", exact: true }).selectOption("flags");
+  await expect(page.locator(".universe-table tbody tr")).toHaveCount(0);
+  await page.getByLabel("Search companies").fill("DCII");
+  await expect(page.locator(".universe-table tbody tr")).toHaveCount(1);
 });
 
 

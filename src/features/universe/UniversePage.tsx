@@ -15,6 +15,7 @@ import {
 
 import { checkCell } from "../../universe/presentation.mjs";
 import { CheckInput } from "./CheckInput";
+import { verdictLabels } from "../ideas/IdeasPage";
 
 type Selection = { symbol: string; checkId: string };
 const columns = [
@@ -122,6 +123,7 @@ export function UniversePage() {
     sector: "",
     subSector: "",
     index: "",
+    verdict: "",
   });
   const [sort, setSort] = useState<Sort>({ column: "symbol", direction: "asc" });
   const [selection, setSelection] = useState<Selection | null>(null);
@@ -140,7 +142,7 @@ export function UniversePage() {
     <main className="universe-page">
       <header className="universe-header">
         <p className="eyebrow">[IDX / fundamentals]</p>
-        <h1>Universe</h1>
+        <h1>Screener</h1>
         <p>
           Cash, capital, obligations, price and ownership. Each measurement opens its formula and
           source inputs.
@@ -217,6 +219,20 @@ export function UniversePage() {
             </select>
           </label>
         ))}
+        <label>
+          Verdict
+          <select
+            value={filters.verdict}
+            onChange={(event) => changeFilter("verdict", event.target.value)}
+          >
+            <option value="">All verdicts</option>
+            {Object.entries(verdictLabels).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
+        </label>
       </div>
       <p className="universe-note" role="status">
         {companies === undefined
