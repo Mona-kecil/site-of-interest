@@ -1,12 +1,12 @@
 # Site of Interest
 
-Site of Interest is a fundamentals research tool for all 962 IDX companies in the Sectors snapshot retrieved on 2 October 2026. It shows measurements, reporting gaps, sub-sector peer percentiles, holders of record and provider business-group labels. It provides no investment advice, ratings or price targets.
+Site of Interest screens all 962 IDX companies in the Sectors snapshot retrieved on 2 October 2026 using a Ricky Ho-style fundamentals screen. Ideas shows Worth a look and Red flags for companies worth at least IDR 1T, with the numbers behind each verdict. Company pages and the screener retain measurements, reporting gaps, peer percentiles and source evidence. Fixed rules inherit provider errors and provide no investment advice or price targets; the app is not affiliated with or endorsed by Ricky Ho.
 
-Start at `/universe`. Filter companies, choose a lens, and open a measurement to inspect its formula, period, inputs and source. Open a company, follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
+Start at `/`. Read the screen's rules and company reasons, then open a company or the Screener at `/universe`. Filter companies by verdict, choose a lens, and open a measurement to inspect its formula, period, inputs and source. Follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
 
 ## Run locally
 
-Install dependencies with `npm install`. For an existing configured and imported dev deployment, run `npm run dev` and open `http://127.0.0.1:5173/universe`. Vite reads `CONVEX_URL` from `.env.local`; the frontend uses `VITE_CONVEX_URL` at build time.
+Install dependencies with `npm install`. For an existing configured and imported dev deployment, run `npm run dev` and open `http://127.0.0.1:5173/`. Vite reads `CONVEX_URL` from `.env.local`; the frontend uses `VITE_CONVEX_URL` at build time.
 
 For a fresh local setup, an operator runs `npm run dev:full` to start Convex and Vite together. Convex writes its deployment settings to `.env.local`. After the schema is deployed, import the checked-in universe with `npm run convex:import-universe`. The import replaces eight universe tables and refuses production, preview deployments, deploy keys and environment overrides unless `--prod` is passed. Keep credentials out of Git.
 

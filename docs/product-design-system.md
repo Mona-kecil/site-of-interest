@@ -1,12 +1,12 @@
 # Product design system
 
-The research surface uses a dark canvas, pale text, thin rules and tabular numbers. Typography and hierarchy distinguish data, evidence and navigation. Measurement values carry no judging color or rating. Selection and keyboard focus can use an accent; the accent describes interaction state.
+The research surface uses a dark canvas, pale text, thin rules and tabular numbers. Typography and hierarchy distinguish data, evidence and navigation. Verdict outcome chips may carry color, with each pillar and its Pass, Mixed, Fail, Inputs not reported or Does not apply label in text. Measurement values stay neutral. Selection and keyboard focus can use an accent; the accent describes interaction state.
 
 ## Typography and layout
 
 Use DM Mono for values, symbols, dates and compact table labels. Use Manrope for company names, explanations and evidence. Keep long body text at least 13 px and working table text at least 11 px. Wrap names and sources before shrinking text.
 
-A header identifies the subject. The screener places filters above a horizontally scrollable table and opens a persistent evidence panel. Company sections follow lens order and put check evidence beside annual records. Owner pages put a capped graph above the full holdings table. At 390 px, tables and graphs scroll within their wrappers; endpoints wrap within disclosures. The document has no horizontal overflow.
+A header identifies the subject. Ideas opens with the screen's purpose and data date, a rules disclosure and two lists with reasons. The screener places filters, including Verdict, above a horizontally scrollable table and opens a persistent evidence panel. A company verdict panel sits under the header facts and links each applicable pillar to its existing section. Company sections follow lens order and put check evidence beside annual records. Owner pages put a capped graph above the full holdings table. At 390 px, tables and graphs scroll within their wrappers; endpoints wrap within disclosures. The document has no horizontal overflow.
 
 ## Measurement states
 
@@ -25,7 +25,7 @@ Gap cells have no peer line. Null stays Not reported in raw inputs and financial
 
 Put `Operating cash flow · FY2023` before the secondary provider code `operating_cash_flow[2023]`. Replace known gap field codes with human labels and fiscal years. Keep unknown gap patterns as raw text so a new provider reason remains visible.
 
-IDR inputs use billions, such as `IDR 19,364.41 bn`, with the exact raw number in the value title. Ratios follow the check unit; fractions render as percentages and share counts retain their count format. Tax-rate annotations retain the selected ROIC tax rule.
+IDR inputs use billions, such as `IDR 19,364.41 bn`, with the exact raw number in the value title. Dividend per share uses IDR per share, such as `IDR 184.00 per share`. Ratios follow the check unit; fractions render as percentages and share counts retain their count format. Tax-rate annotations retain the selected ROIC tax rule.
 
 A source line names Sectors, endpoint path, field batch, row range and retrieval date. The stored manifest has ten field batches; the final page ends at row 962. The full query endpoint stays in a Full endpoint disclosure and wraps within the page. Source retrieval time is distinct from the financial reporting period.
 

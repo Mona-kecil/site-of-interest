@@ -6,9 +6,9 @@ React 19 renders the research routes through TanStack Router. Convex serves the 
 
 | Route | Task | Convex query |
 | --- | --- | --- |
-| `/` | Redirect to the screener | None |
-| `/universe` | Search, filter, sort and inspect six check lenses | `universe.screen`, `universe.check` |
-| `/company/$ticker` | Check evidence, annual/quarterly history, peers and holders | `companyProfile.get` |
+| `/` | Ideas, fixed rules, Worth a look and Red flags with evidence | `universe.screen` |
+| `/universe` | Search, filter by verdict, sort and inspect six check lenses | `universe.screen`, `universe.check` |
+| `/company/$ticker` | Verdict, pillar evidence, annual/quarterly history, peers and holders | `companyProfile.get` |
 | `/owners` | Search owners and filter listed company owners | `owners.list` |
 | `/owner/$key` | Holdings, co-holders and one upstream level | `owners.get` |
 | `/groups` | Browse Sectors business-group labels | `owners.groups` |
@@ -21,6 +21,8 @@ The company query accepts lowercase ticker input. Domain route keys use ticker, 
 | Module | Role |
 | --- | --- |
 | [router.tsx](../src/router.tsx) | App shell and route registration |
+| [IdeasPage.tsx](../src/features/ideas/IdeasPage.tsx) | Ideas lists, rules, registry-generated evidence text and verdict labels |
+| [ideas-model.ts](../src/features/ideas/ideas-model.ts) | Pure pillar rules, class-specific core pillars and assessment shared by all three surfaces |
 | [UniversePage.tsx](../src/features/universe/UniversePage.tsx) | Screener, keyboard lens tabs and evidence panel |
 | [universe-model.ts](../src/features/universe/universe-model.ts) | Pure filters, sort, lens order and number-format exports |
 | [CompanyProfilePage.tsx](../src/features/company/CompanyProfilePage.tsx) | Company sections, history tables, holdings and evidence |

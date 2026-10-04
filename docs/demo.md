@@ -1,6 +1,6 @@
 # Three-minute demo
 
-Use the checked-in 2 October 2026 snapshot in an imported dev deployment. Open `/universe`. The steps below follow the visible labels; values are measurements without a rating.
+Use the checked-in 2 October 2026 snapshot in an imported dev deployment. Open `/`. Show the rules disclosure, Worth a look and Red flags with their evidence. Open TLKM to show its Worth a look panel, or DCII to show its price flag and current P/E above 50. Return through Ideas, then click Screener for the measurement path below. Verdicts apply fixed rules; measurement values retain their units and gaps.
 
 ## Click path
 
@@ -13,7 +13,7 @@ Use the checked-in 2 October 2026 snapshot in an imported dev deployment. Open `
 | 2:05–2:35 | Click Groups in Product sections. Click Hartono. | The page attributes membership to Sectors, states that control has not been verified, and shows BBCA among the members. BBCA's ROE cell reads 20.79% for its FY2025 average-equity check. |
 | 2:35–3:00 | Click Owners in Product sections. Enter `Bank Of Singapore` in Search owners. Click Bank Of Singapore Limited. In the graph, click +1 more. | The page labels the holder Custodian or nominee account and states that it may hold for clients. Eight company nodes link to the full nine-row holdings table. |
 
-The screener symbol and name links and Open company use client-side navigation. The graph overflow link stays on the owner page.
+Ideas cards, the screener symbol and name links and Open company use client-side navigation. The graph overflow link stays on the owner page.
 
 ## Number and gap locators
 
