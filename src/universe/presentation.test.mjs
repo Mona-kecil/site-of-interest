@@ -63,6 +63,9 @@ test("every distinct snapshot gap renders without snake case or brackets", async
 });
 
 test("input values use IDR billions, check units for ratios, and preserve null and zero", () => {
+  assert.equal(inputLabel({ key: "totalDividend", field: "total_dividend[2025]", period: "2025" }), "Dividend per share · FY2025");
+  for (const value of [91, 255, 444, 401, 249, 184]) assert.equal(formatInput(value, "total_dividend[2025]", "count"), `IDR ${value}.00 per share`);
+  assert.equal(formatInput(null, "total_dividend[2025]", "count"), "Not reported");
   assert.equal(formatInput(19364410000000, "operating_cash_flow[2023]", "multiple"), "IDR 19,364.41 bn");
   assert.equal(formatInput(-2500000000, "capital_expenditure[2025]", "percent"), "IDR -2.50 bn");
   assert.equal(formatInput(0, "earnings[2025]", "multiple"), "IDR 0.00 bn");

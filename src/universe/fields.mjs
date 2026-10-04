@@ -21,7 +21,7 @@ const labels = {
   capitalExpenditure: "Capital expenditure", freeCashFlow: "Free cash flow", interestExpense: "Interest expense",
   totalAssets: "Total assets", totalLiabilities: "Total liabilities", totalEquity: "Total equity",
   totalDebt: "Total debt", cashAndEquivalents: "Cash and equivalents", currentAssets: "Current assets",
-  currentLiabilities: "Current liabilities", outstandingShares: "Outstanding shares", totalDividend: "Total dividend",
+  currentLiabilities: "Current liabilities", outstandingShares: "Outstanding shares", totalDividend: "Dividend per share",
   pe: "P/E", pb: "P/B", grossLoan: "Gross loans", nonPerformingLoan: "Non-performing loans",
   netInterestMargin: "Net interest margin", loanToDepositRatio: "Loan / deposit ratio",
   capitalAdequacyRatio: "Capital adequacy ratio", revenueQ: "Quarterly revenue", earningsQ: "Quarterly earnings",

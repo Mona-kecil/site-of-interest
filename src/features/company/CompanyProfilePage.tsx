@@ -3,7 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
 import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
-import { checkCell, formatValue } from "../../universe/presentation.mjs";
+import { checkCell, formatInput, formatValue } from "../../universe/presentation.mjs";
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
 import { assess, PILLARS } from "../ideas/ideas-model";
@@ -165,6 +165,7 @@ function HistoryTable({
           {fields.some((field) => field.unit === "multiple")
             ? "; P/E and P/B in multiples (×)"
             : ""}
+          {fields.some((field) => field.unit === "IDR/share") ? "; dividends in IDR per share" : ""}
         </caption>
         <thead>
           <tr>
@@ -172,7 +173,11 @@ function HistoryTable({
             {fields.map((field) => (
               <th key={field.key} scope="col">
                 {field.label}
-                {field.unit === "IDR" ? " (bn)" : " (×)"}
+                {field.unit === "IDR"
+                  ? " (bn)"
+                  : field.unit === "IDR/share"
+                    ? " (IDR/share)"
+                    : " (×)"}
               </th>
             ))}
           </tr>
@@ -185,7 +190,9 @@ function HistoryTable({
                 <td key={fields[index].key} data-reported={value !== null}>
                   {fields[index].unit === "IDR"
                     ? formatIdrAmount(value)
-                    : formatValue(value, "multiple")}
+                    : fields[index].unit === "IDR/share"
+                      ? formatInput(value, "total_dividend")
+                      : formatValue(value, "multiple")}
                 </td>
               ))}
             </tr>
@@ -394,7 +401,8 @@ export function CompanyProfilePage() {
       </section>
       <p className="profile-note">
         Percentiles compare reported sub-sector measurements. Annual and quarterly amounts are in
-        IDR billions (bn). Not reported marks a gap in the record.
+        IDR billions (bn), except dividends in IDR per share. Not reported marks a gap in the
+        record.
       </p>
       {note && <p className="profile-applicability">{note}</p>}
       <nav className="profile-nav" aria-label="Company sections">

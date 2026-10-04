@@ -81,6 +81,17 @@ test("links an entity holder to its owner page", async ({ page }) => {
   await expect(page.getByRole("link", { name: /ASII company page/ })).toBeVisible();
 });
 
+test("displays AALI dividends in IDR per share", async ({ page }) => {
+  await page.goto("/company/AALI");
+  const history = page.getByRole("region", { name: "Price against own history annual history · 2019–2025" });
+  await expect(history.getByRole("columnheader", { name: "Dividend per share (IDR/share)" })).toBeVisible();
+  for (const value of [91, 255, 444, 401, 249, 184]) await expect(history.getByRole("cell", { name: `IDR ${value}.00 per share`, exact: true })).toBeVisible();
+  const check = page.locator('[data-check="dividend_years"]');
+  await check.getByText("Formula and inputs · Dividend years", { exact: true }).click();
+  await expect(check.getByText("Dividend per share · FY2025", { exact: true })).toBeVisible();
+  await expect(check.getByText("IDR 184.00 per share", { exact: true })).toHaveAttribute("title", "184");
+});
+
 test("links ADRO's reported Edwin spelling to the merged owner", async ({ page }) => {
   await page.goto("/company/ADRO");
   const holder = page.getByRole("link", { name: "Edwin Soeryadjaja", exact: true });
