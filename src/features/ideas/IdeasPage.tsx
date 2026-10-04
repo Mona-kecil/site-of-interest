@@ -193,10 +193,11 @@ export function IdeasPage() {
       <details className="ideas-method">
         <summary>How a stock makes the list</summary>
         <p>
-          Each rule compares one measurement with a pass line, a flag line, or both. A pillar passes
-          when every reported rule passes, fails when any rule hits its flag, and is mixed
-          otherwise. Missing numbers are skipped, never counted as zero. Insurance, financing and
-          investment companies have no balance-sheet rules here, so they can be Mixed at best.
+          Each rule compares one measurement with a pass line, a flag line, or both. Missing numbers
+          are skipped, never counted as zero. A pillar fails when any rule hits its flag, passes
+          when every reported rule passes, and is mixed otherwise. A pillar with no reported numbers
+          shows Inputs not reported. Insurance, financing and investment companies have no
+          balance-sheet rules here, so they can be Mixed at best.
         </p>
         <dl>
           {(Object.keys(verdictLabels) as Verdict[]).map((verdict) => (
