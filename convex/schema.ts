@@ -33,6 +33,7 @@ export const universeCheckResult = universeCheckSummary.extend({
 
 export const ownerHolding = v.object({
   symbol: v.string(),
+  reportedName: v.string(),
   percentage: universeNumber,
   shares: universeNumber,
   value: universeNumber,

@@ -64,3 +64,24 @@ test("links an entity holder to its owner page", async ({ page }) => {
   await expect(page).toHaveURL(/\/owner\/astra%20international$/);
   await expect(page.getByRole("link", { name: /ASII company page/ })).toBeVisible();
 });
+
+test("links ADRO's reported Edwin spelling to the merged owner", async ({ page }) => {
+  await page.goto("/company/ADRO");
+  const holder = page.getByRole("link", { name: "Edwin Soeryadjaja", exact: true });
+  await expect(holder).toHaveAttribute("href", "/owner/edwin%20soeryadjaya");
+  await holder.click();
+  await expect(page).toHaveURL(/\/owner\/edwin%20soeryadjaya$/);
+  await expect(page.getByRole("heading", { name: "Edwin Soeryadjaya", exact: true })).toBeVisible();
+});
+
+test("links IMJS's International holder spelling to the listed IMAS owner", async ({ page }) => {
+  await page.goto("/company/IMJS");
+  const holder = page.getByRole("link", { name: "PT Indomobil Sukses International Tbk", exact: true });
+  await expect(holder).toHaveAttribute("href", "/owner/indomobil%20sukses%20internasional");
+  await holder.click();
+  await expect(page).toHaveURL(/\/owner\/indomobil%20sukses%20internasional$/);
+  const company = page.getByRole("link", { name: "IMAS company page →", exact: true });
+  await expect(company).toHaveAttribute("href", "/company/IMAS");
+  await company.click();
+  await expect(page).toHaveURL(/\/company\/IMAS$/);
+});

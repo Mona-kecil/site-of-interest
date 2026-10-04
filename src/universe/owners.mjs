@@ -17,11 +17,32 @@ export function isCustodianName(name) {
   return custodianPatterns.some((pattern) => pattern.test(name.normalize("NFKC")));
 }
 
-export function ownerKey(name) {
+const ownerAliases = new Map([
+  // GSMF listed name; ASDM provider misspelling.
+  ["equity developoment investment", "equity development investment"],
+  // BPII listed name; BPTR and MTWI use International.
+  ["batavia prosperindo international", "batavia prosperindo internasional"],
+  // IMAS listed name; IMJS uses International.
+  ["indomobil sukses international", "indomobil sukses internasional"],
+  // PANR listed name; PDES omits the space after PT.
+  ["ptpanorama sentrawisata", "panorama sentrawisata"],
+  // POLL listed name; POLI uses Properti.
+  ["pollux properti indonesia", "pollux properties indonesia"],
+  // ADRO uses Soeryadjaja; MPMX, SRTG and TBIG use Soeryadjaya.
+  ["edwin soeryadjaja", "edwin soeryadjaya"],
+]);
+const aliasTargets = new Set(ownerAliases.values());
+
+function normalizedOwnerKey(name) {
   const words = name.normalize("NFKC").toLowerCase().replace(/^\s*p\.?t\.(?=\p{L})/u, "pt ").replace(/\./g, "").replace(/[^\p{L}\p{N}\s]/gu, " ").trim().split(/\s+/);
   while (words[0] === "pt") words.shift();
   while (["pt", "tbk", "persero", "ltd", "limited"].includes(words.at(-1))) words.pop();
   return words.join(" ");
+}
+
+export function ownerKey(name) {
+  const key = normalizedOwnerKey(name);
+  return ownerAliases.get(key) ?? key;
 }
 
 export const BUCKET_LABELS = Object.freeze(["Afiliasi", "Afiliasi Pengendali"]);
@@ -37,7 +58,7 @@ export function buildOwners(snapshot) {
   for (const company of snapshot.companies) {
     const key = ownerKey(company.name);
     if (!listed.has(key)) listed.set(key, []);
-    listed.get(key).push(company.symbol);
+    listed.get(key).push(company);
   }
   const entities = snapshot.holdings.filter(({ holderKind }) => holderKind === "entity");
   const byCompany = new Map();
@@ -53,12 +74,16 @@ export function buildOwners(snapshot) {
     const owner = owners.get(key);
     owner.spellings.set(row.holderName, (owner.spellings.get(row.holderName) ?? 0) + 1);
     const rank = row.percentage === null ? null : 1 + byCompany.get(row.symbol).filter((other) => other.percentage !== null && other.percentage > row.percentage).length;
-    const { symbol, percentage, shares, value, sourceId } = row;
-    owner.holdings.push({ symbol, percentage, shares, value, rank, isLargest: rank === 1, sourceId });
+    const { symbol, holderName: reportedName, percentage, shares, value, sourceId } = row;
+    owner.holdings.push({ symbol, reportedName, percentage, shares, value, rank, isLargest: rank === 1, sourceId });
   }
   return [...owners].sort(([a], [b]) => compare(a, b)).map(([key, owner]) => {
-    const name = [...owner.spellings].sort(([a, n], [b, m]) => m - n || compare(a, b))[0][0];
-    const listedSymbol = listed.get(key)?.length === 1 ? listed.get(key)[0] : null;
+    const spellings = [...owner.spellings].sort(([a, n], [b, m]) => m - n || compare(a, b));
+    const listedCompany = listed.get(key)?.length === 1 ? listed.get(key)[0] : null;
+    const name = aliasTargets.has(key)
+      ? (listedCompany && normalizedOwnerKey(listedCompany.name) === key ? listedCompany.name : spellings.find(([spelling]) => normalizedOwnerKey(spelling) === key)?.[0] ?? key)
+      : spellings[0][0];
+    const listedSymbol = listedCompany?.symbol ?? null;
     const holdings = owner.holdings.sort((a, b) => compare(a.symbol, b.symbol) || compare(JSON.stringify(a), JSON.stringify(b)));
     return {
       key, name, kind: buckets.has(key) ? "bucket" : listedSymbol ? "company" : "holder", listedSymbol,

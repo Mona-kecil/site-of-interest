@@ -6,7 +6,9 @@ import { businessGroup, ownerHolding, ownerRecord, universeCheckSummary } from "
 const nullableNumber = v.union(v.number(), v.null());
 const nullableText = v.union(v.string(), v.null());
 const summary = ownerRecord.omit("holdings").extend({ largestHolderCount: v.number() });
-const entityHolder = ownerHolding.omit("symbol").extend({ key: v.string(), name: v.string() });
+const entityHolder = ownerHolding
+  .omit("symbol", "reportedName")
+  .extend({ key: v.string(), name: v.string() });
 const member = v.object({
   symbol: v.string(),
   name: v.string(),
