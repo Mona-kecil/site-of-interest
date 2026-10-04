@@ -50,12 +50,6 @@ test("opens a company from its screener symbol and check panel", async ({ page }
   await expect(page).toHaveURL(/\/company\/ASII$/);
 });
 
-test("redirects the old empire company route", async ({ page }) => {
-  await page.goto("/empire/prajogo/company/BBCA");
-  await expect(page).toHaveURL(/\/company\/BBCA$/);
-  await expect(page.getByRole("heading", { name: "Banks", exact: true })).toBeVisible();
-});
-
 test("links an entity holder to its owner page", async ({ page }) => {
   await page.goto("/company/AALI");
   await page.getByRole("link", { name: "PT Astra International Tbk", exact: true }).click();

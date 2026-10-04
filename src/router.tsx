@@ -58,14 +58,6 @@ const companyRoute = createRoute({
   component: CompanyProfilePage,
 });
 
-const empireCompanyRoute = createRoute({
-  getParentRoute: () => rootRoute,
-  path: "/empire/$empireSlug/company/$ticker",
-  beforeLoad: ({ params }) => {
-    throw redirect({ to: "/company/$ticker", params: { ticker: params.ticker } });
-  },
-});
-
 const universeRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/universe",
@@ -75,7 +67,6 @@ const universeRoute = createRoute({
 const routeTree = rootRoute.addChildren([
   indexRoute,
   companyRoute,
-  empireCompanyRoute,
   universeRoute,
   createRoute({ getParentRoute: () => rootRoute, path: "/owners", component: OwnersPage }),
   createRoute({ getParentRoute: () => rootRoute, path: "/owner/$key", component: OwnerPage }),
