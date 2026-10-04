@@ -19,6 +19,7 @@ function row(symbol: string, value: number | null, overrides: Partial<ScreenRow>
     indices: ["LQ45"],
     marketCap: value,
     freeFloat: null,
+    peTtm: null,
     checks: [
       {
         checkId: "npl_ratio",

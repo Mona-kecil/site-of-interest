@@ -39,6 +39,7 @@ const companies: ScreenRow[] = [
     indices: ["LQ45"],
     marketCap: 100,
     freeFloat: 0.4,
+    peTtm: 12,
     checks: [{ checkId: "npl_ratio", value: 0.02, percentile: 0.5, peerCount: 48, gap: null }],
   },
   {
@@ -49,6 +50,7 @@ const companies: ScreenRow[] = [
     indices: null,
     marketCap: 200,
     freeFloat: null,
+    peTtm: null,
     checks: [
       {
         checkId: "cash_conversion",
