@@ -62,7 +62,7 @@ function profile(subSector: string): CompanyProfile {
       affiliates: ["Hartono"],
       current: { marketCap: 700e12, freeFloat: 0.4, peTtm: 12, pbMrq: 2 },
       sourceIds: { profile: "page" },
-      checks: [],
+      checks: [check],
     },
     years: [
       {
@@ -110,7 +110,7 @@ describe("Company profile page", () => {
     useQuery.mockReturnValue(null);
     view.rerender(<CompanyProfilePage />);
     expect(screen.getByRole("heading", { name: "Company not found" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Back to Universe" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Back to Screener" })).toHaveAttribute(
       "href",
       "/universe",
     );
@@ -122,6 +122,14 @@ describe("Company profile page", () => {
     expect(useQuery.mock.calls[0][1]).toEqual({ symbol: "bbca" });
     expect(screen.getByRole("heading", { name: "Banks" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "ROIC" })).not.toBeInTheDocument();
+    const verdict = screen.getByRole("region", { name: "Not enough data" });
+    expect(verdict).toHaveTextContent("Cash: Does not apply");
+    expect(verdict).toHaveTextContent("Returns: Inputs not reported");
+    expect(verdict).toHaveTextContent("NPL ratio: 2.00%; meets pass <= 3.00%");
+    expect(
+      within(verdict).getByRole("link", { name: "View balance sheet inputs" }),
+    ).toHaveAttribute("href", "#profile-banks");
+    expect(verdict.nextElementSibling).toHaveClass("profile-note");
     const card = container.querySelector('[data-check="npl_ratio"]')!;
     expect(card.querySelector("header > strong")).toHaveTextContent("2.00%");
     expect(card).toHaveTextContent("p84 · 31 peers");

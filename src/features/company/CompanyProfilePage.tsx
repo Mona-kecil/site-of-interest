@@ -6,6 +6,8 @@ import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
 import { checkCell, formatValue } from "../../universe/presentation.mjs";
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
+import { assess, PILLARS } from "../ideas/ideas-model";
+import { PillarOutcome, verdictDescriptions, verdictLabels } from "../ideas/IdeasPage";
 import {
   annualPeriods,
   assembleSections,
@@ -308,15 +310,20 @@ export function CompanyProfilePage() {
       <main className="company-profile profile-state">
         <h1>Company not found</h1>
         <p>No IDX company matches “{ticker.toUpperCase()}”.</p>
-        <Link to="/universe">Back to Universe</Link>
+        <Link to="/universe">Back to Screener</Link>
       </main>
     );
   const { company } = profile;
   const { sections, note } = assembleSections(company);
+  const assessment = assess({
+    subSector: company.subSector,
+    checks: company.checks,
+    peTtm: company.current.peTtm ?? null,
+  });
   return (
     <main className="company-profile">
       <header className="profile-header">
-        <Link to="/universe">← Universe</Link>
+        <Link to="/universe">← Screener</Link>
         <p className="profile-kicker">IDX / {company.symbol}</p>
         <h1>{company.name}</h1>
         <p className="profile-symbol">{company.symbol}</p>
@@ -360,6 +367,31 @@ export function CompanyProfilePage() {
           </div>
         </dl>
       </header>
+      <section className="profile-verdict" aria-labelledby="profile-verdict-title">
+        <p className="eyebrow">Rules-based verdict</p>
+        <h2 id="profile-verdict-title">{verdictLabels[assessment.verdict]}</h2>
+        <p>{verdictDescriptions[assessment.verdict]} Not investment advice.</p>
+        <div className="profile-checks">
+          {assessment.pillars.map((result, index) => {
+            const sectionId =
+              result.id === "balance"
+                ? company.subSector === "Banks"
+                  ? "banks"
+                  : "balance-sheet"
+                : result.id;
+            return (
+              <article key={result.id} data-pillar={result.id}>
+                <PillarOutcome pillar={PILLARS[index]} result={result} />
+                {sections.some(({ id }) => id === sectionId) && (
+                  <a href={`#profile-${sectionId}`}>
+                    View {PILLARS[index].title.toLowerCase()} inputs
+                  </a>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </section>
       <p className="profile-note">
         Percentiles compare reported sub-sector measurements. Annual and quarterly amounts are in
         IDR billions (bn). Not reported marks a gap in the record.

@@ -756,6 +756,10 @@ a:focus-visible {
 .idea-reason p, .idea-reason ul { margin: 4px 0; }
 .ideas-list > button { min-height: 44px; margin-top: 20px; border: 1px solid var(--line); padding: 10px 14px; background: var(--panel-raised); cursor: pointer; font-size: 13px; }
 .ideas-footer { margin-top: 36px; border-top: 1px solid var(--line); padding-top: 20px; font-size: 13px; line-height: 1.7; }
+.profile-verdict { margin-top: 28px; border: 1px solid var(--line); padding: 20px; background: var(--panel); font-size: 13px; overflow-wrap: anywhere; }
+.profile-verdict > h2 { margin: 8px 0; font-size: 28px; font-weight: 500; }
+.profile-verdict article { border-top: 1px solid var(--line); }
+.profile-verdict article > a { display: inline-block; margin: 8px 0; min-height: 30px; }
 @media (max-width: 700px) {
   .ideas-grid { grid-template-columns: minmax(0, 1fr); }
   .idea-card, .ideas-method { padding: 16px; }
