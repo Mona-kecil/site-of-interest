@@ -1,7 +1,8 @@
-import { getRouteApi } from "@tanstack/react-router";
+import { getRouteApi, Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
+import { ownerKey } from "../../universe/owners.mjs";
 import { formatInput, formatPeers, formatValue } from "../universe/universe-model";
 import {
   annualPeriods,
@@ -256,7 +257,15 @@ function Holdings({ profile }: { profile: CompanyProfile }) {
             <tbody>
               {orderHoldings(profile.holdings).map((holding) => (
                 <tr key={holding._id}>
-                  <th scope="row">{holding.holderName}</th>
+                  <th scope="row">
+                    {holding.holderKind === "entity" ? (
+                      <Link to="/owner/$key" params={{ key: ownerKey(holding.holderName) }}>
+                        {holding.holderName}
+                      </Link>
+                    ) : (
+                      holding.holderName
+                    )}
+                  </th>
                   <td>
                     {holding.holderKind === "entity"
                       ? "Entity"
