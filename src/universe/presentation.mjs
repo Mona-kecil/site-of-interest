@@ -76,18 +76,23 @@ export function formatInput(value, field = "", checkUnit = "multiple") {
   return new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(value);
 }
 
-// Owner pages carry only source ids; the id encodes the field batch and row offset.
-export function sourceIdLine(sourceId, manifest) {
+// A source id encodes the field batch and row offset, e.g. universe-04-400.
+function batchRows(sourceId, manifest) {
   const match = /^(.+)-(\d+)$/.exec(sourceId);
   const batch = match ? manifest.groups.findIndex(({ id }) => id === match[1]) : -1;
-  if (batch < 0) return sourceId;
+  if (batch < 0) return null;
   const offset = Number(match[2]);
-  return `Sectors · batch ${batch + 1} of ${manifest.groups.length} · rows ${offset + 1}–${Math.min(offset + 200, manifest.companyCount)}`;
+  return `batch ${batch + 1} of ${manifest.groups.length} · rows ${offset + 1}–${Math.min(offset + 200, manifest.companyCount)}`;
+}
+
+// Owner pages carry only source ids.
+export function sourceIdLine(sourceId, manifest) {
+  const rows = batchRows(sourceId, manifest);
+  return rows ? `Sectors · ${rows}` : sourceId;
 }
 
 export function sourceLine(source, manifest) {
   const path = new URL(source.endpoint, "https://api.sectors.app").pathname;
   const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(source.retrievedAt));
-  const [provider, ...batchAndRows] = sourceIdLine(source.id, manifest).split(" · ");
-  return [provider, path, ...batchAndRows, date].join(" · ");
+  return ["Sectors", path, batchRows(source.id, manifest) ?? source.id, date].join(" · ");
 }

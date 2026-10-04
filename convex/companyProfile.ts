@@ -3,6 +3,7 @@ import { definitions } from "../src/universe/checks.mjs";
 import { query } from "./_generated/server";
 import schema from "./schema";
 
+// Import validation allows one row per symbol and period: YEARS and QUARTERS in fields.mjs.
 const limits = { years: 7, quarters: 8, holdings: 100, checks: definitions.length, peers: 1000 };
 
 export const get = query({
