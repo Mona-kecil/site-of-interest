@@ -11,4 +11,5 @@ export function formatValue(value: number | null, unit: CheckUnit): string;
 export function formatPeers(percentile: number | null, peerCount: number): string;
 export function checkCell(result: CheckValue | null | undefined, unit: CheckUnit): { state: "does-not-apply" | "gap" | "few-peers" | "measured"; text: string; peers: string | null; reason: string | null };
 export function formatInput(value: number | null, field?: string, checkUnit?: CheckUnit): string;
+export function sourceIdLine(sourceId: string, manifest: Manifest): string;
 export function sourceLine(source: Source, manifest: Manifest): string;

@@ -13,6 +13,8 @@ test("custodian hints recognize real named intermediaries and account qualifiers
     "Clsa Ltd - Client/Trust Account", "Morgan Stanley And Co Intl Plc-Client Ac",
     "Ubs Switzerland Ag-Client Assets -2049584001", "Nbs Clients",
     "Bp2S Sg/Bnp Paribas Singapore Branch Wealth Management",
+    "Ctla Safekeeping Account Dksh Holding Lt D", "The Bank Of New York Mellon Dr",
+    "Jpmcb Na Aif Clt Re - The Scottish Oriental Smaller Companies Trust Plc",
   ]) assert.equal(isCustodianName(name), true, name);
   assert.equal(isCustodianName("bank of singapore limited"), true);
   assert.equal(isCustodianName("Broker S / A Client"), true);

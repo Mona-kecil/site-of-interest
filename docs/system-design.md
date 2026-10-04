@@ -17,7 +17,7 @@ Sectors /v2/companies/
 
 The command order is `sync:universe → build:checks → build:owners → validate:universe → convex:import-universe`. Cold syncs spend Sectors credits; cache hits retain the source retrieval date and spend zero. Builders and validation read local files. Import writes to Convex, requires a deployed schema, and spends no Sectors credits. Its eight table replacements run as separate imports, so an operator checks for a failed partial import before testing the app.
 
-The import guard reads `.env.local` and accepts only `local:`, `anonymous:` or `dev:` deployment names. It rejects a missing name, production, preview, deploy keys in either the file or process environment, and a conflicting process deployment. It replaces the universe tables and leaves other tables alone.
+The import guard reads `.env.local` and accepts only `local:`, `anonymous:` or `dev:` deployment names. It rejects a missing name, production, preview, deploy keys in either the file or process environment, and a conflicting process deployment. It replaces the universe tables and leaves other tables alone. Passing `--prod` targets the same project's production deployment instead; nothing else reaches production.
 
 ## Calculation contract
 

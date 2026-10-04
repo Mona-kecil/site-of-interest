@@ -10,8 +10,10 @@ import { arrayBounds, IMPORT_ARRAY_CAP } from "../src/universe/array-bounds.mjs"
 
 const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
-if (args.some((arg) => arg !== "--dry-run")) throw new Error("Usage: node scripts/import-universe.mjs [--dry-run]");
+if (args.some((arg) => arg !== "--dry-run" && arg !== "--prod")) throw new Error("Usage: node scripts/import-universe.mjs [--dry-run] [--prod]");
 const dryRun = args.includes("--dry-run");
+// Production is opt-in: the dev deployment in .env.local still selects the project.
+const production = args.includes("--prod");
 let deployment = null;
 try {
   const environment = await readFile(resolve(root, ".env.local"), "utf8");
@@ -41,16 +43,17 @@ const tables = {
 const maxima = arrayBounds(tables, IMPORT_ARRAY_CAP);
 const directory = await mkdtemp(join(tmpdir(), "idx-universe-"));
 const commands = [];
-console.log(`${dryRun ? "Dry run for" : "Importing into"} Convex deployment: ${deployment ?? "not selected (.env.local absent)"}`);
+const target = production ? `production deployment of the project behind ${deployment ?? "an unselected deployment"}` : `Convex deployment: ${deployment ?? "not selected (.env.local absent)"}`;
+console.log(`${dryRun ? "Dry run for" : "Importing into"} ${target}`);
 console.log(`JSONL directory: ${directory}`);
 for (const [table, rows] of Object.entries(tables)) {
   const file = join(directory, `${table}.jsonl`);
   await writeFile(file, rows.map((row) => JSON.stringify(row)).join("\n") + "\n");
-  const commandArgs = ["convex", "import", "--table", table, "--replace", "--yes", file];
+  const commandArgs = ["convex", "import", ...(production ? ["--prod"] : []), "--table", table, "--replace", "--yes", file];
   commands.push(commandArgs);
   console.log(`${table}: ${rows.length} rows`);
   console.log(`  Array maxima (cap ${IMPORT_ARRAY_CAP}): ${Object.entries(maxima[table]).map(([column, length]) => `${column}=${length}`).join(", ") || "no array columns"}`);
-  console.log(`npx convex import --table ${table} --replace --yes '${file.replaceAll("'", "'\\''")}'`);
+  console.log(`npx ${commandArgs.slice(0, -1).join(" ")} '${file.replaceAll("'", "'\\''")}'`);
 }
 if (!dryRun) {
   for (const commandArgs of commands) await new Promise((resolveRun, rejectRun) => {

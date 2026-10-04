@@ -8,7 +8,15 @@ Start at `/universe`. Filter companies, choose a lens, and open a measurement to
 
 Install dependencies with `npm install`. For an existing configured and imported dev deployment, run `npm run dev` and open `http://127.0.0.1:5173/universe`. Vite reads `CONVEX_URL` from `.env.local`; the frontend uses `VITE_CONVEX_URL` at build time.
 
-For a fresh local setup, an operator runs `npm run dev:full` to start Convex and Vite together. Convex writes its deployment settings to `.env.local`. After the schema is deployed, import the checked-in universe with `npm run convex:import-universe`. The import replaces eight universe tables and refuses production, preview deployments, deploy keys and environment overrides. Keep credentials out of Git.
+For a fresh local setup, an operator runs `npm run dev:full` to start Convex and Vite together. Convex writes its deployment settings to `.env.local`. After the schema is deployed, import the checked-in universe with `npm run convex:import-universe`. The import replaces eight universe tables and refuses production, preview deployments, deploy keys and environment overrides unless `--prod` is passed. Keep credentials out of Git.
+
+## Deploy
+
+The live app is https://site-of-interest.vercel.app. Its backend is the project's production Convex deployment.
+
+1. `npx convex deploy` pushes the schema and functions to production.
+2. `node scripts/import-universe.mjs --prod` replaces the eight universe tables in production. `--prod` is the only way the import reaches production; `.env.local` must still name the project's dev deployment.
+3. Vercel's GitHub integration builds every push: `main` deploys to production and other branches get preview URLs. `npx vercel deploy --prod` deploys the local tree instead. Both build with `npm run build`. Vercel's production `CONVEX_URL` points at the production Convex URL. `.vercelignore` keeps `.env*` files out of the upload, and `vercel.json` rewrites app routes to `index.html`.
 
 ## Data pipeline
 
