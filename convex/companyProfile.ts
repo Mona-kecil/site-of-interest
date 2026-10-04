@@ -4,12 +4,6 @@ import { query } from "./_generated/server";
 import schema from "./schema";
 
 const limits = { years: 7, quarters: 8, holdings: 100, checks: definitions.length, peers: 1000 };
-const sourceLimit = 256;
-
-function bounded<T>(rows: T[], cap: number, name: string): T[] {
-  if (rows.length > cap) throw new Error(`Company profile exceeds ${name} cap (${cap})`);
-  return rows;
-}
 
 export const get = query({
   args: { symbol: v.string() },
@@ -38,45 +32,35 @@ export const get = query({
       .withIndex("by_symbol", (index) => index.eq("symbol", symbol.trim().toUpperCase()))
       .unique();
     if (!company) return null;
-    // Read one extra row so a larger snapshot fails instead of losing history or peers.
-    const [yearRows, quarterRows, holdingRows, checkRows, peerRows] = await Promise.all([
+    const [years, quarters, holdings, checks, peers] = await Promise.all([
       ctx.db
         .query("companyYears")
         .withIndex("by_symbol_and_year", (index) => index.eq("symbol", company.symbol))
-        .take(limits.years + 1),
+        .take(limits.years),
       ctx.db
         .query("companyQuarters")
         .withIndex("by_symbol_and_quarter", (index) => index.eq("symbol", company.symbol))
-        .take(limits.quarters + 1),
+        .take(limits.quarters),
       ctx.db
         .query("holdings")
         .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol))
-        .take(limits.holdings + 1),
+        .take(limits.holdings),
       ctx.db
         .query("checkResults")
         .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol))
-        .take(limits.checks + 1),
+        .take(limits.checks),
       ctx.db
         .query("companies")
         .withIndex("by_sub_sector", (index) => index.eq("subSector", company.subSector))
-        .take(limits.peers + 1),
+        .take(limits.peers),
     ]);
-    const years = bounded(yearRows, limits.years, "years");
-    const quarters = bounded(quarterRows, limits.quarters, "quarters");
-    const holdings = bounded(holdingRows, limits.holdings, "holdings");
-    const checks = bounded(checkRows, limits.checks, "checks");
-    const peers = bounded(peerRows, limits.peers, "peers");
-    const sourceIds = bounded(
-      [
-        ...new Set([
-          ...[company, ...years, ...quarters].flatMap((row) => Object.values(row.sourceIds)),
-          ...holdings.map((row) => row.sourceId),
-          ...checks.flatMap((row) => row.inputs.map((input) => input.sourceId)),
-        ]),
-      ],
-      sourceLimit,
-      "sources",
-    );
+    const sourceIds = [
+      ...new Set([
+        ...[company, ...years, ...quarters].flatMap((row) => Object.values(row.sourceIds)),
+        ...holdings.map((row) => row.sourceId),
+        ...checks.flatMap((row) => row.inputs.map((input) => input.sourceId)),
+      ]),
+    ];
     const sources = await Promise.all(
       sourceIds.map(async (id) => {
         const source = await ctx.db

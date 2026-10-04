@@ -18,11 +18,6 @@ const member = v.object({
   checks: v.array(universeCheckSummary),
 });
 
-function bounded<T>(rows: T[], limit: number, label: string): T[] {
-  if (rows.length > limit) throw new Error(`${label} exceeds ${limit} rows`);
-  return rows;
-}
-
 async function company(ctx: QueryCtx, symbol: string) {
   return ctx.db
     .query("companies")
@@ -31,14 +26,10 @@ async function company(ctx: QueryCtx, symbol: string) {
 }
 
 async function companyHoldings(ctx: QueryCtx, symbol: string) {
-  return bounded(
-    await ctx.db
-      .query("holdings")
-      .withIndex("by_symbol", (index) => index.eq("symbol", symbol))
-      .take(65),
-    64,
-    "Company holdings",
-  );
+  return ctx.db
+    .query("holdings")
+    .withIndex("by_symbol", (index) => index.eq("symbol", symbol))
+    .take(64);
 }
 
 async function entityHolders(ctx: QueryCtx, symbol: string) {
@@ -69,11 +60,7 @@ export const list = query({
   args: {},
   returns: v.array(summary),
   handler: async (ctx) => {
-    const rows = bounded(
-      await ctx.db.query("owners").withIndex("by_key").take(5001),
-      5000,
-      "Owner index",
-    );
+    const rows = await ctx.db.query("owners").withIndex("by_key").take(5000);
     return rows.map(({ key, name, kind, listedSymbol, holdings, companyCount, totalValue }) => ({
       key,
       name,
@@ -111,7 +98,7 @@ export const get = query({
       .unique();
     if (!row) return null;
     const holdings = await Promise.all(
-      bounded(row.holdings, 128, "Owner holdings").map(async (holding) => {
+      row.holdings.map(async (holding) => {
         const [held, holders] = await Promise.all([
           company(ctx, holding.symbol),
           entityHolders(ctx, holding.symbol),
@@ -138,44 +125,11 @@ export const get = query({
   },
 });
 
-export const forCompany = query({
-  args: { symbol: v.string() },
-  returns: v.array(
-    v.object({
-      holderName: v.string(),
-      holderKey: v.string(),
-      holderKind: v.union(v.literal("entity"), v.literal("public"), v.literal("treasury")),
-      ownerKey: nullableText,
-      percentage: nullableNumber,
-      shares: nullableNumber,
-      value: nullableNumber,
-      sourceId: v.string(),
-    }),
-  ),
-  handler: async (ctx, { symbol }) =>
-    (await companyHoldings(ctx, symbol.toUpperCase())).map(
-      ({ holderName, holderKey, holderKind, percentage, shares, value, sourceId }) => ({
-        holderName,
-        holderKey,
-        holderKind,
-        ownerKey: holderKind === "entity" ? ownerKey(holderName) : null,
-        percentage,
-        shares,
-        value,
-        sourceId,
-      }),
-    ),
-});
-
 export const groups = query({
   args: {},
   returns: v.array(businessGroup),
   handler: async (ctx) => {
-    const rows = bounded(
-      await ctx.db.query("businessGroups").withIndex("by_slug").take(129),
-      128,
-      "Business groups",
-    );
+    const rows = await ctx.db.query("businessGroups").withIndex("by_slug").take(128);
     return rows.map(({ slug, label, symbols, totalMarketCap }) => ({
       slug,
       label,
@@ -195,7 +149,7 @@ export const group = query({
       .unique();
     if (!row) return null;
     const members = await Promise.all(
-      bounded(row.symbols, 1024, "Group members").map(async (symbol) => {
+      row.symbols.map(async (symbol) => {
         const held = await company(ctx, symbol);
         return {
           symbol,

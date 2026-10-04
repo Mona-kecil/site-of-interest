@@ -60,25 +60,14 @@ export function ownershipGraph(owner: Pick<Owner, "key" | "name" | "holdings" | 
     if (holder.name < upper.get(holder.key)!.name) upper.get(holder.key)!.name = holder.name;
     upper.get(holder.key)!.percentages.push(holder.percentage);
   }
-  const held = new Map<string, (number | null)[]>();
+  const held = new Map<string, { name: string; percentages: (number | null)[] }>();
   for (const holding of owner.holdings) {
-    if (!held.has(holding.symbol)) held.set(holding.symbol, []);
-    held.get(holding.symbol)!.push(holding.percentage);
+    if (!held.has(holding.symbol))
+      held.set(holding.symbol, { name: holding.name ?? holding.symbol, percentages: [] });
+    held.get(holding.symbol)!.name = holding.name ?? holding.symbol;
+    held.get(holding.symbol)!.percentages.push(holding.percentage);
   }
   const largest = (percentages: (number | null)[]) => [...percentages].sort(comparePercentages)[0];
-  const upstream = [...upper].sort(
-    ([a, left], [b, right]) =>
-      comparePercentages(largest(left.percentages), largest(right.percentages)) ||
-      left.name.localeCompare(right.name) ||
-      a.localeCompare(b),
-  );
-  const companyNames = new Map(owner.holdings.map(({ symbol, name }) => [symbol, name ?? symbol]));
-  const downstream = [...held].sort(
-    ([a, left], [b, right]) =>
-      comparePercentages(largest(left), largest(right)) ||
-      companyNames.get(a)!.localeCompare(companyNames.get(b)!) ||
-      a.localeCompare(b),
-  );
   const upperCount = Math.min(upper.size, 8) + Number(upper.size > 8);
   const heldCount = Math.min(held.size, 8) + Number(held.size > 8);
   const count = Math.max(upperCount, heldCount, 1);
@@ -94,68 +83,61 @@ export function ownershipGraph(owner: Pick<Owner, "key" | "name" | "holdings" | 
     href: string,
     x: number,
     y: number,
-  ) => nodes.push({ id, label, role, href, x, y, width: 264, height: 56 });
-  node(
-    center,
-    owner.name,
-    "owner",
-    `/owner/${encodeURIComponent(owner.key)}`,
-    ownerX,
-    (height - 56) / 2,
+  ): GraphNode => ({ id, label, role, href, x, y, width: 264, height: 56 });
+  nodes.push(
+    node(
+      center,
+      owner.name,
+      "owner",
+      `/owner/${encodeURIComponent(owner.key)}`,
+      ownerX,
+      (height - 56) / 2,
+    ),
   );
   const top = (size: number) => (height - ((size - 1) * 92 + 56)) / 2;
-  upstream.slice(0, 8).forEach(([key, holder], index) => {
-    const id = `upstream:${key}`;
-    node(
-      id,
-      holder.name,
-      "upstream",
-      `/owner/${encodeURIComponent(key)}`,
-      24,
-      top(upperCount) + index * 92,
+  const column = (role: "upstream" | "company") => {
+    const upstream = role === "upstream";
+    const rows = [...(upstream ? upper : held)].sort(
+      ([a, left], [b, right]) =>
+        comparePercentages(largest(left.percentages), largest(right.percentages)) ||
+        left.name.localeCompare(right.name) ||
+        a.localeCompare(b),
     );
-    edges.push({
-      id,
-      from: id,
-      to: center,
-      percentages: [...holder.percentages].sort(comparePercentages),
+    const x = upstream ? 24 : ownerX + 340;
+    const size = upstream ? upperCount : heldCount;
+    rows.slice(0, 8).forEach(([key, row], index) => {
+      const id = `${role}:${key}`;
+      nodes.push(
+        node(
+          id,
+          upstream ? row.name : key,
+          role,
+          `/${upstream ? "owner" : "company"}/${encodeURIComponent(key)}`,
+          x,
+          top(size) + index * 92,
+        ),
+      );
+      edges.push({
+        id,
+        from: upstream ? id : center,
+        to: upstream ? center : id,
+        percentages: [...row.percentages].sort(comparePercentages),
+      });
     });
-  });
-  downstream.slice(0, 8).forEach(([symbol, percentages], index) => {
-    const id = `company:${symbol}`;
-    node(
-      id,
-      symbol,
-      "company",
-      `/company/${encodeURIComponent(symbol)}`,
-      ownerX + 340,
-      top(heldCount) + index * 92,
-    );
-    edges.push({
-      id,
-      from: center,
-      to: id,
-      percentages: [...percentages].sort(comparePercentages),
-    });
-  });
-  if (upper.size > 8)
-    node(
-      "more:upstream",
-      `+${upper.size - 8} more`,
-      "more",
-      "#owner-upstream",
-      24,
-      top(upperCount) + 8 * 92,
-    );
-  if (held.size > 8)
-    node(
-      "more:holdings",
-      `+${held.size - 8} more`,
-      "more",
-      "#owner-holdings",
-      ownerX + 340,
-      top(heldCount) + 8 * 92,
-    );
+    const section = upstream ? "upstream" : "holdings";
+    return rows.length > 8
+      ? node(
+          `more:${section}`,
+          `+${rows.length - 8} more`,
+          "more",
+          `#owner-${section}`,
+          x,
+          top(size) + 8 * 92,
+        )
+      : null;
+  };
+  const more = [column("upstream"), column("company")];
+  nodes.push(...more.filter((entry) => entry !== null));
   return { width: upper.size ? 992 : held.size ? 652 : 312, height, nodes, edges };
 }
 

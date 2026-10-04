@@ -1,6 +1,6 @@
 import { FIELD_DEFINITIONS } from "./fields.mjs";
 
-const financialSubSectors = new Set(["Banks", "Insurance", "Financing Service", "Investment Service"]);
+export const financialSubSectors = new Set(["Banks", "Insurance", "Financing Service", "Investment Service"]);
 const fields = new Map(FIELD_DEFINITIONS.map((field) => [field.key, field]));
 const recentYears = [2023, 2024, 2025];
 const historyYears = [2020, 2021, 2022, 2023, 2024, 2025];
@@ -81,7 +81,7 @@ export const CHECKS = Object.freeze([
     compute: threeYearRatio("operatingCashFlow", "earnings", "Earnings sum"),
   },
   {
-    id: "fcf_yield", label: "FCF yield", question: "What free-cash yield does today's market cap buy?", unit: "percent", appliesTo: "nonFinancial",
+    id: "fcf_yield", label: "FCF yield", question: "What is free cash flow relative to the current market cap?", unit: "percent", appliesTo: "nonFinancial",
     formula: "free_cash_flow[2025] / current market_cap",
     compute: calculate("FY2025 / current", [annual("freeCashFlow"), current("marketCap")], ([fcf, cap]) => divide(fcf, cap, "Market cap")),
   },

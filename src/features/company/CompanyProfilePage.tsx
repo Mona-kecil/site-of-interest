@@ -3,8 +3,7 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
 import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
-import { formatValue } from "../universe/universe-model";
-import { checkCell, checkQuestion } from "../../universe/presentation.mjs";
+import { checkCell, formatValue } from "../../universe/presentation.mjs";
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
 import {
@@ -25,8 +24,7 @@ import {
 } from "./profile-model";
 
 const route = getRouteApi("/company/$ticker");
-const reportedValue = (value: number | null, unit: CheckDefinition["unit"]) =>
-  value === null ? "Not reported" : formatValue(value, unit);
+const holderKindLabels = { entity: "Entity", public: "Public", treasury: "Treasury" };
 
 function PeerStrip({
   peers,
@@ -108,7 +106,7 @@ function CheckCard({
       <header>
         <div>
           <h3>{definition.label}</h3>
-          <p>{checkQuestion(definition)}</p>
+          <p>{definition.question}</p>
         </div>
         <strong
           className={cell.state === "does-not-apply" ? "check-does-not-apply" : undefined}
@@ -185,7 +183,7 @@ function HistoryTable({
                 <td key={fields[index].key} data-reported={value !== null}>
                   {fields[index].unit === "IDR"
                     ? formatIdrAmount(value)
-                    : reportedValue(value, "multiple")}
+                    : formatValue(value, "multiple")}
                 </td>
               ))}
             </tr>
@@ -201,7 +199,7 @@ function Holdings({ profile }: { profile: CompanyProfile }) {
     <div className="profile-holdings">
       <p>
         Free float:{" "}
-        <strong>{reportedValue(profile.company.current.freeFloat ?? null, "percent")}</strong>
+        <strong>{formatValue(profile.company.current.freeFloat ?? null, "percent")}</strong>
       </p>
       {profile.holdings.length ? (
         <div className="profile-table-wrap" tabIndex={0} role="region" aria-label="Holdings table">
@@ -231,15 +229,9 @@ function Holdings({ profile }: { profile: CompanyProfile }) {
                       <CustodianLabel />
                     )}
                   </th>
-                  <td>
-                    {holding.holderKind === "entity"
-                      ? "Entity"
-                      : holding.holderKind === "public"
-                        ? "Public"
-                        : "Treasury"}
-                  </td>
-                  <td>{reportedValue(holding.percentage, "percent")}</td>
-                  <td>{reportedValue(holding.shares, "count")}</td>
+                  <td>{holderKindLabels[holding.holderKind]}</td>
+                  <td>{formatValue(holding.percentage, "percent")}</td>
+                  <td>{formatValue(holding.shares, "count")}</td>
                   <td>{formatIdrAmount(holding.value)}</td>
                 </tr>
               ))}
@@ -282,11 +274,11 @@ function ResearchSection({
         <dl className="profile-current-price">
           <div>
             <dt>Current P/E · TTM Q3-2025–Q2-2026</dt>
-            <dd>{reportedValue(profile.company.current.peTtm ?? null, "multiple")}</dd>
+            <dd>{formatValue(profile.company.current.peTtm ?? null, "multiple")}</dd>
           </div>
           <div>
             <dt>Current P/B · MRQ Q2-2026</dt>
-            <dd>{reportedValue(profile.company.current.pbMrq ?? null, "multiple")}</dd>
+            <dd>{formatValue(profile.company.current.pbMrq ?? null, "multiple")}</dd>
           </div>
         </dl>
       )}
@@ -356,7 +348,7 @@ export function CompanyProfilePage() {
           </div>
           <div>
             <dt>Free float</dt>
-            <dd>{reportedValue(company.current.freeFloat ?? null, "percent")}</dd>
+            <dd>{formatValue(company.current.freeFloat ?? null, "percent")}</dd>
           </div>
           <div>
             <dt>Listing board</dt>

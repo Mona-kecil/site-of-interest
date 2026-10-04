@@ -101,9 +101,7 @@ export default defineSchema({
     shares: universeNumber,
     value: universeNumber,
     sourceId: v.string(),
-  })
-    .index("by_symbol", ["symbol"])
-    .index("by_holder_key", ["holderKey"]),
+  }).index("by_symbol", ["symbol"]),
 
   universeSources: defineTable({
     id: v.string(),

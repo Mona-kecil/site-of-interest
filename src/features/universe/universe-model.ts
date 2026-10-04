@@ -80,8 +80,6 @@ export function filterOptions(
   ];
 }
 
-export { formatInput, formatPeers, formatValue } from "../../universe/presentation.mjs";
-
 export function formatMarketCap(value: number | null) {
   return value === null
     ? "Not reported"

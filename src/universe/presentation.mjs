@@ -4,10 +4,6 @@ const fields = new Map(FIELD_DEFINITIONS.map((field) => [field.providerField, fi
 const number = (value, digits = 2) => new Intl.NumberFormat("en", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
 const fieldDefinition = (field) => fields.get(field.split("[")[0]);
 
-export function checkQuestion(definition) {
-  return definition.id === "fcf_yield" ? "What is free cash flow relative to the current market cap?" : definition.question;
-}
-
 function humanField(field) {
   const match = /^(\w+)(?:\[(\d{4}|Q\d-\d{4})\])?$/.exec(field);
   const definition = match && fields.get(match[1]);
@@ -90,12 +86,8 @@ export function sourceIdLine(sourceId, manifest) {
 }
 
 export function sourceLine(source, manifest) {
-  const url = new URL(source.endpoint, "https://api.sectors.app");
-  const batchId = source.id.replace(/-\d+$/, "");
-  const batch = manifest.groups.findIndex(({ id }) => id === batchId);
-  const offset = Number(url.searchParams.get("offset") ?? 0);
-  const limit = Number(url.searchParams.get("limit") ?? 200);
+  const path = new URL(source.endpoint, "https://api.sectors.app").pathname;
   const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(source.retrievedAt));
-  const provider = (source.provider ?? manifest.provider) === "sectors" ? "Sectors" : source.provider ?? manifest.provider;
-  return `${provider} · ${url.pathname} · ${batch < 0 ? "batch not recorded" : `batch ${batch + 1} of ${manifest.groups.length}`} · rows ${offset + 1}–${Math.min(offset + limit, manifest.companyCount)} · ${date}`;
+  const [provider, ...batchAndRows] = sourceIdLine(source.id, manifest).split(" · ");
+  return [provider, path, ...batchAndRows, date].join(" · ");
 }

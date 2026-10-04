@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { formatValue } from "../universe/universe-model";
+import { formatValue } from "../../universe/presentation.mjs";
 import { graphLines, ownershipGraph, type Owner } from "./owners-model";
 
 export function OwnershipGraph({ owner }: { owner: Owner }) {

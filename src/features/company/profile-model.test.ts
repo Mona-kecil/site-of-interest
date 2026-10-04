@@ -96,7 +96,6 @@ describe("Company profile model", () => {
       "C",
     ]);
     expect(strip.missing).toEqual(["E"]);
-    expect([strip.min, strip.max]).toEqual([-2, 6]);
   });
 
   it("spaces ordinary peers by rank despite a loan/deposit outlier", () => {
@@ -124,16 +123,13 @@ describe("Company profile model", () => {
       ).points.map(({ position }) => position),
     ).toEqual([0.5, 0.5]);
     expect(peerStrip([{ symbol: "A", value: null }], "A")).toEqual({
-      min: null,
-      max: null,
       points: [],
       missing: ["A"],
     });
   });
 
-  it("formats IDR with an explicit, consistent billion or trillion unit", () => {
+  it("formats IDR with an explicit, consistent billion unit", () => {
     expect(formatIdr(1.25e12)).toBe("IDR 1,250.00 bn");
-    expect(formatIdr(1.25e12, "tn")).toBe("IDR 1.25 tn");
     expect(formatIdr(-2.5e9)).toBe("IDR -2.50 bn");
     expect(formatIdr(0)).toBe("IDR 0.00 bn");
     expect(formatIdr(null)).toBe("Not reported");

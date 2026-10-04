@@ -3,14 +3,14 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { FIELD_DEFINITIONS } from "./fields.mjs";
 import { definitions } from "./checks.mjs";
-import { checkCell, checkQuestion, formatInput, gapCategory, humanGap, inputLabel, sourceIdLine, sourceLine } from "./presentation.mjs";
+import { checkCell, formatInput, gapCategory, humanGap, inputLabel, sourceIdLine, sourceLine } from "./presentation.mjs";
 
 const read = async (name) => JSON.parse(await readFile(new URL(`../../data/universe/${name}.json`, import.meta.url), "utf8"));
 const result = { value: 2, percentile: 0.84, peerCount: 31, gap: null };
 
 test("displayed registry questions use measurement language", () => {
-  for (const definition of definitions) assert.doesNotMatch(checkQuestion(definition), /\b(?:good|bad|buy|sell|healthy|weak|warning|threshold|cheap|expensive)\b/i);
-  assert.equal(checkQuestion(definitions.find(({ id }) => id === "fcf_yield")), "What is free cash flow relative to the current market cap?");
+  for (const definition of definitions) assert.doesNotMatch(definition.question, /\b(?:good|bad|buy|sell|healthy|weak|warning|threshold|cheap|expensive)\b/i);
+  assert.equal(definitions.find(({ id }) => id === "fcf_yield").question, "What is free cash flow relative to the current market cap?");
 });
 
 test("check cells distinguish measured, few peers, gaps and non-applicability", () => {
