@@ -1,9 +1,9 @@
-import { checkCell } from "../../universe/presentation.mjs";
+import { checkCell, formatValue } from "../../universe/presentation.mjs";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { definitions } from "../../universe/checks.mjs";
-import { formatMarketCap, formatValue } from "../universe/universe-model";
+import { formatMarketCap } from "../universe/universe-model";
 
 const groupNote =
   "Sectors business-group labels. Membership follows the provider's affiliates field; control has not been verified. A company can carry more than one label.";

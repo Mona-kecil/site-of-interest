@@ -1,10 +1,8 @@
 import { describe, expect, it } from "vitest";
+import { formatInput, formatPeers, formatValue } from "../../universe/presentation.mjs";
 import {
   filterOptions,
-  formatInput,
   formatMarketCap,
-  formatPeers,
-  formatValue,
   screenRows,
   UNREPORTED,
   type Filters,

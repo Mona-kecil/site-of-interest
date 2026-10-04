@@ -4,10 +4,6 @@ const fields = new Map(FIELD_DEFINITIONS.map((field) => [field.providerField, fi
 const number = (value, digits = 2) => new Intl.NumberFormat("en", { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
 const fieldDefinition = (field) => fields.get(field.split("[")[0]);
 
-export function checkQuestion(definition) {
-  return definition.id === "fcf_yield" ? "What is free cash flow relative to the current market cap?" : definition.question;
-}
-
 function humanField(field) {
   const match = /^(\w+)(?:\[(\d{4}|Q\d-\d{4})\])?$/.exec(field);
   const definition = match && fields.get(match[1]);
@@ -80,22 +76,23 @@ export function formatInput(value, field = "", checkUnit = "multiple") {
   return new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(value);
 }
 
-// Owner pages carry only source ids; the id encodes the field batch and row offset.
-export function sourceIdLine(sourceId, manifest) {
+// A source id encodes the field batch and row offset, e.g. universe-04-400.
+function batchRows(sourceId, manifest) {
   const match = /^(.+)-(\d+)$/.exec(sourceId);
   const batch = match ? manifest.groups.findIndex(({ id }) => id === match[1]) : -1;
-  if (batch < 0) return sourceId;
+  if (batch < 0) return null;
   const offset = Number(match[2]);
-  return `Sectors · batch ${batch + 1} of ${manifest.groups.length} · rows ${offset + 1}–${Math.min(offset + 200, manifest.companyCount)}`;
+  return `batch ${batch + 1} of ${manifest.groups.length} · rows ${offset + 1}–${Math.min(offset + 200, manifest.companyCount)}`;
+}
+
+// Owner pages carry only source ids.
+export function sourceIdLine(sourceId, manifest) {
+  const rows = batchRows(sourceId, manifest);
+  return rows ? `Sectors · ${rows}` : sourceId;
 }
 
 export function sourceLine(source, manifest) {
-  const url = new URL(source.endpoint, "https://api.sectors.app");
-  const batchId = source.id.replace(/-\d+$/, "");
-  const batch = manifest.groups.findIndex(({ id }) => id === batchId);
-  const offset = Number(url.searchParams.get("offset") ?? 0);
-  const limit = Number(url.searchParams.get("limit") ?? 200);
+  const path = new URL(source.endpoint, "https://api.sectors.app").pathname;
   const date = new Intl.DateTimeFormat("en-GB", { day: "numeric", month: "short", year: "numeric", timeZone: "UTC" }).format(new Date(source.retrievedAt));
-  const provider = (source.provider ?? manifest.provider) === "sectors" ? "Sectors" : source.provider ?? manifest.provider;
-  return `${provider} · ${url.pathname} · ${batch < 0 ? "batch not recorded" : `batch ${batch + 1} of ${manifest.groups.length}`} · rows ${offset + 1}–${Math.min(offset + limit, manifest.companyCount)} · ${date}`;
+  return ["Sectors", path, batchRows(source.id, manifest) ?? source.id, date].join(" · ");
 }

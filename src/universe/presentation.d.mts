@@ -3,7 +3,6 @@ export type CheckValue = { value: number | null; percentile: number | null; peer
 export type CheckInput = { key: string; field: string; period: string; value: number | null; sourceId: string; label?: string };
 export type Source = { id: string; endpoint: string; retrievedAt: string; provider?: string };
 export type Manifest = { provider: string; companyCount: number; groups: { id: string }[] };
-export function checkQuestion(definition: { id: string; question: string }): string;
 export function inputLabel(input: Pick<CheckInput, "key" | "field" | "period">): string;
 export function humanGap(gap: string): string;
 export function gapCategory(gap: string | null): "Not reported" | "Not meaningful" | "Too little history";

@@ -13,7 +13,7 @@ import {
   type Sort,
 } from "./universe-model";
 
-import { checkCell, checkQuestion } from "../../universe/presentation.mjs";
+import { checkCell } from "../../universe/presentation.mjs";
 import { CheckInput } from "./CheckInput";
 
 type Selection = { symbol: string; checkId: string };
@@ -67,7 +67,7 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
       ) : (
         <>
           <h2>{result.definition.label}</h2>
-          <p>{checkQuestion(result.definition)}</p>
+          <p>{result.definition.question}</p>
           <dl className="universe-calculation">
             <div>
               <dt>Formula</dt>

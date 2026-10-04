@@ -1,7 +1,12 @@
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
 import manifest from "../../../data/universe/manifest.json";
-import { definitions, type CheckDefinition } from "../../universe/checks.mjs";
+import {
+  applies,
+  definitions,
+  financialSubSectors,
+  type CheckDefinition,
+} from "../../universe/checks.mjs";
 import { lenses } from "../universe/universe-model";
 
 export type CompanyProfile = NonNullable<FunctionReturnType<typeof api.companyProfile.get>>;
@@ -16,12 +21,6 @@ export type ProfileSection = {
   series: SeriesField[];
 };
 
-const financialSubSectors = new Set([
-  "Banks",
-  "Insurance",
-  "Financing Service",
-  "Investment Service",
-]);
 const money = (key: string, label: string): SeriesField => ({ key, label, unit: "IDR" });
 const history: Record<string, SeriesField[]> = {
   Cash: [
@@ -61,13 +60,7 @@ export const annualPeriods = manifest.years;
 export const quarterPeriods = manifest.quarters;
 
 export function assembleSections(company: { subSector: string | null }) {
-  const applicable = definitions.filter(
-    (check) =>
-      check.appliesTo === "all" ||
-      (check.appliesTo === "bank"
-        ? company.subSector === "Banks"
-        : !financialSubSectors.has(company.subSector ?? "")),
-  );
+  const applicable = definitions.filter((check) => applies(check, company));
   const sections: ProfileSection[] = lenses.flatMap((lens) => {
     const checks = lens.checks.flatMap((id) => applicable.filter((check) => check.id === id));
     return checks.length
@@ -102,8 +95,6 @@ export function extractSeries<P extends string | number>(
 
 export function peerStrip(peers: readonly Peer[], symbol: string) {
   const reported = peers.filter((peer): peer is Peer & { value: number } => peer.value !== null);
-  const min = reported.length ? Math.min(...reported.map(({ value }) => value)) : null;
-  const max = reported.length ? Math.max(...reported.map(({ value }) => value)) : null;
   const ordered = [...reported].sort((a, b) => a.value - b.value);
   const positions = new Map<number, number>();
   for (let start = 0; start < ordered.length;) {
@@ -116,8 +107,6 @@ export function peerStrip(peers: readonly Peer[], symbol: string) {
     start = end;
   }
   return {
-    min,
-    max,
     points: reported.map((peer) => ({
       ...peer,
       position: positions.get(peer.value)!,
@@ -127,16 +116,16 @@ export function peerStrip(peers: readonly Peer[], symbol: string) {
   };
 }
 
-export function formatIdrAmount(value: number | null, unit: "bn" | "tn" = "bn") {
+export function formatIdrAmount(value: number | null) {
   return value === null
     ? "Not reported"
     : new Intl.NumberFormat("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
-        value / (unit === "bn" ? 1e9 : 1e12),
+        value / 1e9,
       );
 }
 
-export function formatIdr(value: number | null, unit: "bn" | "tn" = "bn") {
-  return value === null ? "Not reported" : `IDR ${formatIdrAmount(value, unit)} ${unit}`;
+export function formatIdr(value: number | null) {
+  return value === null ? "Not reported" : `IDR ${formatIdrAmount(value)} bn`;
 }
 
 export function orderHoldings<

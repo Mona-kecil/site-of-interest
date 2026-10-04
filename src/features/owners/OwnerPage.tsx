@@ -1,11 +1,11 @@
 import manifest from "../../../data/universe/manifest.json";
 import { isCustodianName } from "../../universe/owners.mjs";
-import { sourceIdLine } from "../../universe/presentation.mjs";
+import { formatValue, sourceIdLine } from "../../universe/presentation.mjs";
 import { CustodianLabel } from "./CustodianLabel";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
-import { formatMarketCap, formatValue } from "../universe/universe-model";
+import { formatMarketCap } from "../universe/universe-model";
 import { kindLabels } from "./owners-model";
 import { OwnershipGraph } from "./OwnershipGraph";
 
