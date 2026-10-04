@@ -8,15 +8,8 @@
  * @module
  */
 
-import type * as companies from "../companies.js";
 import type * as companyProfile from "../companyProfile.js";
-import type * as empireDirectory from "../empireDirectory.js";
-import type * as empires from "../empires.js";
-import type * as focus from "../focus.js";
-import type * as fundamentalSignals from "../fundamentalSignals.js";
-import type * as news from "../news.js";
 import type * as owners from "../owners.js";
-import type * as seed from "../seed.js";
 import type * as universe from "../universe.js";
 
 import type {
@@ -26,15 +19,8 @@ import type {
 } from "convex/server";
 
 declare const fullApi: ApiFromModules<{
-  companies: typeof companies;
   companyProfile: typeof companyProfile;
-  empireDirectory: typeof empireDirectory;
-  empires: typeof empires;
-  focus: typeof focus;
-  fundamentalSignals: typeof fundamentalSignals;
-  news: typeof news;
   owners: typeof owners;
-  seed: typeof seed;
   universe: typeof universe;
 }>;
 

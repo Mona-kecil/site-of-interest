@@ -16,20 +16,14 @@
     "test:e2e": "playwright test",
     "test:legacy": "node --test 'src/**/*.test.mjs' 'scripts/**/*.test.mjs'",
     "convex:dev": "convex dev",
-    "convex:seed": "node scripts/seed-prajogo.mjs",
     "convex:import-universe": "node scripts/import-universe.mjs",
-    "sync:sectors": "node scripts/sync-sectors.mjs",
-    "sync:news": "node scripts/sync-news.mjs",
     "sync:universe": "node scripts/sync-universe.mjs",
     "validate:universe": "node scripts/validate-universe.mjs",
-    "analyze:empire": "node scripts/analyze-empire.mjs data/empires/prajogo",
-    "validate": "node scripts/validate-corpus.mjs data/empires/prajogo",
     "validate:docs": "node scripts/validate-product-docs.mjs"
   },
   "dependencies": {
     "@tanstack/react-router": "^1.170.38",
     "convex": "^1.46.0",
-    "motion": "^13.4.0",
     "react": "^19.3.0",
     "react-dom": "^19.3.0"
   },
