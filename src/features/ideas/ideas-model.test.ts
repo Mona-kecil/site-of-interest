@@ -78,7 +78,9 @@ describe("Ideas assessment", () => {
     ["owners", "free_float", 0.1, "pass", null],
     ["owners", "free_float", 0.099, "fail", null],
   ] as const)("%s / %s at %s yields %s", (id, key, value, result, subSector) => {
-    expect(pillar({ [key]: value }, id, subSector).evidence).toEqual([{ key, value, result }]);
+    expect(pillar({ [key]: value }, id, subSector).evidence).toMatchObject([
+      { key, value, result },
+    ]);
   });
 
   it("omits null and absent inputs and distinguishes unknown from non-applicable pillars", () => {

@@ -15,7 +15,7 @@ import {
 
 import { checkCell } from "../../universe/presentation.mjs";
 import { CheckInput } from "./CheckInput";
-import { verdictLabels } from "../ideas/IdeasPage";
+import { verdictLabels } from "../ideas/ideas-model";
 
 type Selection = { symbol: string; checkId: string };
 const columns = [

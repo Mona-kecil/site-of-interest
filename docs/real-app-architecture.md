@@ -21,8 +21,8 @@ The company query accepts lowercase ticker input. Domain route keys use ticker, 
 | Module | Role |
 | --- | --- |
 | [router.tsx](../src/router.tsx) | App shell and route registration |
-| [IdeasPage.tsx](../src/features/ideas/IdeasPage.tsx) | Ideas lists, rules, registry-generated evidence text and verdict labels |
-| [ideas-model.ts](../src/features/ideas/ideas-model.ts) | Pure pillar rules, class-specific core pillars and assessment shared by all three surfaces |
+| [IdeasPage.tsx](../src/features/ideas/IdeasPage.tsx) | Ideas lists, rules, registry-generated evidence text and verdict descriptions |
+| [ideas-model.ts](../src/features/ideas/ideas-model.ts) | Pure pillar rules, class-specific core pillars, verdict labels and assessment shared by all three surfaces |
 | [UniversePage.tsx](../src/features/universe/UniversePage.tsx) | Screener, keyboard lens tabs and evidence panel |
 | [universe-model.ts](../src/features/universe/universe-model.ts) | Pure filters, sort, lens order and number-format exports |
 | [CompanyProfilePage.tsx](../src/features/company/CompanyProfilePage.tsx) | Company sections, history tables, holdings and evidence |

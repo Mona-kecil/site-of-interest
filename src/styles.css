@@ -751,6 +751,10 @@ a:focus-visible {
 .outcome-pass { color: var(--acid); }
 .outcome-mixed { color: #f0cb79; }
 .outcome-fail { color: #ffa394; }
+.idea-reasons { margin: 0; padding-left: 18px; font-size: 13px; line-height: 1.6; }
+.idea-reasons li + li { margin-top: 8px; }
+.idea-reasons strong { font-weight: 600; }
+.idea-reasons span { display: block; }
 .idea-reason { margin-top: 16px; font-size: 13px; line-height: 1.7; }
 .idea-reason h3 { margin: 0; font-size: 14px; font-weight: 600; }
 .idea-reason p, .idea-reason ul { margin: 4px 0; }

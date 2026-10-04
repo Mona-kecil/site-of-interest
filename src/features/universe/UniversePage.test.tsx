@@ -185,7 +185,7 @@ describe("Ideas page", () => {
     expect(within(ideas).getAllByRole("article")).toHaveLength(12);
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent("IDEA13");
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent(
-      "Cash conversion: 1.00×; meets pass >= 0.80×",
+      "Cash conversion 1.00× · pass ≥ 0.80×",
     );
     expect(screen.queryByRole("link", { name: "SMALL" })).not.toBeInTheDocument();
     fireEvent.click(
@@ -194,7 +194,7 @@ describe("Ideas page", () => {
     expect(within(ideas).getAllByRole("article")).toHaveLength(14);
     const flags = screen.getByRole("region", { name: "Red flags · 1" });
     expect(flags).toHaveTextContent("Priced for perfection");
-    expect(flags).toHaveTextContent("Current P/E: 100.00×; flags > 50.00×");
+    expect(flags).toHaveTextContent("Current P/E 100.00× · flag > 50.00×");
     expect(within(flags).getByRole("link", { name: "FLAG" })).toHaveAttribute(
       "href",
       "/company/FLAG",

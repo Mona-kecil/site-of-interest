@@ -9,13 +9,13 @@ test("opens Ideas with both lists, rules and company reasons", async ({ page }) 
   const flags = page.getByRole("region", { name: /^Red flags ·/ });
   await expect(ideas.getByRole("article")).toHaveCount(12);
   await expect(flags.getByRole("article")).toHaveCount(12);
-  await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText("meets pass");
-  await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText("flags");
+  await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText("· pass ");
+  await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText("· flag ");
   const dcii = flags.locator('[data-symbol="DCII"]');
   await expect(dcii).toContainText("Priced for perfection");
-  await expect(dcii).toContainText("Current P/E: 413.61×; flags > 50.00×");
+  await expect(dcii).toContainText("Current P/E 413.61× · flag > 50.00×");
   await page.getByText("How a stock makes the list", { exact: true }).click();
-  await expect(page.locator(".ideas-method")).toContainText("Cash conversion: pass >= 0.80×; flag < 0.50×");
+  await expect(page.locator(".ideas-method")).toContainText("Cash conversion: pass ≥ 0.80×, flag < 0.50×");
   await ideas.getByRole("button", { name: /^Show all/ }).click();
   await expect.poll(() => ideas.getByRole("article").count()).toBeGreaterThan(12);
   await flags.getByRole("button", { name: /^Show all/ }).click();

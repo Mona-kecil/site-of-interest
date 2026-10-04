@@ -9,19 +9,15 @@ import { formatMarketCap, type ScreenRow } from "../universe/universe-model";
 import {
   assess,
   PILLARS,
+  verdictLabels,
+  type Bound,
   type CompanyClass,
   type Outcome,
   type Rule,
   type Verdict,
 } from "./ideas-model";
 
-export const verdictLabels: Record<Verdict, string> = {
-  idea: "Worth a look",
-  mixed: "Mixed",
-  flags: "Red flags",
-  thin: "Not enough data",
-};
-export const outcomeLabels: Record<Outcome, string> = {
+const outcomeLabels: Record<Outcome, string> = {
   pass: "Pass",
   mixed: "Mixed",
   fail: "Fail",
@@ -29,46 +25,37 @@ export const outcomeLabels: Record<Outcome, string> = {
   na: "Does not apply",
 };
 export const verdictDescriptions: Record<Verdict, string> = {
-  idea: "At least three pillars have data, the core pillars pass, and at most one applicable pillar is mixed or missing inputs.",
-  mixed:
-    "At least three pillars have data and none fail, but the core or remaining pillars do not clear the Worth a look rules.",
-  flags: "At least one reported rule fails, even when other inputs are missing.",
-  thin: "No pillar fails, but fewer than three pillars have reported inputs.",
+  idea: "The core pillars pass (cash and balance sheet; returns and balance sheet for banks) and at most one other pillar falls short of a pass.",
+  mixed: "No measurement hits a flag, but the company does not clear every Worth a look test.",
+  flags: "At least one measurement hits a flag line.",
+  thin: "No measurement hits a flag, but fewer than three pillars have reported numbers.",
 };
 const classLabels: Record<CompanyClass, string> = {
   nonFinancial: "Non-financial companies",
   bank: "Banks",
-  otherFinancial: "Other financial companies",
+  otherFinancial: "Insurance, financing and investment companies",
 };
 const definitionById = new Map(definitions.map((definition) => [definition.id, definition]));
+const symbols = { ">=": "≥", "<=": "≤", ">": ">", "<": "<" };
 type PillarResult = ReturnType<typeof assess>["pillars"][number];
+type Evidence = PillarResult["evidence"][number];
 
-export function RuleText({
-  rule,
-  evidence,
-}: {
-  rule: Rule;
-  evidence?: PillarResult["evidence"][number];
-}) {
+function RuleText({ rule }: { rule: Rule | Evidence }) {
   const definition = definitionById.get(rule.key);
   const label = rule.key === "pe_ttm" ? "Current P/E" : definition!.label;
   const unit = rule.key === "pe_ttm" ? "multiple" : definition!.unit;
-  const pass = rule.pass && `${rule.pass[0]} ${formatValue(rule.pass[1], unit)}`;
-  const fail = rule.fail && `${rule.fail[0]} ${formatValue(rule.fail[1], unit)}`;
-  return (
-    <>
-      {label}: {evidence ? `${formatValue(evidence.value, unit)}; ` : ""}
-      {evidence
-        ? evidence.result === "fail"
-          ? `flags ${fail}`
-          : evidence.result === "neutral"
-            ? `misses pass ${pass}`
-            : pass
-              ? `meets pass ${pass}`
-              : `passes; flag ${fail} not met`
-        : [pass ? `pass ${pass}` : null, fail ? `flag ${fail}` : null].filter(Boolean).join("; ")}
-    </>
-  );
+  const bound = ([operator, threshold]: Bound) =>
+    `${symbols[operator]} ${formatValue(threshold, unit)}`;
+  const pass = rule.pass && `pass ${bound(rule.pass)}`;
+  const flag = rule.fail && `flag ${bound(rule.fail)}`;
+  if (!("result" in rule)) return <>{`${label}: ${[pass, flag].filter(Boolean).join(", ")}`}</>;
+  const threshold =
+    rule.result === "fail"
+      ? flag
+      : rule.result === "neutral"
+        ? `short of ${pass}`
+        : (pass ?? `clear of ${flag}`);
+  return <>{`${label} ${formatValue(rule.value, unit)} · ${threshold}`}</>;
 }
 
 export function PillarOutcome({
@@ -94,12 +81,7 @@ export function PillarOutcome({
         <ul>
           {result.evidence.map((evidence) => (
             <li key={evidence.key}>
-              <RuleText
-                rule={Object.values(pillar.rules)
-                  .flat()
-                  .find(({ key }) => key === evidence.key)!}
-                evidence={evidence}
-              />
+              <RuleText rule={evidence} />
             </li>
           ))}
         </ul>
@@ -140,23 +122,30 @@ function CompanyCard({
           </span>
         ))}
       </div>
-      <div className="idea-reasons">
-        {reasons.map((result) => (
-          <PillarOutcome
-            key={result.id}
-            pillar={PILLARS.find(({ id }) => id === result.id)!}
-            result={{
-              ...result,
-              evidence:
-                assessment.verdict === "flags"
-                  ? result.evidence.filter(({ result }) => result === "fail")
-                  : result.outcome === "pass"
-                    ? result.evidence.slice(0, 1)
-                    : result.evidence,
-            }}
-          />
-        ))}
-      </div>
+      <ul className="idea-reasons">
+        {reasons.map(({ id, outcome, evidence }) => {
+          const pillar = PILLARS.find((item) => item.id === id)!;
+          return (
+            <li key={id}>
+              <strong>
+                {outcome === "na" || outcome === "unknown"
+                  ? `${pillar.title}: inputs not reported`
+                  : pillar.headlines[outcome]}
+              </strong>
+              {(assessment.verdict === "flags"
+                ? evidence.filter(({ result }) => result === "fail")
+                : outcome === "pass"
+                  ? evidence.slice(0, 1)
+                  : evidence
+              ).map((item) => (
+                <span key={item.key}>
+                  <RuleText rule={item} />
+                </span>
+              ))}
+            </li>
+          );
+        })}
+      </ul>
     </article>
   );
 }
@@ -203,15 +192,44 @@ export function IdeasPage() {
       </header>
       <details className="ideas-method">
         <summary>How a stock makes the list</summary>
+        <p>
+          Each rule compares one measurement with a pass line, a flag line, or both. A pillar passes
+          when every reported rule passes, fails when any rule hits its flag, and is mixed
+          otherwise. Missing numbers are skipped, never counted as zero. Insurance, financing and
+          investment companies have no balance-sheet rules here, so they can be Mixed at best.
+        </p>
+        <dl>
+          {(Object.keys(verdictLabels) as Verdict[]).map((verdict) => (
+            <div key={verdict}>
+              <dt>{verdictLabels[verdict]}</dt>
+              <dd>{verdictDescriptions[verdict]}</dd>
+            </div>
+          ))}
+        </dl>
         <div className="ideas-rules">
-          {PILLARS.map((pillar) => (
-            <section key={pillar.id}>
-              <h2>{pillar.title}</h2>
-              <p>{pillar.question}</p>
-              {(Object.entries(pillar.rules) as [CompanyClass, Rule[]][]).map(
-                ([companyClass, rules]) => (
-                  <div key={companyClass}>
-                    <h3>{classLabels[companyClass]}</h3>
+          {PILLARS.map((pillar) => {
+            const groups = new Map<string, { rules: Rule[]; classes: CompanyClass[] }>();
+            for (const [companyClass, rules] of Object.entries(pillar.rules) as [
+              CompanyClass,
+              Rule[],
+            ][]) {
+              const key = JSON.stringify(rules);
+              groups.set(key, {
+                rules,
+                classes: [...(groups.get(key)?.classes ?? []), companyClass],
+              });
+            }
+            return (
+              <section key={pillar.id}>
+                <h2>{pillar.title}</h2>
+                <p>{pillar.question}</p>
+                {[...groups.values()].map(({ rules, classes }) => (
+                  <div key={classes.join()}>
+                    <h3>
+                      {classes.length === 3
+                        ? "All companies"
+                        : classes.map((item) => classLabels[item]).join(" · ")}
+                    </h3>
                     {rules.length ? (
                       <ul>
                         {rules.map((rule) => (
@@ -224,29 +242,11 @@ export function IdeasPage() {
                       <p>Does not apply.</p>
                     )}
                   </div>
-                ),
-              )}
-            </section>
-          ))}
+                ))}
+              </section>
+            );
+          })}
         </div>
-        <p>
-          Missing values add no evidence. A pillar fails if any rule fails, passes if all reported
-          rules pass, and is mixed otherwise. No reported rules means inputs not reported; an empty
-          rule list means does not apply. Fail-only rules pass when their flag threshold is not met.
-        </p>
-        <p>
-          Core pillars: cash and balance sheet for non-financial companies; returns and balance
-          sheet for banks and other financial companies. Other financial companies cannot be Worth a
-          look because their balance pillar does not apply.
-        </p>
-        <dl>
-          {(Object.keys(verdictLabels) as Verdict[]).map((verdict) => (
-            <div key={verdict}>
-              <dt>{verdictLabels[verdict]}</dt>
-              <dd>{verdictDescriptions[verdict]}</dd>
-            </div>
-          ))}
-        </dl>
       </details>
       {companies === undefined ? (
         <p role="status">Loading ideas</p>

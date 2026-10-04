@@ -125,7 +125,7 @@ describe("Company profile page", () => {
     const verdict = screen.getByRole("region", { name: "Not enough data" });
     expect(verdict).toHaveTextContent("Cash: Does not apply");
     expect(verdict).toHaveTextContent("Returns: Inputs not reported");
-    expect(verdict).toHaveTextContent("NPL ratio: 2.00%; meets pass <= 3.00%");
+    expect(verdict).toHaveTextContent("NPL ratio 2.00% · pass ≤ 3.00%");
     expect(
       within(verdict).getByRole("link", { name: "View balance sheet inputs" }),
     ).toHaveAttribute("href", "#profile-banks");

@@ -9,7 +9,7 @@ test("opens a lowercase bank symbol with NPL and no ROIC", async ({ page }) => {
   const verdict = page.getByRole("region", { name: "Worth a look", exact: true });
   await expect(verdict).toBeVisible();
   await expect(verdict).toContainText("Cash: Does not apply");
-  await expect(verdict).toContainText("NPL ratio: 1.65%; meets pass <= 3.00%");
+  await expect(verdict).toContainText("NPL ratio 1.65% · pass ≤ 3.00%");
   await expect(verdict.getByRole("link", { name: "View balance sheet inputs" })).toHaveAttribute("href", "#profile-banks");
 });
 
@@ -19,7 +19,7 @@ test("explains a company price flag before the section navigation", async ({ pag
   await expect(verdict).toBeVisible();
   await expect(verdict).toContainText("Price: Fail");
   await expect(verdict).toContainText("Priced for perfection");
-  await expect(verdict).toContainText("Current P/E: 413.61×; flags > 50.00×");
+  await expect(verdict).toContainText("Current P/E 413.61× · flag > 50.00×");
   await verdict.getByRole("link", { name: "View price inputs" }).click();
   await expect(page).toHaveURL(/#profile-price$/);
 });

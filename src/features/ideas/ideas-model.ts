@@ -7,6 +7,25 @@ export type PillarId = "cash" | "returns" | "balance" | "price" | "owners";
 export type Outcome = "pass" | "mixed" | "fail" | "unknown" | "na";
 export type Verdict = "idea" | "mixed" | "flags" | "thin";
 
+export const verdictLabels: Record<Verdict, string> = {
+  idea: "Worth a look",
+  mixed: "Mixed",
+  flags: "Red flags",
+  thin: "Not enough data",
+};
+
+const roe: Rule[] = [{ key: "roe", pass: [">=", 0.12], fail: ["<", 0.05] }];
+const financialPrice: Rule[] = [
+  { key: "pb_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
+  { key: "pe_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
+  { key: "pe_ttm", fail: [">", 50] },
+];
+const owners: Rule[] = [
+  { key: "share_dilution", pass: ["<=", 0.05], fail: [">", 0.25] },
+  { key: "dividend_years", pass: [">=", 4] },
+  { key: "free_float", fail: ["<", 0.1] },
+];
+
 export const PILLARS: {
   id: PillarId;
   title: string;
@@ -43,8 +62,8 @@ export const PILLARS: {
     },
     rules: {
       nonFinancial: [{ key: "roic", pass: [">=", 0.12], fail: ["<", 0.05] }],
-      bank: [{ key: "roe", pass: [">=", 0.12], fail: ["<", 0.05] }],
-      otherFinancial: [{ key: "roe", pass: [">=", 0.12], fail: ["<", 0.05] }],
+      bank: roe,
+      otherFinancial: roe,
     },
   },
   {
@@ -84,16 +103,8 @@ export const PILLARS: {
         { key: "fcf_yield", pass: [">=", 0.05] },
         { key: "pe_ttm", fail: [">", 50] },
       ],
-      bank: [
-        { key: "pb_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
-        { key: "pe_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
-        { key: "pe_ttm", fail: [">", 50] },
-      ],
-      otherFinancial: [
-        { key: "pb_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
-        { key: "pe_vs_history", pass: ["<=", 1], fail: [">", 1.5] },
-        { key: "pe_ttm", fail: [">", 50] },
-      ],
+      bank: financialPrice,
+      otherFinancial: financialPrice,
     },
   },
   {
@@ -105,23 +116,7 @@ export const PILLARS: {
       mixed: "Mixed record with minority holders",
       fail: "Minority holders at risk",
     },
-    rules: {
-      nonFinancial: [
-        { key: "share_dilution", pass: ["<=", 0.05], fail: [">", 0.25] },
-        { key: "dividend_years", pass: [">=", 4] },
-        { key: "free_float", fail: ["<", 0.1] },
-      ],
-      bank: [
-        { key: "share_dilution", pass: ["<=", 0.05], fail: [">", 0.25] },
-        { key: "dividend_years", pass: [">=", 4] },
-        { key: "free_float", fail: ["<", 0.1] },
-      ],
-      otherFinancial: [
-        { key: "share_dilution", pass: ["<=", 0.05], fail: [">", 0.25] },
-        { key: "dividend_years", pass: [">=", 4] },
-        { key: "free_float", fail: ["<", 0.1] },
-      ],
-    },
+    rules: { nonFinancial: owners, bank: owners, otherFinancial: owners },
   },
 ];
 
@@ -171,7 +166,7 @@ export function assess({
           : !rule.pass || holds(value, rule.pass)
             ? "pass"
             : "neutral";
-      return [{ key: rule.key, value, result }];
+      return [{ ...rule, value, result }];
     });
     const outcome: Outcome =
       rules.length === 0

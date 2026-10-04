@@ -6,8 +6,8 @@ import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
 import { checkCell, formatInput, formatValue } from "../../universe/presentation.mjs";
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
-import { assess, PILLARS } from "../ideas/ideas-model";
-import { PillarOutcome, verdictDescriptions, verdictLabels } from "../ideas/IdeasPage";
+import { assess, PILLARS, verdictLabels } from "../ideas/ideas-model";
+import { PillarOutcome, verdictDescriptions } from "../ideas/IdeasPage";
 import {
   annualPeriods,
   assembleSections,
