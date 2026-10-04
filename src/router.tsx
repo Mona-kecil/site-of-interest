@@ -11,6 +11,7 @@ import { EmpireDirectoryPage } from "./features/empire/EmpireDirectoryPage";
 import { CompanyPage, EmpireCompanyPage } from "./features/company/CompanyPage";
 import { TodayPage } from "./features/today/TodayPage";
 import { FocusPage } from "./features/focus/FocusPage";
+import { UniversePage } from "./features/universe/UniversePage";
 
 type FocusKind = "fundamental" | "news";
 type TodaySearch = { focusKind?: FocusKind; focusId?: string; focusEmpire?: string };
@@ -29,6 +30,13 @@ function RootLayout() {
           Site of Interest
         </Link>
         <nav aria-label="Product sections">
+          <Link
+            activeProps={{ className: "nav-link is-active" }}
+            className="nav-link"
+            to="/universe"
+          >
+            Universe
+          </Link>
           <Link
             activeProps={{ className: "nav-link is-active" }}
             className="nav-link"
@@ -124,6 +132,12 @@ const focusRoute = createRoute({
   component: FocusPage,
 });
 
+const universeRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/universe",
+  component: UniversePage,
+});
+
 const routeTree = rootRoute.addChildren([
   indexRoute,
   todayRoute,
@@ -133,6 +147,7 @@ const routeTree = rootRoute.addChildren([
   companyRoute,
   empireCompanyRoute,
   focusRoute,
+  universeRoute,
 ]);
 
 export const router = createRouter({

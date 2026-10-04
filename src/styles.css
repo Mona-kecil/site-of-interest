@@ -2184,14 +2184,71 @@ a:focus-visible {
 .focus-footnote { margin-top: 20px; }
 .focus-empty { padding: 30px 0; color: #d5ded0; }
 
+.universe-page { min-width: 0; max-width: 100%; height: calc(100vh - 58px); overflow-y: auto; padding: 32px clamp(15px, 4vw, 64px) 60px; }
+.universe-header h1 { margin: 8px 0 14px; font-size: 48px; font-weight: 500; letter-spacing: -0.04em; }
+.universe-header > p:last-child { max-width: 660px; color: #aeb6af; font-size: 13px; line-height: 1.7; }
+.universe-lenses { display: flex; gap: 6px; max-width: 100%; overflow-x: auto; margin: 24px 0; padding-bottom: 5px; }
+.universe-lenses button { flex: none; border: 1px solid var(--line); padding: 10px 14px; background: var(--panel); color: #aeb6af; cursor: pointer; font: 12px "DM Mono", monospace; }
+.universe-lenses button[aria-selected="true"] { border-color: #c4ccc4; color: #f4f6eb; background: var(--panel-raised); }
+.universe-controls { display: flex; flex-wrap: wrap; gap: 12px; }
+.universe-controls label { display: grid; flex: 1 1 180px; min-width: 0; max-width: 280px; gap: 7px; color: #aeb6af; font: 11px "DM Mono", monospace; }
+.universe-controls input,
+.universe-controls select { width: 100%; min-width: 0; min-height: 42px; border: 1px solid #424a42; border-radius: 0; padding: 0 12px; background: var(--panel); color: #f4f6eb; font: 12px "DM Mono", monospace; }
+.universe-controls input:focus-visible,
+.universe-controls select:focus-visible { outline: 2px solid #c4ccc4; outline-offset: 2px; }
+.universe-note { color: #aeb6af; font-size: 11px; line-height: 1.7; }
+.universe-table-wrap { max-width: 100%; overflow-x: auto; margin-top: 20px; border-top: 1px solid #596259; border-bottom: 1px solid var(--line); }
+.universe-table { width: 100%; min-width: 1100px; border-collapse: collapse; }
+.universe-table caption { text-align: left; color: #aeb6af; padding: 12px 14px; font: 11px "DM Mono", monospace; }
+.universe-table th,
+.universe-table td { border-bottom: 1px solid var(--line); padding: 14px; text-align: right; vertical-align: top; font: 12px "DM Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.universe-table th:nth-child(-n+3),
+.universe-table td:nth-child(-n+3) { text-align: left; }
+.universe-table thead th { color: #aeb6af; font-size: 10px; }
+.universe-table thead button { border: 0; background: none; padding: 4px 0; cursor: pointer; white-space: nowrap; }
+.universe-table tbody th { color: #f4f6eb; font-size: 14px; font-weight: 500; }
+.universe-table tbody tr:hover { background: var(--panel); }
+.universe-table .universe-company-name { min-width: 180px; max-width: 240px; white-space: normal; font: 12px Manrope, sans-serif; line-height: 1.6; }
+.universe-cell-wrap { position: relative; }
+.universe-cell { display: grid; justify-items: end; gap: 6px; width: 100%; min-height: 44px; border: 0; padding: 0; background: none; cursor: pointer; font: 13px "DM Mono", monospace; }
+.universe-cell small { color: #aeb6af; font-size: 10px; }
+.universe-cell[aria-disabled="true"] { cursor: default; }
+.universe-cell[aria-expanded="true"] { text-decoration: underline; text-underline-offset: 4px; }
+.universe-gap { display: none; position: absolute; z-index: 2; right: 0; bottom: 100%; width: 280px; max-width: 80vw; border: 1px solid #596259; background: var(--panel-raised); padding: 10px; color: #f4f6eb; white-space: normal; text-align: left; font-size: 11px; line-height: 1.5; }
+.universe-cell-wrap:hover .universe-gap,
+.universe-cell-wrap:focus-within .universe-gap { display: block; }
+.universe-panel { position: fixed; z-index: 20; top: 58px; right: 0; bottom: 0; width: min(520px, 100vw); overflow-y: auto; padding: 24px; border-left: 1px solid #596259; background: var(--panel); box-shadow: -16px 0 40px rgb(0 0 0 / 35%); }
+.universe-panel header { display: flex; align-items: center; justify-content: space-between; gap: 12px; }
+.universe-panel header button { min-height: 44px; border: 1px solid #596259; background: var(--panel-raised); padding: 8px 12px; cursor: pointer; font-size: 12px; }
+.universe-panel h2 { font-size: 26px; font-weight: 500; }
+.universe-panel h3 { margin-top: 28px; font-size: 16px; font-weight: 500; }
+.universe-panel p { line-height: 1.7; }
+.universe-panel dl { margin: 0; font-size: 12px; line-height: 1.7; }
+.universe-panel dl div { margin-top: 10px; }
+.universe-panel dt { color: #aeb6af; font: 10px "DM Mono", monospace; }
+.universe-panel dd { margin: 4px 0 0; overflow-wrap: anywhere; }
+.universe-panel code { font-size: 11px; }
+.universe-calculation { border-top: 1px solid var(--line); padding-top: 12px; }
+.universe-inputs { padding: 0; list-style: none; }
+.universe-inputs li { padding: 18px 0; border-top: 1px solid var(--line); }
+.universe-inputs strong { font-size: 13px; }
+
 @media (max-width: 1050px) {
   .topbar { height: auto; min-height: 58px; }
   .topbar nav { display: flex; grid-column: 1 / -1; order: 3; overflow-x: auto; border-top: 1px solid var(--line); }
+  .topbar nav { min-width: 0; }
   .topbar nav .nav-link { flex: none; min-height: 42px; }
   .focus-page { height: auto; min-height: calc(100vh - 100px); overflow: visible; }
+  .universe-page { height: auto; min-height: calc(100vh - 100px); }
+  .universe-panel { top: 0; }
 }
 
 @media (max-width: 600px) {
+  .universe-page { padding: 25px 15px 60px; }
+  .universe-header h1 { font-size: 36px; }
+  .universe-controls label { max-width: none; flex-basis: 150px; }
+  .universe-controls label:first-child { flex-basis: 100%; }
+  .universe-panel { padding: 20px 15px; }
   .focus-page { padding: 25px 15px 60px; }
   .focus-header { display: block; }
   .focus-header > a { display: inline-block; margin-top: 12px; }
