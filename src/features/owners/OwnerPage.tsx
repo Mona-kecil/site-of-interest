@@ -72,6 +72,9 @@ export function OwnerPage() {
                         {holding.symbol}
                       </Link>
                       <small>{holding.name ?? "Name not reported"}</small>
+                      {holding.reportedName !== owner.name && (
+                        <small>Reported as {holding.reportedName}</small>
+                      )}
                       <small>Market cap: {formatMarketCap(holding.marketCap)}</small>
                     </th>
                     <td>{formatValue(holding.percentage, "percent")}</td>

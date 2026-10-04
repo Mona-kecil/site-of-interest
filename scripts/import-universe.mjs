@@ -6,6 +6,7 @@ import { getSeedDeployment } from "./seed-deployment.mjs";
 import { readUniverse } from "../src/universe/files.mjs";
 import { buildChecks } from "../src/universe/checks.mjs";
 import { validateUniverse } from "../src/universe/validate.mjs";
+import { arrayBounds, IMPORT_ARRAY_CAP } from "../src/universe/array-bounds.mjs";
 
 const root = resolve(import.meta.dirname, "..");
 const args = process.argv.slice(2);
@@ -37,6 +38,7 @@ const tables = {
   owners: JSON.parse(await readFile(resolve(root, "data/universe/owners.json"), "utf8")),
   businessGroups: JSON.parse(await readFile(resolve(root, "data/universe/groups.json"), "utf8")),
 };
+const maxima = arrayBounds(tables, IMPORT_ARRAY_CAP);
 const directory = await mkdtemp(join(tmpdir(), "idx-universe-"));
 const commands = [];
 console.log(`${dryRun ? "Dry run for" : "Importing into"} Convex deployment: ${deployment ?? "not selected (.env.local absent)"}`);
@@ -47,6 +49,7 @@ for (const [table, rows] of Object.entries(tables)) {
   const commandArgs = ["convex", "import", "--table", table, "--replace", "--yes", file];
   commands.push(commandArgs);
   console.log(`${table}: ${rows.length} rows`);
+  console.log(`  Array maxima (cap ${IMPORT_ARRAY_CAP}): ${Object.entries(maxima[table]).map(([column, length]) => `${column}=${length}`).join(", ") || "no array columns"}`);
   console.log(`npx convex import --table ${table} --replace --yes '${file.replaceAll("'", "'\\''")}'`);
 }
 if (!dryRun) {

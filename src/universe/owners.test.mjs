@@ -28,6 +28,78 @@ test("core names, people, legal words inside names and custodial accounts stay d
   ]) assert.notEqual(ownerKey(a), ownerKey(b));
 });
 
+test("real reported names resolve to hand-written keys, with only reviewed aliases merged", async () => {
+  const snapshot = await readUniverse(new URL("../../data/universe", import.meta.url).pathname);
+  const names = new Set(snapshot.holdings.map(({ holderName }) => holderName));
+  for (const [name, key] of [
+    ["PT Danantara Asset Management", "danantara asset management"],
+    ["PT Danantara Asset Management (Persero)", "danantara asset management"],
+    ["PT. Asabri (Persero)", "asabri"],
+    ["Asabri (Persero),PT", "asabri"],
+    ["PT Asabri", "asabri"],
+    ["PT Asabri (Persero) - Dapen Tni", "asabri persero dapen tni"],
+    ["PT Astra International Tbk", "astra international"],
+    ["PT Astra International Tbk.", "astra international"],
+    ["Bank Of Singapore Limited", "bank of singapore"],
+    ["PT Equity Developoment Investment Tbk", "equity development investment"],
+    ["PT Equity Development Investment Tbk", "equity development investment"],
+    ["PT. Batavia Prosperindo International", "batavia prosperindo internasional"],
+    ["PT Batavia Prosperindo International Tbk", "batavia prosperindo internasional"],
+    ["Batavia Prosperindo Internasional,PT", "batavia prosperindo internasional"],
+    ["PT Indomobil Sukses International Tbk", "indomobil sukses internasional"],
+    ["PTPanorama Sentrawisata Tbk", "panorama sentrawisata"],
+    ["PT. Panorama Sentrawisata,", "panorama sentrawisata"],
+    ["PT Pollux Properti Indonesia Tbk", "pollux properties indonesia"],
+    ["Edwin Soeryadjaja", "edwin soeryadjaya"],
+    ["Edwin Soeryadjaya", "edwin soeryadjaya"],
+    ["Gwie Gunadi Gunawan", "gwie gunadi gunawan"],
+    ["Gwie Gunato Gunawan", "gwie gunato gunawan"],
+    ["PT Adaro Strategic Investment", "adaro strategic investment"],
+    ["PT Adaro Strategic Investments", "adaro strategic investments"],
+    ["Andrianto Oetomo", "andrianto oetomo"],
+    ["Arianto Oetomo", "arianto oetomo"],
+    ["Jusuf Sutrisno", "jusuf sutrisno"],
+    ["Jusup Sutrisno", "jusup sutrisno"],
+  ]) {
+    assert.ok(names.has(name), `${name} is a raw snapshot name`);
+    assert.equal(ownerKey(name), key, name);
+  }
+  const owners = new Map(buildOwners(snapshot).map((owner) => [owner.key, owner]));
+  for (const [key, listedSymbol, symbols] of [
+    ["equity development investment", "GSMF", ["ASDM", "BGTG"]],
+    ["batavia prosperindo internasional", "BPII", ["BPFI", "BPTR", "MTWI"]],
+    ["indomobil sukses internasional", "IMAS", ["IMJS"]],
+    ["panorama sentrawisata", "PANR", ["PDES", "WEHA"]],
+    ["pollux properties indonesia", "POLL", ["POLI"]],
+    ["edwin soeryadjaya", null, ["ADRO", "MPMX", "SRTG", "TBIG"]],
+  ]) {
+    const owner = owners.get(key);
+    assert.equal(owner.listedSymbol, listedSymbol, key);
+    assert.equal(owner.kind, listedSymbol ? "company" : "holder", key);
+    assert.deepEqual(owner.holdings.map(({ symbol }) => symbol), symbols, key);
+    assert.equal(owner.name, listedSymbol ? snapshot.companies.find(({ symbol }) => symbol === listedSymbol).name : "Edwin Soeryadjaya", key);
+  }
+  for (const [left, right] of [
+    ["gwie gunadi gunawan", "gwie gunato gunawan"],
+    ["adaro strategic investment", "adaro strategic investments"],
+    ["andrianto oetomo", "arianto oetomo"],
+    ["jusuf sutrisno", "jusup sutrisno"],
+  ]) {
+    assert.ok(owners.has(left), left);
+    assert.ok(owners.has(right), right);
+    assert.notEqual(owners.get(left), owners.get(right));
+  }
+});
+
+test("alias target spellings take precedence over variant frequency and prefer the listed name", () => {
+  const holdings = [holding("Edwin Soeryadjaja", 0.1), holding("Edwin Soeryadjaja", 0.2), holding("Edwin Soeryadjaya", 0.3)];
+  assert.equal(buildOwners({ companies: [], holdings })[0].name, "Edwin Soeryadjaya");
+  const companies = [{ symbol: "IMAS", name: "Indomobil Sukses Internasional Tbk" }];
+  const [owner] = buildOwners({ companies, holdings: [holding("PT Indomobil Sukses International Tbk", 0.5)] });
+  assert.equal(owner.name, "Indomobil Sukses Internasional Tbk");
+  assert.equal(owner.holdings[0].reportedName, "PT Indomobil Sukses International Tbk");
+});
+
 test("owners exclude public and treasury, classify explicit buckets, and resolve listed companies", () => {
   const owners = buildOwners({ companies: [{ symbol: "ASII", name: "PT Astra International Tbk" }], holdings: [
     holding("Astra International", 0.5), ...BUCKET_LABELS.map((name) => holding(name, 0.1)),
@@ -81,8 +153,8 @@ test("real snapshot assigns every entity row once and preserves all holding sour
   const owners = buildOwners(snapshot);
   const sources = new Set(snapshot.sources.map(({ id }) => id));
   for (const row of snapshot.holdings) assert.ok(sources.has(row.sourceId), `${row.symbol}: ${row.sourceId}`);
-  const identity = ({ symbol, percentage, shares, value, sourceId }) => JSON.stringify({ symbol, percentage, shares, value, sourceId });
-  const expected = snapshot.holdings.filter(({ holderKind }) => holderKind === "entity").map((row) => `${ownerKey(row.holderName)}:${identity(row)}`).sort();
+  const identity = ({ symbol, reportedName, percentage, shares, value, sourceId }) => JSON.stringify({ symbol, reportedName, percentage, shares, value, sourceId });
+  const expected = snapshot.holdings.filter(({ holderKind }) => holderKind === "entity").map((row) => `${ownerKey(row.holderName)}:${identity({ ...row, reportedName: row.holderName })}`).sort();
   const actual = owners.flatMap((owner) => owner.holdings.map((row) => {
     assert.ok(sources.has(row.sourceId), `${owner.key}: ${row.sourceId}`);
     return `${owner.key}:${identity(row)}`;

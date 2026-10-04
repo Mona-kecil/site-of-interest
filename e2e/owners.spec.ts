@@ -40,6 +40,22 @@ test("links Astra's company, holdings, co-holders and upstream chain", async ({ 
   await expect(page.getByRole("img", { name: /^Reported ownership links/ })).toBeVisible();
 });
 
+test("merges Edwin's reviewed spelling and exposes ADRO's reported name", async ({ page }) => {
+  await page.goto("/owner/edwin%20soeryadjaya");
+  await expect(page.getByRole("heading", { name: "Edwin Soeryadjaya", exact: true })).toBeVisible();
+  const rows = page.locator(".owners-holdings tbody tr");
+  await expect(rows).toHaveCount(4);
+  for (const symbol of ["ADRO", "MPMX", "SRTG", "TBIG"]) {
+    await expect(
+      page.locator(`.owners-holdings tr[data-symbol="${symbol}"]`).getByRole("link", { name: symbol, exact: true }),
+    ).toHaveAttribute("href", `/company/${symbol}`);
+  }
+  await expect(
+    page.locator('.owners-holdings tr[data-symbol="ADRO"]').getByText("Reported as Edwin Soeryadjaja", { exact: true }),
+  ).toBeVisible();
+  await expect(page.locator('.owners-holdings tr[data-symbol="MPMX"]')).not.toContainText("Reported as");
+});
+
 test("lists Sectors business-group members with check summaries", async ({ page }) => {
   await page.goto("/groups");
   await expect

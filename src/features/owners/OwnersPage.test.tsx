@@ -80,6 +80,7 @@ const owner: Owner = {
   holdings: [
     {
       symbol: "UNTR",
+      reportedName: "PT Astra International Tbk",
       name: "PT United Tractors Tbk",
       percentage: 0.595,
       rank: 1,
@@ -143,6 +144,36 @@ describe("owners pages", () => {
     expect(document.querySelectorAll(".owners-edge")).toHaveLength(2);
     expect(document.querySelector(".owners-graph")).toHaveTextContent("59.50%");
     expect(document.querySelector(".owners-upstream")).toHaveTextContent("50.00%");
+  });
+
+  it("shows the reported name for legal-form and spelling merges, only on differing rows", () => {
+    useParams.mockReturnValue({ key: owner.key });
+    useQuery.mockReturnValue({
+      ...owner,
+      holdings: [{ ...owner.holdings[0], reportedName: "PT Astra International Tbk." }],
+    });
+    const view = render(<OwnerPage />);
+    expect(document.querySelector('[data-symbol="UNTR"]')).toHaveTextContent(
+      "Reported as PT Astra International Tbk.",
+    );
+    useParams.mockReturnValue({ key: "edwin soeryadjaya" });
+    useQuery.mockReturnValue({
+      ...owner,
+      key: "edwin soeryadjaya",
+      name: "Edwin Soeryadjaya",
+      kind: "holder",
+      listedSymbol: null,
+      ownHolders: [],
+      holdings: [
+        { ...owner.holdings[0], symbol: "ADRO", reportedName: "Edwin Soeryadjaja" },
+        { ...owner.holdings[0], symbol: "MPMX", reportedName: "Edwin Soeryadjaya" },
+      ],
+    });
+    view.rerender(<OwnerPage />);
+    expect(document.querySelector('[data-symbol="ADRO"]')).toHaveTextContent(
+      "Reported as Edwin Soeryadjaja",
+    );
+    expect(document.querySelector('[data-symbol="MPMX"]')).not.toHaveTextContent("Reported as");
   });
 
   it("exposes provider labels, overlapping membership and check gaps", () => {

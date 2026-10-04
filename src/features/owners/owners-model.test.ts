@@ -93,6 +93,7 @@ describe("ownership graph", () => {
     name: "PT Asabri (Persero)",
     holdings: Array.from({ length: 11 }, (_, index) => ({
       symbol: `C${String(index).padStart(2, "0")}`,
+      reportedName: "PT Asabri (Persero)",
       name: `Company ${index}`,
       percentage: index / 100,
       shares: null,

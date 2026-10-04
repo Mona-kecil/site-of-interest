@@ -22,6 +22,10 @@ Field groups have at most 28 references and a 2,000-character where clause. A 1,
 
 Import requires a deployed schema and `.env.local` with a `local:`, `anonymous:` or `dev:` deployment. The guard rejects production, preview, deploy keys in the file or environment, and conflicting deployment overrides. It replaces only the eight universe tables. Each table is imported separately. `node scripts/import-universe.mjs --dry-run` validates and writes temporary JSONL without calling Convex; it can run without `.env.local`, with no deployment selected. Deployment, import, code generation and browser verification belong to the operator.
 
+Before writing JSONL, import checks every array column against a 256-element cap. A breach stops the import and names the table, column, row key and length. Convex permits 8,192 elements per array; this snapshot's maxima are `companies.indices` 13, `companies.affiliates` 4, `companies.checks` 15, `checkResults.inputs` 12, `owners.holdings` 14 and `businessGroups.symbols` 20. The dry run prints these maxima for all eight tables, including those without array columns.
+
+`owners.holdings[].reportedName` is required. Existing owner documents without this field fail the new schema until re-imported. The operator must stage the schema and import migration.
+
 ## Files and provenance
 
 All files live in [data/universe](../data/universe/).
@@ -35,7 +39,7 @@ All files live in [data/universe](../data/universe/).
 | `sources.json` | 50 rows: ID, provider, raw title, full endpoint, retrieval time and credits charged for that run |
 | `manifest.json` | Provider, assembly time, company count, field batches, years, quarters, credits and schema version |
 | `checks.json` | Version, source retrieval time, 19 definitions and 14,013 applicable results with inputs, gaps and peers |
-| `owners.json` | 3,190 canonical entity owners, kind, listed-symbol match, raw source holdings and aggregate counts/values |
+| `owners.json` | 3,186 canonical entity owners, kind, listed-symbol match, raw source holdings with reported names and aggregate counts/values |
 | `groups.json` | 24 provider-label groups, slug, member symbols and summed reported market cap |
 
 [fields.mjs](../src/universe/fields.mjs) owns internal keys, human labels, provider field codes, units, scopes and periods. A year reference expands to a code such as `operating_cash_flow[2023]`. The manifest maps that code to a field batch; the row maps that batch to `sources.json`. Holdings have a direct `sourceId`.
@@ -56,9 +60,22 @@ Measured cells show a value plus percentile and peer count. With fewer than five
 
 ## Owners and groups
 
-Owner keys normalize Unicode, case, punctuation and spacing, remove leading PT and trailing legal-form suffixes, and preserve core names and account qualifiers. Display names use the most common spelling with a lexical tie break. Only entity rows become owners. Afiliasi and Afiliasi Pengendali remain explicit bucket labels, not single controlling owners. Exact canonical company-name matches identify listed companies; ambiguous matches stay holders.
+Owner keys normalize Unicode with NFKC, lowercase, remove periods, turn other punctuation into spaces and collapse spacing. They remove leading PT and trailing PT, Tbk, Persero, Ltd and Limited, while preserving core names and account qualifiers. After normalization, [ownerKey](../src/universe/owners.mjs) applies only these six reviewed aliases:
 
-Every raw entity row stays a separate source holding. Rank compares entity percentages within the same company and uses competition ranks such as 1, 1, 3 for ties. Null percentages have no rank. Company and largest-holder counts count distinct symbols. Sums include reported amounts and stay null when none exist. Public and treasury rows remain on company pages but are excluded from owners and largest-entity-stake checks.
+| Normalized variant | Canonical target | Reviewed records |
+| --- | --- | --- |
+| `equity developoment investment` | `equity development investment` | GSMF listed name; ASDM misspelling; BGTG target spelling |
+| `batavia prosperindo international` | `batavia prosperindo internasional` | BPII listed name; BPTR and MTWI variants; BPFI target spelling |
+| `indomobil sukses international` | `indomobil sukses internasional` | IMAS listed name; IMJS variant |
+| `ptpanorama sentrawisata` | `panorama sentrawisata` | PANR listed name; PDES missing space; WEHA target spelling |
+| `pollux properti indonesia` | `pollux properties indonesia` | POLL listed name; POLI variant |
+| `edwin soeryadjaja` | `edwin soeryadjaya` | ADRO variant; MPMX, SRTG and TBIG target spelling |
+
+There is no fuzzy matching. Gwie Gunadi Gunawan / Gwie Gunato Gunawan, PT Adaro Strategic Investment / PT Adaro Strategic Investments, Andrianto Oetomo / Arianto Oetomo and Jusuf Sutrisno / Jusup Sutrisno stay separate; their identities have not been established.
+
+Display names use the most common raw spelling with a lexical tie break. Alias groups choose a raw target spelling, preferring the matching listed company's name. Only entity rows become owners. Afiliasi and Afiliasi Pengendali remain explicit bucket labels, not single controlling owners. Canonical company-name matches identify 102 listed owners; ambiguous matches stay holders. Company-page holder links use the same canonical key.
+
+Every raw entity row stays a separate source holding. Each stores the provider's holder name as `reportedName`; the owner holdings table shows "Reported as …" when it differs from the owner display name, including legal-form differences. Rank compares entity percentages within the same company and uses competition ranks such as 1, 1, 3 for ties. Null percentages have no rank. Company and largest-holder counts count distinct symbols. Sums include reported amounts and stay null when none exist. Public and treasury rows remain on company pages but are excluded from owners and largest-entity-stake checks.
 
 The graph combines duplicate canonical nodes while retaining source percentages on their edge. Upstream and downstream columns sort by largest reported stake then name, show at most eight entities and link +N more to the full page list. Listed owners expose one upstream entity-holder level. This graph does not trace ultimate control.
 
