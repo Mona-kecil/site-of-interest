@@ -16,7 +16,7 @@ The live app is https://site-of-interest.vercel.app. Its backend is the project'
 
 1. `npx convex deploy` pushes the schema and functions to production.
 2. `node scripts/import-universe.mjs --prod` replaces the eight universe tables in production. `--prod` is the only way the import reaches production; `.env.local` must still name the project's dev deployment.
-3. `npx vercel deploy --prod` builds the frontend with `npm run build`. Vercel's production `CONVEX_URL` points at the production Convex URL. `.vercelignore` keeps `.env*` files out of the upload, and `vercel.json` rewrites app routes to `index.html`.
+3. Vercel's GitHub integration builds every push: `main` deploys to production and other branches get preview URLs. `npx vercel deploy --prod` deploys the local tree instead. Both build with `npm run build`. Vercel's production `CONVEX_URL` points at the production Convex URL. `.vercelignore` keeps `.env*` files out of the upload, and `vercel.json` rewrites app routes to `index.html`.
 
 ## Data pipeline
 
