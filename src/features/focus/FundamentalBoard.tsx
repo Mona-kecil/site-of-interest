@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
-import { cycleLabels, formatCompanyValue, type CycleState } from "../company/company-model";
+import { cycleLabels, formatCompanyValue, type CycleState } from "./legacy-company-model";
 import {
   fundamentalCycle,
   fundamentalGaps,

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { deriveCycleState } from "../company/company-model";
+import { deriveCycleState } from "./legacy-company-model";
 import {
   fundamentalCycle,
   fundamentalGaps,

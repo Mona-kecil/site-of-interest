@@ -51,6 +51,12 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
           Close
         </button>
       </header>
+      <a
+        className="universe-company-link"
+        href={`/company/${encodeURIComponent(selection.symbol)}`}
+      >
+        Open company
+      </a>
       {result === undefined ? (
         <p role="status">Loading check inputs</p>
       ) : result === null ? (
@@ -291,8 +297,22 @@ export function UniversePage() {
             <tbody>
               {rows.map((row) => (
                 <tr key={row.symbol} data-symbol={row.symbol}>
-                  <th scope="row">{row.symbol}</th>
-                  <td className="universe-company-name">{row.name}</td>
+                  <th scope="row">
+                    <a
+                      className="universe-company-link"
+                      href={`/company/${encodeURIComponent(row.symbol)}`}
+                    >
+                      {row.symbol}
+                    </a>
+                  </th>
+                  <td className="universe-company-name">
+                    <a
+                      className="universe-company-link"
+                      href={`/company/${encodeURIComponent(row.symbol)}`}
+                    >
+                      {row.name}
+                    </a>
+                  </td>
                   <td>{row.subSector ?? "n/a"}</td>
                   <td>{formatMarketCap(row.marketCap)}</td>
                   {checks.map((definition) => {

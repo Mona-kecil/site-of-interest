@@ -1,6 +1,6 @@
 import type { FunctionReturnType } from "convex/server";
 import { api } from "../../../convex/_generated/api";
-import { deriveCycleState, type CycleState } from "../company/company-model";
+import { deriveCycleState, type CycleState } from "./legacy-company-model";
 
 export type FundamentalBoardData = NonNullable<
   FunctionReturnType<typeof api.focus.getFundamentals>

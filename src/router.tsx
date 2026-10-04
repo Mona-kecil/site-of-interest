@@ -8,7 +8,7 @@ import {
 } from "@tanstack/react-router";
 import { EmpirePage } from "./features/empire/EmpirePage";
 import { EmpireDirectoryPage } from "./features/empire/EmpireDirectoryPage";
-import { CompanyPage, EmpireCompanyPage } from "./features/company/CompanyPage";
+import { CompanyProfilePage } from "./features/company/CompanyProfilePage";
 import { TodayPage } from "./features/today/TodayPage";
 import { FocusPage } from "./features/focus/FocusPage";
 import { UniversePage } from "./features/universe/UniversePage";
@@ -117,13 +117,15 @@ const empireDirectoryRoute = createRoute({
 const companyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/company/$ticker",
-  component: CompanyPage,
+  component: CompanyProfilePage,
 });
 
 const empireCompanyRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/empire/$empireSlug/company/$ticker",
-  component: EmpireCompanyPage,
+  beforeLoad: ({ params }) => {
+    throw redirect({ to: "/company/$ticker", params: { ticker: params.ticker } });
+  },
 });
 
 const focusRoute = createRoute({

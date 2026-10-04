@@ -2261,3 +2261,397 @@ a:focus-visible {
   .focus-controls select { width: 100%; }
   .focus-evidence { max-width: 500px; }
 }
+
+/* Company profile — fundamental checks */
+.company-profile {
+  --profile-text: #edf0ef;
+  --profile-muted: #b7bfbd;
+  --profile-mark: #bac5c2;
+  width: 100%;
+  min-width: 0;
+  max-width: 100%;
+  height: calc(100vh - 58px);
+  overflow-y: auto;
+  padding: 36px clamp(15px, 4vw, 64px) 72px;
+  background: var(--ink);
+  color: var(--profile-text);
+  line-height: 1.6;
+}
+
+.company-profile > * {
+  max-width: 1280px;
+  margin-right: auto;
+  margin-left: auto;
+}
+
+.company-profile a,
+.universe-company-link {
+  color: inherit;
+  text-underline-offset: 4px;
+}
+
+.company-profile a:focus-visible,
+.company-profile summary:focus-visible,
+.company-profile [tabindex="0"]:focus-visible,
+.universe-company-link:focus-visible {
+  outline: 2px solid #bac5c2;
+  outline-offset: 3px;
+}
+
+.profile-header {
+  overflow-wrap: anywhere;
+}
+
+.profile-header > a {
+  display: inline-block;
+  min-height: 40px;
+  font-size: 13px;
+}
+
+.profile-kicker,
+.profile-symbol {
+  font-family: "DM Mono", monospace;
+}
+
+.profile-kicker {
+  margin: 18px 0 8px;
+  color: var(--profile-muted);
+  font-size: 12px;
+}
+
+.profile-header h1 {
+  margin: 0;
+  font-size: clamp(30px, 4vw, 52px);
+  font-weight: 500;
+  line-height: 1.2;
+  letter-spacing: -0.04em;
+}
+
+.profile-symbol {
+  margin: 14px 0 8px;
+  font-size: 24px;
+}
+
+.profile-header > p:last-of-type {
+  color: var(--profile-muted);
+  font-size: 13px;
+}
+
+.profile-identity {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 20px 28px;
+  margin: 28px 0 24px;
+  border-top: 1px solid var(--line);
+  padding-top: 24px;
+}
+
+.profile-identity dt,
+.profile-current-price dt,
+.profile-evidence dt {
+  color: var(--profile-muted);
+  font-size: 11px;
+}
+
+.profile-identity dd,
+.profile-current-price dd {
+  margin: 5px 0 0;
+  font-size: 14px;
+}
+
+.profile-note,
+.profile-applicability {
+  color: var(--profile-muted);
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.profile-applicability {
+  border: 1px solid var(--line);
+  padding: 14px;
+}
+
+.profile-nav {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  margin-top: 24px;
+  margin-bottom: 28px;
+  font-size: 13px;
+}
+
+.profile-nav a {
+  display: inline-flex;
+  min-height: 40px;
+  align-items: center;
+}
+
+.profile-section {
+  min-width: 0;
+  border-top: 1px solid #58615e;
+  padding: 26px 0 36px;
+  scroll-margin-top: 20px;
+}
+
+.profile-section h2 {
+  margin: 0 0 22px;
+  font-size: 26px;
+  font-weight: 500;
+  line-height: 1.3;
+}
+
+.profile-checks {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 16px;
+}
+
+.profile-check {
+  min-width: 0;
+  border: 1px solid var(--line);
+  padding: 20px;
+  background: var(--panel);
+}
+
+.profile-check header {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 20px;
+}
+
+.profile-check header > div {
+  min-width: 0;
+}
+
+.profile-check h3 {
+  margin: 0;
+  font-size: 18px;
+  font-weight: 500;
+}
+
+.profile-check header p {
+  margin: 8px 0 0;
+  color: var(--profile-muted);
+  font-size: 13px;
+}
+
+.profile-check header > strong {
+  flex: none;
+  max-width: 45%;
+  font: 18px/1.5 "DM Mono", monospace;
+  overflow-wrap: anywhere;
+}
+
+.profile-check-period,
+.profile-check-rank {
+  margin: 12px 0 0;
+  color: var(--profile-muted);
+  font: 11px/1.7 "DM Mono", monospace;
+  overflow-wrap: anywhere;
+}
+
+.profile-check-rank {
+  margin-top: 6px;
+  color: var(--profile-text);
+}
+
+.profile-peers {
+  margin-top: 18px;
+  font-size: 11px;
+  color: var(--profile-muted);
+}
+
+.profile-peers p {
+  margin: 8px 0;
+  overflow-wrap: anywhere;
+}
+
+.profile-peers svg {
+  display: block;
+  width: 100%;
+  height: 36px;
+  overflow: visible;
+}
+
+.profile-peers line {
+  stroke: #687571;
+}
+
+.profile-peers circle {
+  fill: var(--profile-mark);
+  fill-opacity: 0.65;
+}
+
+.profile-peers .profile-peer-subject {
+  fill: var(--panel);
+  stroke: var(--profile-mark);
+  stroke-width: 2;
+}
+
+.profile-axis {
+  display: flex;
+  justify-content: space-between;
+  gap: 8px;
+  font-family: "DM Mono", monospace;
+}
+
+.profile-peer-gaps summary {
+  margin-top: 12px;
+  cursor: pointer;
+}
+
+.profile-evidence {
+  margin-top: 18px;
+  border-top: 1px solid var(--line);
+  padding-top: 14px;
+  font-size: 12px;
+  overflow-wrap: anywhere;
+}
+
+.profile-evidence > summary {
+  min-height: 30px;
+  cursor: pointer;
+}
+
+.profile-evidence ol {
+  margin: 18px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.profile-evidence li {
+  border-top: 1px solid var(--line);
+  padding: 18px 0 0;
+}
+
+.profile-evidence dl {
+  margin: 14px 0;
+}
+
+.profile-evidence dl > div {
+  display: grid;
+  grid-template-columns: 68px minmax(0, 1fr);
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.profile-evidence dd {
+  min-width: 0;
+  margin: 0;
+}
+
+.profile-evidence code {
+  font-size: 11px;
+  overflow-wrap: anywhere;
+}
+
+.profile-current-price {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 18px 36px;
+  margin: 24px 0;
+}
+
+.profile-table-wrap {
+  min-width: 0;
+  max-width: 100%;
+  overflow-x: auto;
+  margin-top: 24px;
+  border: 1px solid var(--line);
+}
+
+.profile-table-wrap table {
+  width: 100%;
+  min-width: 660px;
+  border-collapse: collapse;
+  font: 12px/1.6 "DM Mono", monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+.profile-table-wrap caption {
+  padding: 14px;
+  color: var(--profile-muted);
+  text-align: left;
+  font-size: 11px;
+}
+
+.profile-table-wrap th,
+.profile-table-wrap td {
+  border-top: 1px solid var(--line);
+  padding: 14px;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.profile-table-wrap thead th {
+  color: var(--profile-muted);
+  font-size: 11px;
+  font-weight: 500;
+}
+
+.profile-table-wrap th:first-child {
+  text-align: left;
+  font-weight: 500;
+}
+
+.profile-table-wrap td[data-reported="false"] {
+  color: var(--profile-muted);
+}
+
+.profile-holdings > p {
+  margin-top: 24px;
+  font-size: 14px;
+}
+
+.profile-holdings td:nth-child(2) {
+  text-align: left;
+}
+
+.profile-state {
+  display: grid;
+  align-content: center;
+  justify-items: start;
+  min-height: 50vh;
+  overflow-wrap: anywhere;
+}
+
+.profile-state > * {
+  width: 100%;
+}
+
+@media (max-width: 1050px) {
+  .company-profile {
+    height: auto;
+    min-height: calc(100vh - 100px);
+    overflow: visible;
+  }
+}
+
+@media (max-width: 700px) {
+  .company-profile {
+    padding: 24px 15px 60px;
+  }
+
+  .profile-identity {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 18px 16px;
+  }
+
+  .profile-checks {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .profile-check {
+    padding: 16px;
+  }
+
+  .profile-check header {
+    gap: 12px;
+  }
+
+  .profile-check header > strong {
+    font-size: 16px;
+  }
+}
+/* End company profile */
