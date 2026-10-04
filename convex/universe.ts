@@ -33,6 +33,7 @@ export const screen = query({
       indices: v.union(v.array(v.string()), v.null()),
       marketCap: nullableNumber,
       freeFloat: nullableNumber,
+      peTtm: nullableNumber,
       checks: v.array(universeCheckSummary),
     }),
   ),
@@ -46,6 +47,7 @@ export const screen = query({
       indices: company.indices,
       marketCap: company.current.marketCap ?? null,
       freeFloat: company.current.freeFloat ?? null,
+      peTtm: company.current.peTtm ?? null,
       checks: company.checks,
     }));
   },

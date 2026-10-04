@@ -13,7 +13,7 @@ export type CompanyProfile = NonNullable<FunctionReturnType<typeof api.companyPr
 export type ProfileCheck = CompanyProfile["checks"][number];
 export type Peer = CompanyProfile["peers"][number]["values"][number];
 type Values = { values: Record<string, number | null> };
-export type SeriesField = { key: string; label: string; unit: "IDR" | "multiple" };
+export type SeriesField = { key: string; label: string; unit: "IDR" | "IDR/share" | "multiple" };
 export type ProfileSection = {
   id: string;
   label: string;
@@ -42,7 +42,7 @@ const history: Record<string, SeriesField[]> = {
   Price: [
     { key: "pe", label: "P/E", unit: "multiple" },
     { key: "pb", label: "P/B", unit: "multiple" },
-    money("totalDividend", "Total dividend"),
+    { key: "totalDividend", label: "Dividend per share", unit: "IDR/share" },
   ],
   Owners: [],
   Banks: [

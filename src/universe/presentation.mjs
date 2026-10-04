@@ -70,6 +70,7 @@ export function checkCell(result, unit) {
 export function formatInput(value, field = "", checkUnit = "multiple") {
   if (value === null) return "Not reported";
   const definition = fieldDefinition(field);
+  if (definition?.key === "totalDividend") return `IDR ${number(value)} per share`;
   if (definition?.unit === "IDR") return `IDR ${number(value / 1e9)} bn`;
   if (definition?.unit === "fraction" || field === "major_shareholders_name.share_percentage") return formatValue(value, "percent");
   if (definition?.unit === "ratio") return formatValue(value, checkUnit);

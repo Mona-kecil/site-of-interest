@@ -6,6 +6,22 @@ test("opens a lowercase bank symbol with NPL and no ROIC", async ({ page }) => {
   const npl = page.locator('[data-check="npl_ratio"]');
   await expect(npl.locator("header > strong")).toHaveText(/\d+\.\d+%/);
   await expect(page.locator('[data-check="roic"]')).toHaveCount(0);
+  const verdict = page.getByRole("region", { name: "Worth a look", exact: true });
+  await expect(verdict).toBeVisible();
+  await expect(verdict).toContainText("Cash: Does not apply");
+  await expect(verdict).toContainText("NPL ratio 1.65% · pass ≤ 3.00%");
+  await expect(verdict.getByRole("link", { name: "View balance sheet inputs" })).toHaveAttribute("href", "#profile-banks");
+});
+
+test("explains a company price flag before the section navigation", async ({ page }) => {
+  await page.goto("/company/DCII");
+  const verdict = page.getByRole("region", { name: "Red flags", exact: true });
+  await expect(verdict).toBeVisible();
+  await expect(verdict).toContainText("Price: Fail");
+  await expect(verdict).toContainText("Priced for perfection");
+  await expect(verdict).toContainText("Current P/E 413.61× · flag > 50.00×");
+  await verdict.getByRole("link", { name: "View price inputs" }).click();
+  await expect(page).toHaveURL(/#profile-price$/);
 });
 
 test("opens cash conversion with its formula and source endpoint", async ({ page }) => {
@@ -27,7 +43,7 @@ test("opens cash conversion with its formula and source endpoint", async ({ page
 test("renders an unknown symbol with a return link", async ({ page }) => {
   await page.goto("/company/ZZZZ");
   await expect(page.getByRole("heading", { name: "Company not found" })).toBeVisible();
-  await expect(page.getByRole("link", { name: "Back to Universe" })).toHaveAttribute("href", "/universe");
+  await expect(page.getByRole("link", { name: "Back to Screener" })).toHaveAttribute("href", "/universe");
 });
 
 test("contains tables and expanded source endpoints at 390 pixels", async ({ page }) => {
@@ -63,6 +79,17 @@ test("links an entity holder to its owner page", async ({ page }) => {
   await page.getByRole("link", { name: "PT Astra International Tbk", exact: true }).click();
   await expect(page).toHaveURL(/\/owner\/astra%20international$/);
   await expect(page.getByRole("link", { name: /ASII company page/ })).toBeVisible();
+});
+
+test("displays AALI dividends in IDR per share", async ({ page }) => {
+  await page.goto("/company/AALI");
+  const history = page.getByRole("region", { name: "Price against own history annual history · 2019–2025" });
+  await expect(history.getByRole("columnheader", { name: "Dividend per share (IDR/share)" })).toBeVisible();
+  for (const value of [91, 255, 444, 401, 249, 184]) await expect(history.getByRole("cell", { name: `IDR ${value}.00 per share`, exact: true })).toBeVisible();
+  const check = page.locator('[data-check="dividend_years"]');
+  await check.getByText("Formula and inputs · Dividend years", { exact: true }).click();
+  await expect(check.getByText("Dividend per share · FY2025", { exact: true })).toBeVisible();
+  await expect(check.getByText("IDR 184.00 per share", { exact: true })).toHaveAttribute("title", "184");
 });
 
 test("links ADRO's reported Edwin spelling to the merged owner", async ({ page }) => {

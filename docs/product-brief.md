@@ -1,12 +1,37 @@
 # Product brief
 
-Site of Interest is a fundamentals research tool for all 962 IDX companies in the stored Sectors snapshot. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Measurements carry sub-sector peer percentiles and source inputs. The researcher reads the record and decides what to examine.
+Site of Interest screens all 962 IDX companies in the stored Sectors snapshot with a Ricky Ho-style fundamentals screen. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Verdicts cite the measurements behind their rules. Measurements carry sub-sector peer percentiles and source inputs.
 
-The application provides no investment advice, ratings, trade recommendations, price targets or claims of beneficial ownership. Provider group labels remain attributed to Sectors. It has no composite company score.
+The application provides no investment advice, trade recommendations, price targets or claims of beneficial ownership. It is not affiliated with or endorsed by Ricky Ho. Verdicts inherit provider errors. Provider group labels remain attributed to Sectors.
+
+## Verdicts
+
+[ideas-model.ts](../src/features/ideas/ideas-model.ts) owns the five ordered pillars, bounds, core pillars and assessment. Banks use the bank rules; Insurance, Financing Service and Investment Service use other-financial rules; all remaining sub-sectors, including unreported ones, use non-financial rules. Percent thresholds below are fractions; multiples and counts retain their units. `pe_ttm` is current P/E.
+
+| Pillar | Non-financial | Bank | Other financial |
+| --- | --- | --- | --- |
+| Cash | cash_conversion pass >= 0.8, fail < 0.5; fcf_yield pass > 0 | Does not apply | Does not apply |
+| Returns | roic pass >= 0.12, fail < 0.05 | roe pass >= 0.12, fail < 0.05 | Same as bank |
+| Balance sheet | net_debt_to_ebitda pass <= 2, fail > 4; interest_coverage pass >= 4, fail < 1.5 | npl_ratio pass <= 0.03, fail > 0.05; capital_adequacy pass >= 0.18, fail < 0.14; loan_to_deposit pass <= 0.95, fail > 1.1 | Does not apply |
+| Price | pe_vs_history pass <= 1, fail > 1.5; fcf_yield pass >= 0.05; pe_ttm fail > 50 | pb_vs_history pass <= 1, fail > 1.5; pe_vs_history pass <= 1, fail > 1.5; pe_ttm fail > 50 | Same as bank |
+| Owners | share_dilution pass <= 0.05, fail > 0.25; dividend_years pass >= 4; free_float fail < 0.10 | Same as non-financial | Same as non-financial |
+
+A reported rule fails when its fail bound holds, passes when its pass bound holds or it has no pass bound, and is neutral otherwise. Null values add no evidence. A pillar with no rules is not applicable; one with no reported values is unknown. Any failed evidence fails the pillar, all passing evidence passes it, and the remaining cases are mixed.
+
+Apply verdicts in this order, with the first match winning:
+
+1. Red flags: any pillar fails.
+2. Not enough data: fewer than three pillars are pass, mixed or fail.
+3. Worth a look: every core pillar passes and at most one pillar that applies is mixed or unknown.
+4. Mixed: all remaining cases.
+
+Core pillars are cash and balance sheet for non-financial companies, returns and balance sheet for banks and other financial companies. Other financial companies can never be Worth a look because their balance pillar does not apply. A partially reported pillar can pass from its reported evidence.
+
+Ideas lists companies with market cap >= IDR 1T: Worth a look sorts by passing pillar count then market cap, Red flags by market cap. Each starts with twelve cards and can expand to the full list. Company pages show all five pillars; the screener's verdict filter covers all 962 companies, including smaller ones.
 
 ## Research path
 
-Start at /universe, search or filter a company and choose a lens. Open a measurement's formula, reporting period, human input labels, raw field codes and source disclosure. Follow the company link for annual and quarterly history, ranked peer dots and reported holders. Open an owner for its stakes, co-holders and upstream list. Open Groups to compare members of a Sectors business-group label.
+Start at / with Ideas, its rules and company reasons. Open a company for its verdict and pillar evidence, or use /universe to search, filter by verdict and choose a lens. Open a measurement's formula, reporting period, human input labels, raw field codes and source disclosure. Follow the company link for annual and quarterly history, ranked peer dots and reported holders. Open an owner for its stakes, co-holders and upstream list. Open Groups to compare members of a Sectors business-group label.
 
 The company, owner and group pages retain gaps. A name-pattern label marks possible custodian or nominee accounts and states that they may hold for clients. A largest reported stake is a measurement of the entity rows, not proof of control. The [demo](demo.md) follows this path with stored values.
 
@@ -42,8 +67,8 @@ A measured result shows its value, percentile and reported peer count. With fewe
 
 Null inputs remain Not reported and never become zero. A reported zero remains a number. Percentiles compare only reported, applicable results for the same check and sub-sector, including the subject. Ties share their midrank. The rank-based company strip uses the same reported peer set and a diamond for the subject; it exposes each dot's symbol and value without assigning a rating.
 
-Evidence puts the human field label and fiscal period before the provider code. IDR inputs use billions with exact raw values available in titles. A source line shows provider, endpoint path, field batch, row range and retrieval date; a disclosure preserves the full endpoint. The [data contract](universe-data.md) specifies capex signs, ROIC tax handling, ownership names and known provider limits.
+Evidence puts the human field label and fiscal period before the provider code. IDR inputs use billions except for dividends per share, with exact raw values available in titles. A source line shows provider, endpoint path, field batch, row range and retrieval date; a disclosure preserves the full endpoint. The [data contract](universe-data.md) specifies capex signs, ROIC tax handling, ownership names and known provider limits.
 
 ## Current scope
 
-The app covers the screener, company history and checks, owners and business-group labels. It reads a stored snapshot through bounded Convex queries. It does not refresh provider data during navigation. Authentication, saved research notes and automated refresh are outside the current surface. The [delivery checklist](tickets/README.md) lists the current scope and known follow-ups.
+The app covers Ideas, the screener, company verdicts, history and checks, owners and business-group labels. It reads a stored snapshot through bounded Convex queries. It does not refresh provider data during navigation. Authentication, saved research notes and automated refresh are outside the current surface. The [delivery checklist](tickets/README.md) lists the current scope and known follow-ups.

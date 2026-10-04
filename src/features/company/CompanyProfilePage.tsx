@@ -3,9 +3,11 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
 import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
-import { checkCell, formatValue } from "../../universe/presentation.mjs";
+import { checkCell, formatInput, formatValue } from "../../universe/presentation.mjs";
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
+import { assess, PILLARS, verdictLabels } from "../ideas/ideas-model";
+import { PillarOutcome, verdictDescriptions } from "../ideas/IdeasPage";
 import {
   annualPeriods,
   assembleSections,
@@ -163,6 +165,7 @@ function HistoryTable({
           {fields.some((field) => field.unit === "multiple")
             ? "; P/E and P/B in multiples (×)"
             : ""}
+          {fields.some((field) => field.unit === "IDR/share") ? "; dividends in IDR per share" : ""}
         </caption>
         <thead>
           <tr>
@@ -170,7 +173,11 @@ function HistoryTable({
             {fields.map((field) => (
               <th key={field.key} scope="col">
                 {field.label}
-                {field.unit === "IDR" ? " (bn)" : " (×)"}
+                {field.unit === "IDR"
+                  ? " (bn)"
+                  : field.unit === "IDR/share"
+                    ? " (IDR/share)"
+                    : " (×)"}
               </th>
             ))}
           </tr>
@@ -183,7 +190,9 @@ function HistoryTable({
                 <td key={fields[index].key} data-reported={value !== null}>
                   {fields[index].unit === "IDR"
                     ? formatIdrAmount(value)
-                    : formatValue(value, "multiple")}
+                    : fields[index].unit === "IDR/share"
+                      ? formatInput(value, "total_dividend")
+                      : formatValue(value, "multiple")}
                 </td>
               ))}
             </tr>
@@ -308,15 +317,20 @@ export function CompanyProfilePage() {
       <main className="company-profile profile-state">
         <h1>Company not found</h1>
         <p>No IDX company matches “{ticker.toUpperCase()}”.</p>
-        <Link to="/universe">Back to Universe</Link>
+        <Link to="/universe">Back to Screener</Link>
       </main>
     );
   const { company } = profile;
   const { sections, note } = assembleSections(company);
+  const assessment = assess({
+    subSector: company.subSector,
+    checks: company.checks,
+    peTtm: company.current.peTtm ?? null,
+  });
   return (
     <main className="company-profile">
       <header className="profile-header">
-        <Link to="/universe">← Universe</Link>
+        <Link to="/universe">← Screener</Link>
         <p className="profile-kicker">IDX / {company.symbol}</p>
         <h1>{company.name}</h1>
         <p className="profile-symbol">{company.symbol}</p>
@@ -360,9 +374,35 @@ export function CompanyProfilePage() {
           </div>
         </dl>
       </header>
+      <section className="profile-verdict" aria-labelledby="profile-verdict-title">
+        <p className="eyebrow">Rules-based verdict</p>
+        <h2 id="profile-verdict-title">{verdictLabels[assessment.verdict]}</h2>
+        <p>{verdictDescriptions[assessment.verdict]} Not investment advice.</p>
+        <div className="profile-checks">
+          {assessment.pillars.map((result, index) => {
+            const sectionId =
+              result.id === "balance"
+                ? company.subSector === "Banks"
+                  ? "banks"
+                  : "balance-sheet"
+                : result.id;
+            return (
+              <article key={result.id} data-pillar={result.id}>
+                <PillarOutcome pillar={PILLARS[index]} result={result} />
+                {sections.some(({ id }) => id === sectionId) && (
+                  <a href={`#profile-${sectionId}`}>
+                    View {PILLARS[index].title.toLowerCase()} inputs
+                  </a>
+                )}
+              </article>
+            );
+          })}
+        </div>
+      </section>
       <p className="profile-note">
         Percentiles compare reported sub-sector measurements. Annual and quarterly amounts are in
-        IDR billions (bn). Not reported marks a gap in the record.
+        IDR billions (bn), except dividends in IDR per share. Not reported marks a gap in the
+        record.
       </p>
       {note && <p className="profile-applicability">{note}</p>}
       <nav className="profile-nav" aria-label="Company sections">

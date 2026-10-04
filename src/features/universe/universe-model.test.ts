@@ -9,7 +9,7 @@ import {
   type ScreenRow,
 } from "./universe-model";
 
-const filters: Filters = { search: "", sector: "", subSector: "", index: "" };
+const filters: Filters = { search: "", sector: "", subSector: "", index: "", verdict: "" };
 function row(symbol: string, value: number | null, overrides: Partial<ScreenRow> = {}): ScreenRow {
   return {
     symbol,
@@ -19,6 +19,7 @@ function row(symbol: string, value: number | null, overrides: Partial<ScreenRow>
     indices: ["LQ45"],
     marketCap: value,
     freeFloat: null,
+    peTtm: null,
     checks: [
       {
         checkId: "npl_ratio",
@@ -33,6 +34,38 @@ function row(symbol: string, value: number | null, overrides: Partial<ScreenRow>
 }
 
 describe("Universe measurements", () => {
+  it("filters each verdict using the same assessment as the ideas and company pages", () => {
+    const checks = Object.entries({
+      cash_conversion: 1,
+      roic: 0.15,
+      net_debt_to_ebitda: 1,
+      pe_vs_history: 0.8,
+      free_float: 0.3,
+    }).map(([checkId, value]) => ({ checkId, value, percentile: null, peerCount: 1, gap: null }));
+    const idea = row("IDEA", 1, { subSector: "Industrials", checks, peTtm: 12 });
+    const rows = [
+      idea,
+      { ...idea, symbol: "FLAG", peTtm: 100 },
+      {
+        ...idea,
+        symbol: "MIXED",
+        checks: checks.filter(({ checkId }) => checkId !== "cash_conversion"),
+      },
+      row("THIN", 1, { checks: [] }),
+    ];
+    for (const [verdict, symbol] of [
+      ["idea", "IDEA"],
+      ["flags", "FLAG"],
+      ["mixed", "MIXED"],
+      ["thin", "THIN"],
+    ]) {
+      expect(
+        screenRows(rows, { ...filters, verdict }, { column: "symbol", direction: "asc" }).map(
+          ({ symbol }) => symbol,
+        ),
+      ).toEqual([symbol]);
+    }
+  });
   it("combines search, sector, sub-sector and index without mutating rows", () => {
     const rows = [
       row("BBCA", 0.01, { name: "Bank Central Asia", indices: ["KOMPAS100", "LQ45"] }),
@@ -41,7 +74,13 @@ describe("Universe measurements", () => {
     expect(
       screenRows(
         rows,
-        { search: " CENTRAL ", sector: "Financials", subSector: "Banks", index: "KOMPAS100" },
+        {
+          search: " CENTRAL ",
+          sector: "Financials",
+          subSector: "Banks",
+          index: "KOMPAS100",
+          verdict: "",
+        },
         { column: "symbol", direction: "asc" },
       ).map(({ symbol }) => symbol),
     ).toEqual(["BBCA"]);

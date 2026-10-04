@@ -1,32 +1,34 @@
-import {
-  Link,
-  Outlet,
-  createRootRoute,
-  createRoute,
-  createRouter,
-  redirect,
-} from "@tanstack/react-router";
+import { Link, Outlet, createRootRoute, createRoute, createRouter } from "@tanstack/react-router";
 import { CompanyProfilePage } from "./features/company/CompanyProfilePage";
 import { UniversePage } from "./features/universe/UniversePage";
 import { OwnersPage } from "./features/owners/OwnersPage";
 import { OwnerPage } from "./features/owners/OwnerPage";
 import { GroupsPage, GroupPage } from "./features/owners/GroupsPage";
+import { IdeasPage } from "./features/ideas/IdeasPage";
 
 function RootLayout() {
   return (
     <div className="app-shell">
       <header className="topbar">
-        <Link className="brand" to="/universe">
+        <Link className="brand" to="/">
           <span className="brand-mark" />
           Site of Interest
         </Link>
         <nav aria-label="Product sections">
           <Link
             activeProps={{ className: "nav-link is-active" }}
+            activeOptions={{ exact: true }}
+            className="nav-link"
+            to="/"
+          >
+            Ideas
+          </Link>
+          <Link
+            activeProps={{ className: "nav-link is-active" }}
             className="nav-link"
             to="/universe"
           >
-            Universe
+            Screener
           </Link>
           <Link activeProps={{ className: "nav-link is-active" }} className="nav-link" to="/owners">
             Owners
@@ -47,9 +49,7 @@ const rootRoute = createRootRoute({ component: RootLayout });
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
-  beforeLoad: () => {
-    throw redirect({ to: "/universe" });
-  },
+  component: IdeasPage,
 });
 
 const companyRoute = createRoute({

@@ -1,9 +1,16 @@
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
+import { assess } from "../ideas/ideas-model";
 
 export type ScreenRow = FunctionReturnType<typeof api.universe.screen>[number];
 export type CheckSummary = ScreenRow["checks"][number];
-export type Filters = { search: string; sector: string; subSector: string; index: string };
+export type Filters = {
+  search: string;
+  sector: string;
+  subSector: string;
+  index: string;
+  verdict: string;
+};
 export type Sort = { column: string; direction: "asc" | "desc" };
 export const UNREPORTED = "__unreported__";
 export const lenses = [
@@ -45,6 +52,7 @@ export function screenRows(rows: readonly ScreenRow[], filters: Filters, sort: S
           row.name.toLowerCase().includes(search)) &&
         matches(filters.sector, row.sector) &&
         matches(filters.subSector, row.subSector) &&
+        (!filters.verdict || assess(row).verdict === filters.verdict) &&
         (!filters.index ||
           (filters.index === UNREPORTED
             ? row.indices === null

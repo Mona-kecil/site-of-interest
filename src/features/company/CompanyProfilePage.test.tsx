@@ -62,7 +62,7 @@ function profile(subSector: string): CompanyProfile {
       affiliates: ["Hartono"],
       current: { marketCap: 700e12, freeFloat: 0.4, peTtm: 12, pbMrq: 2 },
       sourceIds: { profile: "page" },
-      checks: [],
+      checks: [check],
     },
     years: [
       {
@@ -110,7 +110,7 @@ describe("Company profile page", () => {
     useQuery.mockReturnValue(null);
     view.rerender(<CompanyProfilePage />);
     expect(screen.getByRole("heading", { name: "Company not found" })).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "Back to Universe" })).toHaveAttribute(
+    expect(screen.getByRole("link", { name: "Back to Screener" })).toHaveAttribute(
       "href",
       "/universe",
     );
@@ -122,6 +122,14 @@ describe("Company profile page", () => {
     expect(useQuery.mock.calls[0][1]).toEqual({ symbol: "bbca" });
     expect(screen.getByRole("heading", { name: "Banks" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "ROIC" })).not.toBeInTheDocument();
+    const verdict = screen.getByRole("region", { name: "Not enough data" });
+    expect(verdict).toHaveTextContent("Cash: Does not apply");
+    expect(verdict).toHaveTextContent("Returns: Inputs not reported");
+    expect(verdict).toHaveTextContent("NPL ratio 2.00% · pass ≤ 3.00%");
+    expect(
+      within(verdict).getByRole("link", { name: "View balance sheet inputs" }),
+    ).toHaveAttribute("href", "#profile-banks");
+    expect(verdict.nextElementSibling).toHaveClass("profile-note");
     const card = container.querySelector('[data-check="npl_ratio"]')!;
     expect(card.querySelector("header > strong")).toHaveTextContent("2.00%");
     expect(card).toHaveTextContent("p84 · 31 peers");
@@ -161,6 +169,29 @@ describe("Company profile page", () => {
     expect(within(quarters).getAllByRole("row")).toHaveLength(9);
     expect(within(quarters).getAllByRole("row")[1]).toHaveTextContent("Q3-2024Not reported");
     expect(screen.getByText("Holdings not reported.")).toBeInTheDocument();
+  });
+  it("displays dividends as IDR per share in history and sourced evidence", () => {
+    const data = profile("Banks");
+    data.years[0].values.totalDividend = 184;
+    data.checks[0].inputs = [
+      {
+        key: "totalDividend",
+        field: "total_dividend[2025]",
+        period: "2025",
+        value: 184,
+        sourceId: "universe-01-0",
+      },
+    ];
+    useQuery.mockReturnValue(data);
+    render(<CompanyProfilePage />);
+    const history = screen.getByRole("region", {
+      name: "Price against own history annual history · 2019–2025",
+    });
+    expect(history).toHaveTextContent("Dividend per share (IDR/share)");
+    expect(history).toHaveTextContent("IDR 184.00 per share");
+    fireEvent.click(screen.getByText("Formula and inputs · NPL ratio"));
+    expect(screen.getByText("Dividend per share · FY2025")).toBeVisible();
+    expect(screen.getAllByText("IDR 184.00 per share")).toHaveLength(2);
   });
   it("shows a gap category without a peer line and retains the human reason", () => {
     const data = profile("Banks");

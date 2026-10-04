@@ -54,9 +54,11 @@ Capex is an outflow that Sectors reports with either sign. Reinvestment uses the
 
 ROIC uses the reported effective tax rate when its inputs support a rate from zero to one, and uses 0.22 otherwise. The tax input annotation names the selected rate; reported tax and earnings before tax remain visible. P/E and P/B history use only positive reported annual values and require at least three such years. Dividend years count positive reported dividends and retain missing years in the evidence.
 
+The provider field `total_dividend` is dividend per share in IDR. AALI reports 91, 255, 444, 401, 249 and 184 for 2020 through 2025. History and evidence show IDR per share; the dividend-years check still counts positive years.
+
 Peers are applicable, non-null results for the same check and sub-sector. The subject belongs to the peer set. Percentile is `(below + 0.5 × (equal − 1)) / (n − 1)`; fewer than five reported peers yields null. Below counts strictly lower values and equal includes the subject. Untied extrema are zero and one; ties share a midrank. A gap retains its stored peer count but shows no peer line.
 
-Measured cells show a value plus percentile and peer count. With fewer than five peers, they show a value plus `3 peers · no percentile`. Gaps show Not reported for missing inputs, Not meaningful for an undefined base, or Too little history. Excluded checks show Does not apply without a button. Human reasons replace known field codes and years; unknown patterns retain the raw reason. Inputs show human labels, provider codes and source references; IDR uses billions with the exact number in a title.
+Measured cells show a value plus percentile and peer count. With fewer than five peers, they show a value plus `3 peers · no percentile`. Gaps show Not reported for missing inputs, Not meaningful for an undefined base, or Too little history. Excluded checks show Does not apply without a button. Human reasons replace known field codes and years; unknown patterns retain the raw reason. Inputs show human labels, provider codes and source references; IDR uses billions except for dividends per share, with the exact number in a title.
 
 ## Owners and groups
 
