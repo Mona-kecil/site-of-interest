@@ -6,8 +6,9 @@ export default defineConfig({
     baseURL: "http://127.0.0.1:5173",
     viewport: { width: 1440, height: 900 },
   },
+  // Specs read the configured Convex deployment; push functions first with `npx convex dev --once`.
   webServer: {
-    command: "npm run dev:full",
+    command: "npx vp dev --host 127.0.0.1 --port 5173 --strictPort",
     reuseExistingServer: true,
     url: "http://127.0.0.1:5173",
   },

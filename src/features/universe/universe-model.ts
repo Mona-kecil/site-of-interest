@@ -1,6 +1,5 @@
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
-import type { CheckDefinition } from "../../universe/checks.mjs";
 
 export type ScreenRow = FunctionReturnType<typeof api.universe.screen>[number];
 export type CheckSummary = ScreenRow["checks"][number];
@@ -81,31 +80,10 @@ export function filterOptions(
   ];
 }
 
-export function formatValue(value: number | null, unit: CheckDefinition["unit"]) {
-  if (value === null) return "n/a";
-  if (unit === "percent")
-    return new Intl.NumberFormat("en", {
-      style: "percent",
-      minimumFractionDigits: 2,
-      maximumFractionDigits: 2,
-    }).format(value);
-  if (unit === "multiple")
-    return `${new Intl.NumberFormat("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(value)}×`;
-  return new Intl.NumberFormat("en", { maximumFractionDigits: 0 }).format(value);
-}
+export { formatInput, formatPeers, formatValue } from "../../universe/presentation.mjs";
 
 export function formatMarketCap(value: number | null) {
   return value === null
-    ? "n/a"
-    : `IDR ${new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 2 }).format(value)}`;
-}
-
-export function formatInput(value: number | null) {
-  return value === null
     ? "Not reported"
-    : new Intl.NumberFormat("en", { maximumFractionDigits: 12 }).format(value);
-}
-
-export function formatPeers(percentile: number | null, peerCount: number) {
-  return `${percentile === null ? "p n/a" : `p${Math.round(percentile * 100)}`} · ${peerCount} peers`;
+    : `IDR ${new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 2 }).format(value)}`;
 }

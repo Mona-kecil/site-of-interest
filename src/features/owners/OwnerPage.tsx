@@ -1,3 +1,5 @@
+import { isCustodianName } from "../../universe/owners.mjs";
+import { CustodianLabel } from "./CustodianLabel";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
@@ -25,6 +27,7 @@ export function OwnerPage() {
           <header className="owners-header">
             <p className="eyebrow">IDX / {kindLabels[owner.kind]}</p>
             <h1>{owner.name}</h1>
+            {isCustodianName(owner.name) && <CustodianLabel />}
             {owner.listedSymbol && (
               <Link to="/company/$ticker" params={{ ticker: owner.listedSymbol }}>
                 {owner.listedSymbol} company page →
@@ -42,11 +45,11 @@ export function OwnerPage() {
             )}
           </header>
           <OwnershipGraph owner={owner} />
-          <h2>Holdings</h2>
+          <h2 id="owner-holdings">Holdings</h2>
           <p className="owners-note">
             Percentages are reported stakes. Rank compares entity rows within each company; ties
-            share a rank. Public and treasury rows are excluded. n/a means not reported. Multiple
-            source rows stay separate.
+            share a rank. Public and treasury rows are excluded. Not reported marks a missing value.
+            Multiple source rows stay separate.
           </p>
           <div className="owners-table-wrap" role="region" aria-label="Owner holdings" tabIndex={0}>
             <table className="owners-table owners-holdings">
@@ -73,7 +76,7 @@ export function OwnerPage() {
                     </th>
                     <td>{formatValue(holding.percentage, "percent")}</td>
                     <td>
-                      {holding.rank ?? "n/a"}
+                      {holding.rank ?? "Not reported"}
                       {holding.isLargest && <small>Largest entity stake</small>}
                     </td>
                     <td>
@@ -93,7 +96,7 @@ export function OwnerPage() {
                                 </Link>
                                 <span>
                                   {formatValue(holder.percentage, "percent")} · rank{" "}
-                                  {holder.rank ?? "n/a"}
+                                  {holder.rank ?? "Not reported"}
                                 </span>
                               </li>
                             ))}
@@ -109,24 +112,44 @@ export function OwnerPage() {
             </table>
           </div>
           {owner.listedSymbol && (
-            <section className="owners-upstream">
+            <section id="owner-upstream" className="owners-upstream">
               <h2>Holders of {owner.listedSymbol}</h2>
               <p className="owners-note">
                 One level above this listed owner, from its reported entity holdings.
               </p>
               {owner.ownHolders.length ? (
-                <ul>
-                  {owner.ownHolders.map((holder, index) => (
-                    <li key={`${holder.key}:${index}`}>
-                      <Link to="/owner/$key" params={{ key: holder.key }}>
-                        {holder.name}
-                      </Link>
-                      <span>
-                        {formatValue(holder.percentage, "percent")} · rank {holder.rank ?? "n/a"}
-                      </span>
-                    </li>
-                  ))}
-                </ul>
+                <div
+                  className="owners-table-wrap"
+                  role="region"
+                  aria-label="Upstream holders"
+                  tabIndex={0}
+                >
+                  <table className="owners-table">
+                    <caption>{owner.ownHolders.length} reported upstream holdings</caption>
+                    <thead>
+                      <tr>
+                        <th scope="col">Holder</th>
+                        <th scope="col">Stake %</th>
+                        <th scope="col">Rank</th>
+                        <th scope="col">Source</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {owner.ownHolders.map((holder, index) => (
+                        <tr key={`${holder.key}:${index}`}>
+                          <th scope="row">
+                            <Link to="/owner/$key" params={{ key: holder.key }}>
+                              {holder.name}
+                            </Link>
+                          </th>
+                          <td>{formatValue(holder.percentage, "percent")}</td>
+                          <td>{holder.rank ?? "Not reported"}</td>
+                          <td>{holder.sourceId}</td>
+                        </tr>
+                      ))}
+                    </tbody>
+                  </table>
+                </div>
               ) : (
                 <p>No entity holders reported.</p>
               )}

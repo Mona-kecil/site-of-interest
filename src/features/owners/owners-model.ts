@@ -44,7 +44,7 @@ export function ownerRows(
 export type GraphNode = {
   id: string;
   label: string;
-  role: "upstream" | "owner" | "company";
+  role: "upstream" | "owner" | "company" | "more";
   href: string;
   x: number;
   y: number;
@@ -65,7 +65,23 @@ export function ownershipGraph(owner: Pick<Owner, "key" | "name" | "holdings" | 
     if (!held.has(holding.symbol)) held.set(holding.symbol, []);
     held.get(holding.symbol)!.push(holding.percentage);
   }
-  const count = Math.max(upper.size, held.size, 1);
+  const largest = (percentages: (number | null)[]) => [...percentages].sort(comparePercentages)[0];
+  const upstream = [...upper].sort(
+    ([a, left], [b, right]) =>
+      comparePercentages(largest(left.percentages), largest(right.percentages)) ||
+      left.name.localeCompare(right.name) ||
+      a.localeCompare(b),
+  );
+  const companyNames = new Map(owner.holdings.map(({ symbol, name }) => [symbol, name ?? symbol]));
+  const downstream = [...held].sort(
+    ([a, left], [b, right]) =>
+      comparePercentages(largest(left), largest(right)) ||
+      companyNames.get(a)!.localeCompare(companyNames.get(b)!) ||
+      a.localeCompare(b),
+  );
+  const upperCount = Math.min(upper.size, 8) + Number(upper.size > 8);
+  const heldCount = Math.min(held.size, 8) + Number(held.size > 8);
+  const count = Math.max(upperCount, heldCount, 1);
   const height = count * 92 + 48;
   const nodes: GraphNode[] = [];
   const edges: GraphEdge[] = [];
@@ -88,44 +104,58 @@ export function ownershipGraph(owner: Pick<Owner, "key" | "name" | "holdings" | 
     (height - 56) / 2,
   );
   const top = (size: number) => (height - ((size - 1) * 92 + 56)) / 2;
-  [...upper]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([key, holder], index) => {
-      const id = `upstream:${key}`;
-      node(
-        id,
-        holder.name,
-        "upstream",
-        `/owner/${encodeURIComponent(key)}`,
-        24,
-        top(upper.size) + index * 92,
-      );
-      edges.push({
-        id,
-        from: id,
-        to: center,
-        percentages: [...holder.percentages].sort(comparePercentages),
-      });
+  upstream.slice(0, 8).forEach(([key, holder], index) => {
+    const id = `upstream:${key}`;
+    node(
+      id,
+      holder.name,
+      "upstream",
+      `/owner/${encodeURIComponent(key)}`,
+      24,
+      top(upperCount) + index * 92,
+    );
+    edges.push({
+      id,
+      from: id,
+      to: center,
+      percentages: [...holder.percentages].sort(comparePercentages),
     });
-  [...held]
-    .sort(([a], [b]) => a.localeCompare(b))
-    .forEach(([symbol, percentages], index) => {
-      const id = `company:${symbol}`;
-      node(
-        id,
-        symbol,
-        "company",
-        `/company/${encodeURIComponent(symbol)}`,
-        ownerX + 340,
-        top(held.size) + index * 92,
-      );
-      edges.push({
-        id,
-        from: center,
-        to: id,
-        percentages: [...percentages].sort(comparePercentages),
-      });
+  });
+  downstream.slice(0, 8).forEach(([symbol, percentages], index) => {
+    const id = `company:${symbol}`;
+    node(
+      id,
+      symbol,
+      "company",
+      `/company/${encodeURIComponent(symbol)}`,
+      ownerX + 340,
+      top(heldCount) + index * 92,
+    );
+    edges.push({
+      id,
+      from: center,
+      to: id,
+      percentages: [...percentages].sort(comparePercentages),
     });
+  });
+  if (upper.size > 8)
+    node(
+      "more:upstream",
+      `+${upper.size - 8} more`,
+      "more",
+      "#owner-upstream",
+      24,
+      top(upperCount) + 8 * 92,
+    );
+  if (held.size > 8)
+    node(
+      "more:holdings",
+      `+${held.size - 8} more`,
+      "more",
+      "#owner-holdings",
+      ownerX + 340,
+      top(heldCount) + 8 * 92,
+    );
   return { width: upper.size ? 992 : held.size ? 652 : 312, height, nodes, edges };
 }
 

@@ -1,8 +1,9 @@
+import { checkCell } from "../../universe/presentation.mjs";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { definitions } from "../../universe/checks.mjs";
-import { formatMarketCap, formatPeers, formatValue } from "../universe/universe-model";
+import { formatMarketCap, formatValue } from "../universe/universe-model";
 
 const groupNote =
   "Sectors business-group labels. Membership follows the provider's affiliates field; control has not been verified. A company can carry more than one label.";
@@ -49,8 +50,8 @@ export function GroupsPage() {
         </div>
       )}
       <p className="owners-note">
-        Combined market cap sums reported company values. n/a means none were reported. Values can
-        overlap across labels and include both a parent and its listed subsidiaries.
+        Combined market cap sums reported company values. Not reported means none were reported.
+        Values can overlap across labels and include both a parent and its listed subsidiaries.
       </p>
     </main>
   );
@@ -83,9 +84,9 @@ export function GroupPage() {
             </p>
           </header>
           <p className="owners-note">
-            Checks show measurements and sub-sector percentiles, without a direction. n/a carries
-            the reported gap. A dash means the check does not apply. Market caps sum reported
-            values, including listed parents and subsidiaries.
+            Checks show measurements and sub-sector percentiles, without a direction. Gap categories
+            name missing inputs, undefined bases or short histories. Does not apply marks excluded
+            checks. Market caps sum reported values, including listed parents and subsidiaries.
           </p>
           <div
             className="owners-table-wrap"
@@ -124,17 +125,18 @@ export function GroupPage() {
                     <td>{formatValue(company.freeFloat, "percent")}</td>
                     {definitions.map((definition) => {
                       const check = company.checks.find(({ checkId }) => checkId === definition.id);
+                      const cell = checkCell(check, definition.unit);
                       return (
-                        <td key={definition.id}>
-                          {check ? (
-                            <>
-                              <span>{formatValue(check.value, definition.unit)}</span>
-                              <small>{formatPeers(check.percentile, check.peerCount)}</small>
-                              {check.gap && <small className="owners-check-gap">{check.gap}</small>}
-                            </>
-                          ) : (
-                            <span aria-label="Not applicable">—</span>
-                          )}
+                        <td key={definition.id} title={cell.reason ?? undefined}>
+                          <span
+                            className={
+                              cell.state === "does-not-apply" ? "check-does-not-apply" : undefined
+                            }
+                          >
+                            {cell.text}
+                          </span>
+                          {cell.peers && <small>{cell.peers}</small>}
+                          {cell.reason && <small className="owners-check-gap">{cell.reason}</small>}
                         </td>
                       );
                     })}

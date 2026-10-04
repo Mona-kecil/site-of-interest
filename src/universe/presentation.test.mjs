@@ -1,0 +1,77 @@
+import assert from "node:assert/strict";
+import { readFile } from "node:fs/promises";
+import test from "node:test";
+import { FIELD_DEFINITIONS } from "./fields.mjs";
+import { definitions } from "./checks.mjs";
+import { checkCell, checkQuestion, formatInput, gapCategory, humanGap, inputLabel, sourceLine } from "./presentation.mjs";
+
+const read = async (name) => JSON.parse(await readFile(new URL(`../../data/universe/${name}.json`, import.meta.url), "utf8"));
+const result = { value: 2, percentile: 0.84, peerCount: 31, gap: null };
+
+test("displayed registry questions use measurement language", () => {
+  for (const definition of definitions) assert.doesNotMatch(checkQuestion(definition), /\b(?:good|bad|buy|sell|healthy|weak|warning|threshold|cheap|expensive)\b/i);
+  assert.equal(checkQuestion(definitions.find(({ id }) => id === "fcf_yield")), "What is free cash flow relative to the current market cap?");
+});
+
+test("check cells distinguish measured, few peers, gaps and non-applicability", () => {
+  assert.deepEqual(checkCell(result, "multiple"), { state: "measured", text: "2.00×", peers: "p84 · 31 peers", reason: null });
+  assert.deepEqual(checkCell({ ...result, value: 0, percentile: null, peerCount: 3 }, "multiple"), { state: "few-peers", text: "0.00×", peers: "3 peers · no percentile", reason: null });
+  assert.deepEqual(checkCell(undefined, "percent"), { state: "does-not-apply", text: "Does not apply", peers: null, reason: null });
+  assert.deepEqual(checkCell({ ...result, value: null, gap: "pe_ttm is zero or negative" }, "multiple"), { state: "gap", text: "Not meaningful", peers: null, reason: "Trailing P/E is zero or negative" });
+  for (const [gap, category] of [
+    ["Not reported: earnings[2025]", "Not reported"],
+    ["No entity holdings reported", "Not reported"],
+    ["Earnings sum is zero or negative", "Not meaningful"],
+    ["2020 outstanding shares is zero", "Not meaningful"],
+    ["Invested capital is zero or negative", "Not meaningful"],
+    ["Calculation is not finite", "Not meaningful"],
+    ["Fewer than 3 positive PE years reported", "Too little history"],
+  ]) assert.equal(gapCategory(gap), category);
+});
+
+test("all registry entries have human labels and inputs put the fiscal year first", () => {
+  for (const field of FIELD_DEFINITIONS) {
+    assert.equal(typeof field.label, "string", field.key);
+    assert.ok(field.label.length > 0, field.key);
+    assert.doesNotMatch(field.label, /_|\[/, field.key);
+  }
+  assert.equal(inputLabel({ key: "operatingCashFlow", field: "operating_cash_flow[2023]", period: "2023" }), "Operating cash flow · FY2023");
+  assert.equal(inputLabel({ key: "Bank Of Singapore Limited", field: "major_shareholders_name.share_percentage", period: "current" }), "Bank Of Singapore Limited · current stake");
+});
+
+test("gap reasons replace field codes, keep unknown patterns and name the history limit", () => {
+  assert.equal(humanGap("Not reported: operating_cash_flow[2023], earnings[2024]"), "Operating cash flow FY2023 and earnings FY2024 not reported");
+  assert.equal(humanGap("pb_mrq is zero or negative"), "Current P/B is zero or negative");
+  assert.equal(humanGap("Fewer than 3 positive PE years reported"), "Fewer than 3 positive P/E years reported");
+  assert.equal(humanGap("Not reported: unknown_field[2025]"), "Not reported: unknown_field[2025]");
+  assert.equal(humanGap("Unrecognized provider reason"), "Unrecognized provider reason");
+});
+
+test("every distinct snapshot gap renders without snake case or brackets", async () => {
+  const { results } = await read("checks");
+  const gaps = new Set(results.flatMap(({ gap }) => gap ? [gap] : []));
+  assert.ok(gaps.size > 0);
+  for (const gap of gaps) assert.doesNotMatch(humanGap(gap), /[a-z]+_[a-z_]+|\[/, gap);
+});
+
+test("input values use IDR billions, check units for ratios, and preserve null and zero", () => {
+  assert.equal(formatInput(19364410000000, "operating_cash_flow[2023]", "multiple"), "IDR 19,364.41 bn");
+  assert.equal(formatInput(-2500000000, "capital_expenditure[2025]", "percent"), "IDR -2.50 bn");
+  assert.equal(formatInput(0, "earnings[2025]", "multiple"), "IDR 0.00 bn");
+  assert.equal(formatInput(null, "earnings[2025]", "multiple"), "Not reported");
+  assert.equal(formatInput(0.84, "loan_to_deposit_ratio[2025]", "percent"), "84.00%");
+  assert.equal(formatInput(2.5, "pe[2023]", "multiple"), "2.50×");
+  assert.equal(formatInput(0.125, "free_float", "percent"), "12.50%");
+  assert.equal(formatInput(0.125, "major_shareholders_name.share_percentage", "percent"), "12.50%");
+  assert.equal(formatInput(123456789, "outstanding_shares[2025]", "percent"), "123,456,789");
+});
+
+test("source lines derive field batches, bounded row ranges and UTC dates from the snapshot", async () => {
+  const sources = await read("sources");
+  const manifest = await read("manifest");
+  assert.equal(sourceLine(sources[0], manifest), "Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026");
+  const last = sources.find(({ id }) => id === "universe-10-800");
+  assert.equal(sourceLine(last, manifest), "Sectors · /v2/companies/ · batch 10 of 10 · rows 801–962 · 2 Oct 2026");
+  assert.doesNotMatch(sourceLine(last, manifest), /\?|where=|offset=/);
+  assert.ok(last.endpoint.length > 1000);
+});

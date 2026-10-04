@@ -1,281 +1,50 @@
 # System design
 
-This document defines the target product contracts and identifies which parts exist in the repository. Read it before changing a data contract, route, collector, or product ticket.
-
-## Implementation status
-
-The repository has three working data paths.
-
-The Empire path runs from `scripts/sync-sectors.mjs` to JSON under `data/empires/prajogo/`, then through `convex/seed.ts` into the Empire and company queries. React exposes `/empire/$slug` and `/empire/$empireSlug/company/$ticker`. The older `/company/$ticker` route remains for existing links and reads the Prajogo corpus.
-
-The fundamental-signal path runs the rules in `src/features/today/fundamental-rules.ts` over parsed annual and valuation facts during the local corpus import. `convex/seed.ts` stores each value or gap in `fundamentalSignals`. `convex/fundamentalSignals.ts` serves the paginated feed, exact metric and period comparisons, source detail, and full company measurement list to `/happening`. The current corpus produces 350 signals for 10 listed companies. No provider call runs when a user opens the page.
-
-The news path runs `scripts/sync-news.mjs` over a bounded Sectors IDX news window. `src/news-records.mjs` accepts only exact provider ticker matches. The local seed imports 97 September 2026 articles and their date-range coverage. The feed and company view display headlines, publication times, source URLs, and match rules. They omit sentiment tags and do not assign an event time.
-
-A general event timeline, authentication, research cases, and multi-Empire import remain target contracts. The fundamental, news, and Empire-context paths work for the Prajogo corpus. Shared rules and read models must still accept an Empire key. The fundamental feed uses each provider fact's `asOf` date. It does not claim that a historical annual fact was newly reported on that date.
-
-## Product boundary
-
-Site of Interest maps imported records about Indonesian conglomerates and calculates reproducible comparisons across their listed companies. It reports facts, calculations, and gaps. The user decides what those values mean. The app does not recommend trades or classify a measurement as normal, abnormal, positive, negative, suspicious, or important.
-
-A measured signal is the root of the target research flow. The user opens its company, source records, and Empire context. The Empire graph contains people, business groups, companies, assets, and relationships. Financial records, events, news, and signals refer to graph entities. They are not graph edges.
-
-Sectors is the only company-data provider in the current implementation. A static geographic file may supply map geometry. It cannot supply a company, relationship, asset, production figure, financial value, event, or news claim.
-
-## Claim states
-
-Every user-visible claim has one state:
-
-- **Fact** contains a normalized provider value and at least one source reference.
-- **Calculation** contains a deterministic result, cited inputs, and a formula version.
-- **Gap** contains the unanswered question, the checked data area, and the check time.
-
-Never convert a gap into a fact. Present a provider group label as an attributed provider fact, not as legal ownership. Do not derive a relationship or causation from the timing of news records.
+Site of Interest reads a stored Sectors snapshot through Convex. Page visits make no Sectors request. React derives display labels, gap categories, source summaries, peer ranks and graph caps at render time. The snapshot and backend contracts retain raw provider values.
 
 ## Data flow
 
-The target flow extends the implemented paths:
-
 ```text
-Sectors API
-    ↓ authenticated provider client
-Boundary parser
-    ↓ normalized provider facts
-Corpus or news snapshot importer
-    ↓ persisted records
-Versioned signal rule
-    ↓ measured signal
-Route-specific Convex query
-    ↓ bounded read model
-React workspace
-    ↓ authenticated user action
-Research case
+Sectors /v2/companies/
+  → budgeted, cached sync and boundary validation
+  → data/universe/ company, annual, quarterly, holding and source rows
+  → offline checks and owner/group builders
+  → offline snapshot validation
+  → guarded dev-only import into eight Convex tables
+  → indexed read models
+  → React research routes
 ```
 
-The provider client owns credentials, request budgets, caching, and HTTP failures. A boundary parser validates one provider response and returns a named domain record. Code after that boundary trusts the normalized record.
+The command order is `sync:universe → build:checks → build:owners → validate:universe → convex:import-universe`. Cold syncs spend Sectors credits; cache hits retain the source retrieval date and spend zero. Builders and validation read local files. Import writes to Convex, requires a deployed schema, and spends no Sectors credits. Its eight table replacements run as separate imports, so an operator checks for a failed partial import before testing the app.
 
-Convex stores records needed by React. Pure functions calculate metrics and signals from normalized inputs. React owns layout, selection, filters, and other session-only state. React does not parse provider responses or read Convex tables without a registered function.
+The import guard reads `.env.local` and accepts only `local:`, `anonymous:` or `dev:` deployment names. It rejects a missing name, production, preview, deploy keys in either the file or process environment, and a conflicting process deployment. It replaces the universe tables and leaves other tables alone.
 
-## Routes
+## Calculation contract
 
-The current and target routes are:
+[checks.mjs](../src/universe/checks.mjs) owns the ordered check definitions and deterministic calculations. Each applicable company/check pair has a numeric result or a gap, reporting period, cited inputs, peer count and optional percentile. [The check table](product-brief.md#lenses-and-checks) comes from that registry.
 
-| Research task | Current route | Target route |
-| --- | --- | --- |
-| Open the default application | Redirects to `/happening` | `/happening` |
-| Inspect one Empire | `/empire/$slug` | `/empire/$empireSlug` |
-| Inspect one listed company | `/empire/$empireSlug/company/$ticker`; legacy `/company/$ticker` | `/empire/$empireSlug/company/$ticker` |
-| Compare listed members in one Empire | `/focus/$empireSlug` | `/focus/$empireSlug` |
-| Inspect one research case | Not implemented | `/research/$caseId` |
+Null means not reported and never becomes a reported zero. A zero numerator can produce a measured zero; a zero denominator produces a gap. Calculations that require a positive base also reject negative bases. P/E and P/B history ratios require at least three positive annual reports. Dividend years count positive reported dividends; missing years remain null in the evidence, so zero years means no positive dividend reported rather than six reported zero dividends.
 
-The target company route includes `empireSlug` because one ticker may appear as a member or boundary entity in more than one imported Empire. Do not add a private-entity route until the Empire inspector can no longer complete a named private-company research task.
+ROIC uses EBIT after tax divided by debt plus equity less cash. Its tax rate is tax divided by earnings before tax when the latter is positive and the rate lies from zero to one; other cases use 0.22. The input annotation states the selected rate and preserves the reported tax and earnings-before-tax inputs.
 
-## Domain contracts
+Capex can arrive with either sign. Reinvestment uses the absolute capex outflow. Provider free cash flow is stored as reported, rather than recalculated in React. See the [capex examples and limits](universe-data.md#calculation-and-display-rules).
 
-### Empire graph
+## Peers and display states
 
-The Empire domain owns:
+Peers are reported, applicable values for the same check and sub-sector, including the subject. For `n` peers, percentile is `(below + 0.5 × (equal − 1)) / (n − 1)`, where below counts strictly smaller values and equal includes the subject. The percentile is null for fewer than five reported peers. Ties share their midrank; there is no direction or rating.
 
-- the manifest and coverage date;
-- people, business groups, listed companies, private companies, operating companies, and assets;
-- Empire membership and boundary status;
-- ownership, control, and affiliation relationships;
-- assertions that support or challenge each relationship; and
-- source references and coverage gaps.
+Measured cells show a value and percentile. Measured cells with fewer than five peers show a value and peer count without a percentile. Gap cells show Not reported, Not meaningful or Too little history and the human reason. Excluded checks show Does not apply, in quieter text without a button. Gaps have no peer line. The shared [presentation helper](../src/universe/presentation.mjs) applies these states to screener, company and group values.
 
-An affiliation relationship requires an assertion separate from an ownership relationship. A boundary entity connects to an Empire member but lacks evidence that establishes group membership.
+The company peer strip uses rank positions across reported peers, with ties at their mean rank and a single peer at the center. Lowest and highest label the ends. A diamond outlines the subject; dot titles expose ticker and value. Rank spacing retains distinctions when raw values contain outliers.
 
-The Sectors company screener's `affiliates` field seeds the listed-company universe for an Empire. The boundary parser preserves the returned affiliate label and source field. It emits provider-reported membership, not ownership or control. Company reports and ownership data may extend the universe or contradict the initial classification. The importer preserves both records when they disagree.
+## Ownership boundaries
 
-The graph does not store user notes or financial histories inside entity documents.
+Owner keys normalize legal-form variants while retaining core names and account qualifiers. Entity holdings remain separate source rows. Competition ranks compare reported entity stakes within each company and share ties. Missing percentages have no rank. Public and treasury holdings remain in company data but do not become owners or enter largest-entity-stake checks.
 
-### Fundamentals
+The graph has one center, one upstream holder level for listed owners, and downstream companies. Each column sorts by its largest reported stake, then name, with missing stakes last. Each column displays at most eight entities; a final +N more node links to its full list on the same page. Multiple source rows keep their percentages on one edge.
 
-The Fundamentals domain owns provider financial records, provider valuation records, peer-set definitions, sector templates, and versioned calculations.
+Custodian classification is a name hint about a holder of record. It does not resolve the beneficial owner. [The pattern rule](universe-data.md#custodian-rule) explains the matched institutions and account qualifiers. Provider business-group labels can overlap and do not establish control.
 
-A sector template names every metric that the company view may compare. A calculation records its formula version, input references, reporting period, and calculation time. Provider facts remain unchanged when a formula changes.
+## Verification boundary
 
-The current corpus stores annual financial records, valuation periods, profile metrics, provider measurements, and data gaps in `companyFacts`. The importer stores calculated fundamental results separately in `fundamentalSignals` so the cross-company feed can use indexed queries. The current rule set covers annual revenue, earnings, operating cash flow, and free cash flow changes; operating cash flow divided by earnings; debt divided by assets; earnings divided by assets; and provider-reported P/E. Unknown sectors receive no template. Financial-sector templates exclude debt divided by assets.
-
-The corpus has no defined peer set, book value, EBITDA, or dividend inputs for these rules. The feed does not calculate peer rankings, P/BV, EV/EBITDA, or dividend yield.
-
-Focus compares fundamentals for listed companies in one Empire. Its company identity is `empireSlug + ticker`. The current `getFundamentals` read model returns that identity and a nested `fundamentals` measurement group. The Focus route owns the page frame; the Fundamentals board owns its measurements, evidence, filters, and sort. Each measurement retains its period, source, and coverage gaps.
-
-The current Fundamentals board reads stored listed membership and company facts. It shows the latest annual P/E and provider peer P/E, quarterly revenue and earnings growth measurements, and latest annual free cash flow. Peer premium is `(company P/E / provider peer P/E - 1) × 100` only when both P/E values are positive; the provider has not defined its peer set. The shared company and Focus growth state compares the signs of the two quarterly growth measurements, treating zero as not growing and missing measurements as incomplete. The source field does not identify the reporting quarter. Fundamental research priority sorts unresolved board metrics first, then absolute divergence between the two growth values, then ticker. It does not estimate returns.
-
-### Events and news
-
-An event record represents a corporate action or another provider event with a defined event type. A news record represents one provider news item. Both records may refer to multiple entities.
-
-An entity match stores the provider item, matched `entityId`, and exact match rule. Match rules may use a provider ID, ticker, legal name, or registered alias. A failed or ambiguous match becomes a gap. The importer does not select the closest display name.
-
-The repository has a news schema for exact ticker matches from the Sectors IDX news response. It has no general corporate-event schema. Sectors news items in the imported window have no provider item ID or separate event time. The importer derives a stable app key from the source URL, title, and publication time. News does not establish a relationship unless the provider response states that relationship.
-
-### Measured signals
-
-The Signals domain owns stored results from versioned rules. The current fundamental rules define inputs, reporting period, formula, output unit, and a gap when an input is missing.
-
-The current fundamental signal stores:
-
-- a deterministic `stableId`, `metricId`, and `ruleVersion`;
-- `empireSlug`, `entityId`, and ticker;
-- the reporting period and provider fact date;
-- exact input record references;
-- the calculated value and unit;
-- either a numeric value or a named gap.
-
-For fixed inputs and a fixed rule version, signal generation produces the same identity and value. A formula change requires a new rule version. `seed:replacePrajogo` replaces the stored Prajogo signal set in one transaction; a repeat import does not append duplicates. Supersession and expiry are future contracts.
-
-A signal reports a measurement. It does not describe the result as normal, abnormal, positive, negative, suspicious, or important. It does not claim manipulation, insider activity, coordinated trading, or beneficial ownership.
-
-### Research
-
-The Research domain owns cases, notes, open questions, cited record references, watch conditions, and review states. Every query and mutation derives the user identity from Convex authentication. A client argument never determines record ownership.
-
-User text cannot become a provider fact, relationship assertion, or calculation input. If a cited signal expires or is superseded, the case keeps the citation and displays that state.
-
-Research tables and routes are blocked until the application has an authentication provider and `convex/auth.config.ts`.
-
-## Stable identity
-
-Use these keys at file, import, query, and route boundaries:
-
-- Empire: `empireSlug`
-- Entity within an Empire: `empireSlug + entityId`
-- Relationship: `empireSlug + relationshipId`
-- Listed company within an Empire: `empireSlug + ticker`
-- Company fact: `empireSlug + factId`
-- Provider event: `provider + providerItemId` when the provider supplies an ID
-- Current news item: hash of `provider + source URL + title + publication time`
-- Signal: `ruleId + ruleVersion + empireSlug + subjectId + observationPeriod`
-- Source within an Empire corpus: `empireSlug + sourceId`
-
-Keep two records separate when two Empires contain the same display name, ticker, or provider name. Merge identity across Empires only after a separate identity process proves that both records refer to the same legal entity. The current design does not require that merge.
-
-Convex `_id` values stay inside Convex functions. Routes, imported corpora, signals, and evidence references use domain keys.
-
-## Data lifecycles
-
-### Corpus snapshots
-
-`scripts/sync-sectors.mjs` builds the checked-in Prajogo snapshot. The snapshot contains the manifest, entities, relationships, assertions, sources, company facts, and coverage records. `convex/seed.ts` replaces the imported Prajogo records by stable keys.
-
-Each Empire import follows the same discovery sequence:
-
-1. Query the company screener by an exact configured `affiliates` label.
-2. Store every returned listed company as provider-reported membership.
-3. Fetch company reports for the discovered tickers.
-4. Add direct owners, listed descendants, and private corporate entities from cited ownership records.
-5. Classify entities without separate group evidence as boundary entities.
-6. Validate the complete snapshot before import.
-
-The React application and Convex queries read the stored snapshot. They do not call the affiliate screener during a page request.
-
-A corpus refresh is an explicit command because a cold sync spends Sectors credits. The command writes a complete validated snapshot. It does not mutate the previous JSON files one record at a time.
-
-Before scheduled refreshes replace explicit commands, the design must add snapshot history or change records. Otherwise a refresh would erase the evidence needed to review an ownership change.
-
-### Signal generation
-
-Generate a signal only after all input records exist. A rule reads normalized records, evaluates its versioned calculation, and upserts the result. It never edits a source record.
-
-Recompute a signal when an input record changes, when a new observation completes its period, or when a new rule version replaces the old version. Preserve the old result with a superseded state when a research case cites it.
-
-### User state
-
-Research cases, notes, watch conditions, and review states change independently of provider records. Store them in user-owned tables. Check the authenticated identity on every read and write.
-
-## Read models
-
-Every Convex query uses an index and either a fixed maximum or pagination. A query must state its ordering when the product depends on that order.
-
-The Empire query returns at most 500 records from each of entities, relationships, assertions, and sources. It requests one extra row and fails if any group exceeds that limit. A second Empire with a larger graph needs pagination before import.
-
-The target Empire view supplies context after the user opens it from a signal, company, or news item. It reads the graph, a fixed number of recent signals, and a fixed number of timeline items.
-
-The target company view reads the stable profile and bounded summaries for fundamentals, events, news, and Empire membership. Each historical series uses pagination or a documented maximum.
-
-The current Focus Fundamentals query reads at most 100 listed memberships, 100 facts per member, and 500 source records through indexed Convex reads. It excludes boundary entities and returns a typed row with `empireSlug + ticker`, nested fundamental metrics, fact IDs, source locators, periods, and retrieval dates. An Empire that exceeds those bounds requires pagination before the board can display it.
-
-The target **What's happening?** view reads paginated signal summaries in reverse observation-time order for a bounded date range. Today and Yesterday are presets over the same date-range contract. Filters use indexed fields. Signal detail loads cited inputs after the user opens one signal.
-
-## Evidence access
-
-Never send `SECTORS_API_KEY` or an authenticated Sectors URL to the browser.
-
-For a provider fact, calculation, or gap, show:
-
-- the claim state;
-- the provider and source title;
-- the reporting or observation period;
-- the retrieval time;
-- the API path without credentials; and
-- the provider field locator when the claim refers to one response field.
-
-For a calculation, also show its input record references and formula version.
-
-## Module ownership
-
-The current modules are:
-
-```text
-convex/empires.ts
-convex/companies.ts
-src/features/empire/
-src/features/company/
-convex/empireDirectory.ts
-convex/focus.ts
-convex/fundamentalSignals.ts
-convex/news.ts
-src/news-records.mjs
-src/features/focus/
-src/features/today/
-```
-
-Add target modules only with the vertical slice that uses them:
-
-```text
-convex/fundamentals.ts
-convex/events.ts
-convex/signals.ts
-convex/research.ts
-src/features/research/
-```
-
-Provider clients and boundary parsers stay outside React. Pure functions own calculations, signal rules, ranking, and transformations into display records. JSX owns layout and interaction. Client types derive from Convex function return types when those types already describe the record.
-
-## Vertical delivery contract
-
-A ticket is complete only when one research task works through the full data path. The ticket includes:
-
-1. a provider response or existing normalized record;
-2. a boundary parser with failure tests;
-3. an indexed storage record when the task needs persistence;
-4. a bounded Convex query or mutation with argument and return validators;
-5. a reachable React route;
-6. visible sources, calculations, and gaps;
-7. a browser test of the research task;
-8. type checks, unit tests, a production build, and corpus validation; and
-9. a statement of the provider credits spent by the tested path.
-
-Do not split one research task into separate frontend, backend, and database tickets. Those are implementation steps within one ticket.
-
-## Prototype rule
-
-Build data contracts and product work in the production application. Use a disposable prototype only to compare interaction designs.
-
-Before writing a prototype, record one question, the alternatives, and a time limit. Do not put a provider client, domain record, or persistence code in the prototype. After the comparison, record the selected interaction, implement it in the production feature, and delete the prototype.
-
-Do not maintain a second frontend. Git retains discarded experiments.
-
-## Design constraints
-
-- Bound every new Convex query with an index and a fixed maximum or pagination.
-- Add argument and return validators to every new Convex function.
-- Make imports, collectors, and signal generation safe to rerun.
-- Store provider facts before calculations.
-- Version every signal rule and calculation formula.
-- Keep dated measurements and news separate from stable entity records.
-- Display the coverage date and every known gap.
-- Make every signal reproducible from displayed inputs.
-- Complete one research task before starting another route.
+Type checks, lint/format checks, unit tests and production builds require no live provider data. Browser specs require a seeded dev deployment. An operator runs sync, backend deployment, import, code generation and browser tests. [App architecture](real-app-architecture.md) maps the routes and read models; [universe data](universe-data.md) defines the files and provenance.

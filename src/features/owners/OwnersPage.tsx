@@ -1,3 +1,5 @@
+import { isCustodianName } from "../../universe/owners.mjs";
+import { CustodianLabel } from "./CustodianLabel";
 import { useState } from "react";
 import { Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
@@ -59,8 +61,8 @@ export function OwnersPage() {
       </div>
       <p className="owners-note">
         Public and treasury rows are excluded. Bucket labels combine unnamed holders across
-        companies. Stake values sum reported amounts; n/a means none were reported. Largest-holder
-        counts include ties among entity rows and do not establish control.
+        companies. Stake values sum reported amounts; Not reported means none were reported.
+        Largest-holder counts include ties among entity rows and do not establish control.
       </p>
       {owners === undefined ? (
         <p role="status">Loading owners</p>
@@ -112,6 +114,7 @@ export function OwnersPage() {
                     <Link to="/owner/$key" params={{ key: owner.key }}>
                       {owner.name}
                     </Link>
+                    {isCustodianName(owner.name) && <CustodianLabel />}
                     {owner.listedSymbol && (
                       <small>
                         <Link to="/company/$ticker" params={{ ticker: owner.listedSymbol }}>

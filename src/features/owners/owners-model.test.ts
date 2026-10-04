@@ -118,11 +118,25 @@ describe("ownership graph", () => {
     ],
   };
 
-  it("places 11 holdings and upstream holders without overlapping nodes, regardless of input order", () => {
+  it("caps 11 holdings and places upstream holders without overlapping nodes, regardless of input order", () => {
     const graph = ownershipGraph(owner);
     expect(graph).toEqual(ownershipGraph({ ...owner, holdings: [...owner.holdings].reverse() }));
-    expect(graph.nodes).toHaveLength(13);
-    expect(graph.edges).toHaveLength(12);
+    expect(graph.nodes).toHaveLength(11);
+    expect(graph.edges).toHaveLength(9);
+    expect(graph.nodes.filter(({ role }) => role === "company").map(({ label }) => label)).toEqual([
+      "C10",
+      "C09",
+      "C08",
+      "C07",
+      "C06",
+      "C05",
+      "C04",
+      "C03",
+    ]);
+    expect(graph.nodes.find(({ id }) => id === "more:holdings")).toMatchObject({
+      label: "+3 more",
+      href: "#owner-holdings",
+    });
     for (const [index, a] of graph.nodes.entries()) {
       expect(a.x).toBeGreaterThanOrEqual(0);
       expect(a.y).toBeGreaterThanOrEqual(0);
@@ -157,6 +171,52 @@ describe("ownership graph", () => {
       ownershipGraph({ ...owner, holdings: [...holdings].reverse(), ownHolders: [] }),
     );
     expect(ownershipGraph({ ...owner, holdings: [], ownHolders: [] }).nodes).toHaveLength(1);
+  });
+
+  it("sorts upstream stakes by largest source row, then name; caps at eight and keeps null last", () => {
+    const ownHolders = Array.from({ length: 10 }, (_, index) => ({
+      ...owner.ownHolders[0],
+      key: `parent${index}`,
+      name: `Parent ${index}`,
+      percentage: index === 9 ? null : index / 100,
+    }));
+    ownHolders.push({ ...ownHolders[0], percentage: 0.08 });
+    const graph = ownershipGraph({ ...owner, ownHolders });
+    expect(graph).toEqual(ownershipGraph({ ...owner, ownHolders: [...ownHolders].reverse() }));
+    expect(graph.nodes.filter(({ role }) => role === "upstream").map(({ label }) => label)).toEqual(
+      [
+        "Parent 0",
+        "Parent 8",
+        "Parent 7",
+        "Parent 6",
+        "Parent 5",
+        "Parent 4",
+        "Parent 3",
+        "Parent 2",
+      ],
+    );
+    expect(graph.nodes.find(({ id }) => id === "more:upstream")).toMatchObject({
+      label: "+2 more",
+      href: "#owner-upstream",
+    });
+    expect(graph.edges.find(({ id }) => id === "upstream:parent0")?.percentages).toEqual([0.08, 0]);
+  });
+
+  it("breaks downstream stake ties by company name and puts zero before null", () => {
+    const holdings = [
+      { ...owner.holdings[0], symbol: "Z", name: "Alpha", percentage: 0.5 },
+      { ...owner.holdings[0], symbol: "A", name: "Zulu", percentage: 0.5 },
+      { ...owner.holdings[0], symbol: "N", percentage: null },
+      { ...owner.holdings[0], symbol: "O", percentage: 0 },
+    ];
+    const graph = ownershipGraph({ ...owner, holdings, ownHolders: [] });
+    expect(graph.nodes.filter(({ role }) => role === "company").map(({ label }) => label)).toEqual([
+      "Z",
+      "A",
+      "O",
+      "N",
+    ]);
+    expect(graph.nodes.some(({ role }) => role === "more")).toBe(false);
   });
 
   it("limits visual labels while the graph retains the full name", () => {

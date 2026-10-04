@@ -1,11 +1,17 @@
 import { access, readFile, readdir } from "node:fs/promises";
 import { dirname, resolve } from "node:path";
+import { definitions } from "../src/universe/checks.mjs";
 
-const ticketDocuments = (await readdir("docs/tickets"))
-  .filter((name) => name.endsWith(".md"))
-  .sort()
-  .map((name) => `docs/tickets/${name}`);
-const documents = ["docs/product-brief.md", "docs/system-design.md", ...ticketDocuments];
+async function markdownFiles(directory) {
+  const entries = await readdir(directory, { withFileTypes: true });
+  const files = await Promise.all(entries.map((entry) => {
+    const path = `${directory}/${entry.name}`;
+    return entry.isDirectory() ? markdownFiles(path) : entry.name.endsWith(".md") ? [path] : [];
+  }));
+  return files.flat().sort();
+}
+
+const documents = ["README.md", ...await markdownFiles("docs")];
 const bannedPatterns = [
   [/\u2014/g, "em dash"],
   [/\u201c|\u201d/g, "curly double quote"],
@@ -14,6 +20,7 @@ const bannedPatterns = [
   [/\b(?:deep|complete)\s+(?:analysis|coverage|data|dataset|fundamentals|support)\b/gi, "undefined scope word"],
   [/\binvestigation signals?\b/gi, "retired product term"],
   [/\binferences?\b/gi, "retired claim state"],
+  [/prajogo|empire|happening|focus board|convex:seed|sync:news|seed-prajogo/gi, "retired product reference"],
 ];
 
 const errors = [];
@@ -45,14 +52,24 @@ for (const document of documents) {
     }
   });
 
-  const localLinks = [...source.matchAll(/\[[^\]]+\]\((?!https?:\/\/)([^)#]+\.md)(?:#[^)]+)?\)/g)];
+  const localLinks = [...source.matchAll(/\[[^\]]+\]\(([^)]+)\)/g)]
+    .map((link) => link[1])
+    .filter((target) => !/^(?:[a-z][a-z\d+.-]*:|#)/i.test(target))
+    .map((target) => target.split(/[?#]/)[0]);
   for (const link of localLinks) {
-    const target = resolve(dirname(document), link[1]);
+    const target = resolve(dirname(document), decodeURIComponent(link));
     try {
       await access(target);
     } catch {
-      errors.push(`${document}: missing local document ${link[1]}`);
+      errors.push(`${document}: missing local target ${link}`);
     }
+  }
+}
+
+const brief = await readFile("docs/product-brief.md", "utf8");
+for (const definition of definitions) {
+  if (!brief.includes(`\`${definition.id}\``) || !brief.includes(definition.formula.replaceAll("|", "\\|"))) {
+    errors.push(`docs/product-brief.md: stale check definition ${definition.id}`);
   }
 }
 

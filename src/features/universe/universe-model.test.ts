@@ -134,12 +134,12 @@ describe("Universe measurements", () => {
     expect(formatValue(-0.125, "percent")).toBe("-12.50%");
     expect(formatValue(2, "multiple")).toBe("2.00×");
     expect(formatValue(0, "count")).toBe("0");
-    expect(formatValue(null, "percent")).toBe("n/a");
+    expect(formatValue(null, "percent")).toBe("Not reported");
     expect(formatMarketCap(182580824661400)).toBe("IDR 182.58T");
-    expect(formatMarketCap(null)).toBe("n/a");
+    expect(formatMarketCap(null)).toBe("Not reported");
     expect(formatInput(null)).toBe("Not reported");
     expect(formatInput(0.025)).toBe("0.025");
     expect(formatPeers(0.84, 31)).toBe("p84 · 31 peers");
-    expect(formatPeers(null, 4)).toBe("p n/a · 4 peers");
+    expect(formatPeers(null, 4)).toBe("4 peers · no percentile");
   });
 });

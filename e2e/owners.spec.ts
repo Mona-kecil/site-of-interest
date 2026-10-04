@@ -88,3 +88,23 @@ test("contains tables and the graph at 390 pixels", async ({ page }) => {
     }
   }
 });
+
+
+test("caps Bank of Singapore's nine downstream companies and identifies its account role", async ({ page }) => {
+  await page.goto("/owner/bank%20of%20singapore");
+  await expect(page.getByRole("heading", { name: "Bank Of Singapore Limited", exact: true })).toBeVisible();
+  await expect(page.getByText("Custodian or nominee account", { exact: true })).toBeVisible();
+  await expect(page.getByText(/may hold shares for clients/)).toBeVisible();
+  await expect(page.locator(".owners-node-company")).toHaveCount(8);
+  const more = page.locator('.owners-graph a[href="#owner-holdings"]');
+  await expect(more).toHaveAccessibleName("+1 more");
+  await more.click();
+  await expect(page).toHaveURL(/#owner-holdings$/);
+  await expect(page.locator(".owners-holdings tbody tr")).toHaveCount(9);
+  await page.goto("/owners");
+  await page.getByLabel("Search owners").fill("Bank Of Singapore");
+  await expect(page.getByText("Custodian or nominee account", { exact: true })).toBeVisible();
+  await page.goto("/company/DMMX");
+  const holder = page.locator(".profile-holdings tr").filter({ has: page.getByRole("link", { name: "Bank Of Singapore Limited", exact: true }) });
+  await expect(holder.getByText("Custodian or nominee account", { exact: true })).toBeVisible();
+});

@@ -1,27 +1,46 @@
-# Real app architecture
+# App architecture
 
-## Goal
+React 19 renders the research routes through TanStack Router. Convex serves the imported snapshot. Vite+ runs development, formatting, linting, unit tests and builds. The browser uses read-only queries for the research surface; session filters, sort, selected lens and evidence disclosures stay in React.
 
-The React application reads one normalized Empire from Convex. The first route is `/empire/prajogo`. It renders entities, ownership relationships, and the Sectors assertions that support each relationship.
+## Routes and read models
 
-## Usage
+| Route | Task | Convex query |
+| --- | --- | --- |
+| `/` | Redirect to the screener | None |
+| `/universe` | Search, filter, sort and inspect six check lenses | `universe.screen`, `universe.check` |
+| `/company/$ticker` | Check evidence, annual/quarterly history, peers and holders | `companyProfile.get` |
+| `/owners` | Search owners and filter listed company owners | `owners.list` |
+| `/owner/$key` | Holdings, co-holders and one upstream level | `owners.get` |
+| `/groups` | Browse Sectors business-group labels | `owners.groups` |
+| `/group/$slug` | Member companies and check summaries | `owners.group` |
 
-```ts
-const empire = useQuery(api.empires.getBySlug, { slug: "prajogo" });
-```
+The company query accepts lowercase ticker input. Domain route keys use ticker, canonical owner key and provider-label slug. Convex document IDs remain storage references. TanStack Links connect screener symbols and names to companies, companies to owners, and directories to detail pages. Graph overflow nodes use page anchors.
 
-`getBySlug` returns one object with `manifest`, `entities`, `relationships`, `assertions`, and `sources`. React components do not query storage tables or Sectors endpoints directly.
+## Module roles
 
-## Data ownership
+| Module | Role |
+| --- | --- |
+| [router.tsx](../src/router.tsx) | App shell and route registration |
+| [UniversePage.tsx](../src/features/universe/UniversePage.tsx) | Screener, keyboard lens tabs and evidence panel |
+| [universe-model.ts](../src/features/universe/universe-model.ts) | Pure filters, sort, lens order and number-format exports |
+| [CompanyProfilePage.tsx](../src/features/company/CompanyProfilePage.tsx) | Company sections, history tables, holdings and evidence |
+| [profile-model.ts](../src/features/company/profile-model.ts) | Section applicability, period slots, ranked peer strip and holding order |
+| [owners-model.ts](../src/features/owners/owners-model.ts) | Owner filtering, sorting and capped graph layout |
+| [OwnershipGraph.tsx](../src/features/owners/OwnershipGraph.tsx) | SVG nodes, reported stake edges and table anchors |
+| [CheckInput.tsx](../src/features/universe/CheckInput.tsx) | Human input labels, unit formatting, raw values and source disclosure |
+| [presentation.mjs](../src/universe/presentation.mjs) | Pure check states, gap text, input formatting and source summaries |
+| [fields.mjs](../src/universe/fields.mjs) | Provider field registry, human labels, units and periods |
+| [checks.mjs](../src/universe/checks.mjs) | Calculation registry and sub-sector percentiles |
+| [owners.mjs](../src/universe/owners.mjs) | Canonical owner/group builders and custodian name hints |
 
-- `data/empires/prajogo/` is the checked-in Sectors corpus during the migration.
-- `convex/seed.ts` imports that corpus into Convex with stable string IDs.
-- `convex/empires.ts` owns the public read model.
-- `src/features/empire/` owns layout and interaction state.
-- Convex `_id` values stay inside Convex functions.
+Client types derive from Convex function return types. Pure model tests sit beside the modules. Node tests cover the file-based builders and display helpers; React tests mock queries without making backend calls.
 
-## Synthesis decision
+## Stored read boundaries
 
-The repository replaces the root prototype instead of keeping two frontends. Git preserves the prototype at commit `ff7e544`. The existing ingestion scripts stay in place until Convex actions replace their filesystem writes.
+The eight imported tables are companies, companyYears, companyQuarters, holdings, universeSources, checkResults, owners and businessGroups. Company rows include compact check summaries; evidence queries return full inputs and source rows on demand.
 
-The graph uses indexed edge documents rather than recursive storage queries. `getBySlug` loads one bounded Empire. The browser derives the visible layout from that complete read model.
+The owner read models use indexes and explicit bounds: 5,000 owners, 128 owner holdings, 64 holdings per company, 128 groups and 1,024 group members. An exceeded bound raises an error instead of hiding rows. The graph's eight-node limit affects the drawing only; the full detail list retains the returned rows.
+
+The frontend imports the small manifest for period slots and source batch/range labels. It does not import the full snapshot into the application bundle. It fetches company data through registered queries. Refreshing JSON requires an operator import before the live UI reads the new values.
+
+See [system design](system-design.md) for the pipeline and calculation contracts, and [design system](product-design-system.md) for display rules.

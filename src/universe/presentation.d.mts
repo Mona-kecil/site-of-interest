@@ -1,0 +1,14 @@
+export type CheckUnit = "percent" | "multiple" | "count";
+export type CheckValue = { value: number | null; percentile: number | null; peerCount: number; gap: string | null };
+export type CheckInput = { key: string; field: string; period: string; value: number | null; sourceId: string; label?: string };
+export type Source = { id: string; endpoint: string; retrievedAt: string; provider?: string };
+export type Manifest = { provider: string; companyCount: number; groups: { id: string }[] };
+export function checkQuestion(definition: { id: string; question: string }): string;
+export function inputLabel(input: Pick<CheckInput, "key" | "field" | "period">): string;
+export function humanGap(gap: string): string;
+export function gapCategory(gap: string | null): "Not reported" | "Not meaningful" | "Too little history";
+export function formatValue(value: number | null, unit: CheckUnit): string;
+export function formatPeers(percentile: number | null, peerCount: number): string;
+export function checkCell(result: CheckValue | null | undefined, unit: CheckUnit): { state: "does-not-apply" | "gap" | "few-peers" | "measured"; text: string; peers: string | null; reason: string | null };
+export function formatInput(value: number | null, field?: string, checkUnit?: CheckUnit): string;
+export function sourceLine(source: Source, manifest: Manifest): string;

@@ -104,12 +104,23 @@ export function peerStrip(peers: readonly Peer[], symbol: string) {
   const reported = peers.filter((peer): peer is Peer & { value: number } => peer.value !== null);
   const min = reported.length ? Math.min(...reported.map(({ value }) => value)) : null;
   const max = reported.length ? Math.max(...reported.map(({ value }) => value)) : null;
+  const ordered = [...reported].sort((a, b) => a.value - b.value);
+  const positions = new Map<number, number>();
+  for (let start = 0; start < ordered.length;) {
+    let end = start + 1;
+    while (end < ordered.length && ordered[end].value === ordered[start].value) end++;
+    positions.set(
+      ordered[start].value,
+      ordered.length === 1 ? 0.5 : (start + (end - start - 1) / 2) / (ordered.length - 1),
+    );
+    start = end;
+  }
   return {
     min,
     max,
     points: reported.map((peer) => ({
       ...peer,
-      position: min === max ? 0.5 : (peer.value - min!) / (max! - min!),
+      position: positions.get(peer.value)!,
       selected: peer.symbol === symbol,
     })),
     missing: peers.filter(({ value }) => value === null).map(({ symbol: ticker }) => ticker),

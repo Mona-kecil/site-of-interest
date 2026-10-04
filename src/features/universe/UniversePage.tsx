@@ -1,19 +1,20 @@
+import { Link } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { definitions, type CheckDefinition } from "../../universe/checks.mjs";
 import {
   filterOptions,
-  formatInput,
   formatMarketCap,
-  formatPeers,
-  formatValue,
   lenses,
   screenRows,
   summaryFor,
   type Filters,
   type Sort,
 } from "./universe-model";
+
+import { checkCell, checkQuestion } from "../../universe/presentation.mjs";
+import { CheckInput } from "./CheckInput";
 
 type Selection = { symbol: string; checkId: string };
 const columns = [
@@ -26,6 +27,7 @@ const definitionById = new Map(definitions.map((definition) => [definition.id, d
 
 function CheckPanel({ selection, close }: { selection: Selection; close: () => void }) {
   const result = useQuery(api.universe.check, selection);
+  const cell = result ? checkCell(result, result.definition.unit) : null;
   const panel = useRef<HTMLElement>(null);
   useEffect(() => {
     const previous = document.activeElement;
@@ -51,12 +53,13 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
           Close
         </button>
       </header>
-      <a
+      <Link
         className="universe-company-link"
-        href={`/company/${encodeURIComponent(selection.symbol)}`}
+        to="/company/$ticker"
+        params={{ ticker: selection.symbol }}
       >
         Open company
-      </a>
+      </Link>
       {result === undefined ? (
         <p role="status">Loading check inputs</p>
       ) : result === null ? (
@@ -64,7 +67,7 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
       ) : (
         <>
           <h2>{result.definition.label}</h2>
-          <p>{result.definition.question}</p>
+          <p>{checkQuestion(result.definition)}</p>
           <dl className="universe-calculation">
             <div>
               <dt>Formula</dt>
@@ -76,19 +79,20 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
             </div>
             <div>
               <dt>Value</dt>
-              <dd>{formatValue(result.value, result.definition.unit)}</dd>
+              <dd>{cell?.text}</dd>
             </div>
-            <div>
-              <dt>Sub-sector percentile</dt>
-              <dd>
-                {result.subSector ?? "Not reported"}:{" "}
-                {formatPeers(result.percentile, result.peerCount)}
-              </dd>
-            </div>
-            {result.gap && (
+            {cell?.peers && (
+              <div>
+                <dt>Sub-sector percentile</dt>
+                <dd>
+                  {result.subSector ?? "Not reported"}: {cell.peers}
+                </dd>
+              </div>
+            )}
+            {cell?.reason && (
               <div>
                 <dt>Gap</dt>
-                <dd>{result.gap}</dd>
+                <dd>{cell.reason}</dd>
               </div>
             )}
           </dl>
@@ -100,46 +104,7 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
           <ol className="universe-inputs">
             {result.inputs.map((input, index) => (
               <li key={`${input.field}:${input.key}:${index}`}>
-                <strong>{input.key}</strong>
-                {input.label && <p>{input.label}</p>}
-                <dl>
-                  <div>
-                    <dt>Field</dt>
-                    <dd>
-                      <code>{input.field}</code>
-                    </dd>
-                  </div>
-                  <div>
-                    <dt>Period</dt>
-                    <dd>{input.period}</dd>
-                  </div>
-                  <div>
-                    <dt>Value</dt>
-                    <dd>{formatInput(input.value)}</dd>
-                  </div>
-                  <div>
-                    <dt>Source</dt>
-                    <dd>{input.source?.title ?? `Source unavailable: ${input.sourceId}`}</dd>
-                  </div>
-                  {input.source && (
-                    <>
-                      <div>
-                        <dt>Endpoint</dt>
-                        <dd>
-                          <code>{input.source.endpoint}</code>
-                        </dd>
-                      </div>
-                      <div>
-                        <dt>Retrieved</dt>
-                        <dd>
-                          <time dateTime={input.source.retrievedAt}>
-                            {input.source.retrievedAt}
-                          </time>
-                        </dd>
-                      </div>
-                    </>
-                  )}
-                </dl>
+                <CheckInput input={input} source={input.source} unit={result.definition.unit} />
               </li>
             ))}
           </ol>
@@ -298,56 +263,55 @@ export function UniversePage() {
               {rows.map((row) => (
                 <tr key={row.symbol} data-symbol={row.symbol}>
                   <th scope="row">
-                    <a
+                    <Link
                       className="universe-company-link"
-                      href={`/company/${encodeURIComponent(row.symbol)}`}
+                      to="/company/$ticker"
+                      params={{ ticker: row.symbol }}
                     >
                       {row.symbol}
-                    </a>
+                    </Link>
                   </th>
                   <td className="universe-company-name">
-                    <a
+                    <Link
                       className="universe-company-link"
-                      href={`/company/${encodeURIComponent(row.symbol)}`}
+                      to="/company/$ticker"
+                      params={{ ticker: row.symbol }}
                     >
                       {row.name}
-                    </a>
+                    </Link>
                   </td>
-                  <td>{row.subSector ?? "n/a"}</td>
+                  <td>{row.subSector ?? "Not reported"}</td>
                   <td>{formatMarketCap(row.marketCap)}</td>
                   {checks.map((definition) => {
                     const summary = summaryFor(row, definition.id);
-                    const gap =
-                      summary?.gap ??
-                      (!summary ? "This check does not apply to this sub-sector" : null);
+                    const cell = checkCell(summary, definition.unit);
+                    const gap = cell.reason;
                     const gapId = `gap-${row.symbol}-${definition.id}`;
                     return (
                       <td key={definition.id}>
                         <div className="universe-cell-wrap">
-                          <button
-                            type="button"
-                            className="universe-cell"
-                            aria-label={`${row.symbol} ${definition.label}`}
-                            aria-describedby={gap ? gapId : undefined}
-                            aria-controls={summary ? "universe-check-details" : undefined}
-                            aria-expanded={
-                              summary
-                                ? selection?.symbol === row.symbol &&
-                                  selection.checkId === definition.id
-                                : undefined
-                            }
-                            aria-disabled={!summary}
-                            title={gap ?? undefined}
-                            onClick={() => {
-                              if (summary)
-                                setSelection({ symbol: row.symbol, checkId: definition.id });
-                            }}
-                          >
-                            <span>{formatValue(summary?.value ?? null, definition.unit)}</span>
-                            {summary && (
-                              <small>{formatPeers(summary.percentile, summary.peerCount)}</small>
-                            )}
-                          </button>
+                          {summary ? (
+                            <button
+                              type="button"
+                              className="universe-cell"
+                              aria-label={`${row.symbol} ${definition.label}`}
+                              aria-describedby={gap ? gapId : undefined}
+                              aria-controls="universe-check-details"
+                              aria-expanded={
+                                selection?.symbol === row.symbol &&
+                                selection.checkId === definition.id
+                              }
+                              title={gap ?? undefined}
+                              onClick={() =>
+                                setSelection({ symbol: row.symbol, checkId: definition.id })
+                              }
+                            >
+                              <span>{cell.text}</span>
+                              {cell.peers && <small>{cell.peers}</small>}
+                            </button>
+                          ) : (
+                            <span className="universe-cell check-does-not-apply">{cell.text}</span>
+                          )}
                           {gap && (
                             <span role="tooltip" id={gapId} className="universe-gap">
                               {gap}

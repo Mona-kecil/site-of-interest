@@ -1,107 +1,44 @@
 # Product design system
 
-Site of Interest is a research console. It should feel precise, quiet, and fast. The interface borrows terminal discipline, not terminal cosplay.
+The research surface uses a dark canvas, pale text, thin rules and tabular numbers. Typography and hierarchy distinguish data, evidence and navigation. Measurement values carry no judging color or rating. Selection and keyboard focus can use an accent; the accent describes interaction state.
 
-## Visual direction
+## Typography and layout
 
-Use a near-black canvas, warm white text, thin rules, and one acid-green status color. Information density is welcome when the hierarchy remains obvious.
+Use DM Mono for values, symbols, dates and compact table labels. Use Manrope for company names, explanations and evidence. Keep long body text at least 13 px and working table text at least 11 px. Wrap names and sources before shrinking text.
 
-Do not add fake window controls, scan-line effects, command prompts, glowing panels, glass blur, decorative gradients, or animated noise. Those effects compete with research data.
+A header identifies the subject. The screener places filters above a horizontally scrollable table and opens a persistent evidence panel. Company sections follow lens order and put check evidence beside annual records. Owner pages put a capped graph above the full holdings table. At 390 px, tables and graphs scroll within their wrappers; endpoints wrap within disclosures. The document has no horizontal overflow.
 
-## Typography
+## Measurement states
 
-Use `DM Mono` for numbers, tickers, dates, labels, statuses, and navigation. Use `Manrope` for names, explanations, notes, and long evidence text.
+| State | Primary text | Secondary text | Interaction |
+| --- | --- | --- | --- |
+| Measured | Unit-formatted value | `p84 · 31 peers` | Open formula and inputs |
+| Measured with too few peers | Unit-formatted value | `3 peers · no percentile` | Open formula and inputs |
+| Gap: missing input | Not reported | Human reason in tooltip or panel | Open available evidence |
+| Gap: undefined base | Not meaningful | Human reason in tooltip or panel | Open available evidence |
+| Gap: short history | Too little history | Human reason in tooltip or panel | Open available evidence |
+| Excluded check | Does not apply | None | Quieter text, no button |
 
-Minimum working sizes:
+Gap cells have no peer line. Null stays Not reported in raw inputs and financial history. A reported zero keeps its number and unit. Neither peer percentile nor rank position assigns a direction.
 
-| Content | Minimum size |
-| --- | --- |
-| Long body text | 13px |
-| Table values | 11px |
-| Labels and dates | 9px |
-| Interactive navigation | 12px |
+## Evidence
 
-Do not shrink text to fit another column. Reduce the number of columns or allow horizontal scrolling inside the table.
+Put `Operating cash flow · FY2023` before the secondary provider code `operating_cash_flow[2023]`. Replace known gap field codes with human labels and fiscal years. Keep unknown gap patterns as raw text so a new provider reason remains visible.
 
-## Color roles
+IDR inputs use billions, such as `IDR 19,364.41 bn`, with the exact raw number in the value title. Ratios follow the check unit; fractions render as percentages and share counts retain their count format. Tax-rate annotations retain the selected ROIC tax rule.
 
-Use the variables in `src/styles.css` rather than adding one-off accents.
+A source line names Sectors, endpoint path, field batch, row range and retrieval date. The stored manifest has ten field batches; the final page ends at row 962. The full query endpoint stays in a Full endpoint disclosure and wraps within the page. Source retrieval time is distinct from the financial reporting period.
 
-| Token | Role |
-| --- | --- |
-| `--ink` | Main canvas |
-| `--panel` | Raised working region |
-| `--line` | Dividers and table rules |
-| `--muted` | Secondary text |
-| `--acid` | Selection, checked status, and positive emphasis |
-| `--amber` | Partial coverage or a watch state |
-| `--blue` | Peer or comparison series |
+## Peer and ownership graphs
 
-Red is reserved for negative reported values and failures. Green does not mean “buy.”
+Peer dots use rank spacing. Ties share a position and a single peer sits at the center. Lowest and highest label the ends, with the reported peer count between them. A diamond outlines the current company; each dot exposes its symbol and value in a title. Missing check results appear in a Check gaps disclosure.
 
-## Layout
+Ownership columns sort by largest reported stake descending, then name. Each column displays at most eight entities and a final +N more link to its full table or list. Edge labels retain each reported source percentage. Full names remain in SVG titles when display labels wrap or truncate.
 
-Build pages around scan paths, not card collections.
+Custodian or nominee account labels use neutral text and explain that a holder of record may hold for clients. They appear on the owner page, in the owners list and beside the company holder. The label does not identify the beneficial owner.
 
-- Use a strong page header with subject identity and current research state.
-- Show at most four headline metrics per row on desktop.
-- Put the primary analysis in the wider column.
-- Put coverage, connections, and evidence in the narrower column.
-- Separate sections with rules and whitespace.
-- Flatten containers that do not need their own interaction or state.
+## Interaction and accessibility
 
-On narrow screens, use one column. A table may scroll inside its own wrapper, but the document must not scroll horizontally.
+Use TanStack Links for route changes and native anchors for sections. Check buttons have symbol/check names, gap descriptions, disclosure state and a panel control reference. Lens tabs support arrow keys, Home and End. The evidence panel takes focus, closes with Escape and returns focus to the selecting cell.
 
-## Components
-
-### Status labels
-
-Write compact labels in brackets, such as `[status / valuation]`. A status label introduces a section; it does not replace the heading.
-
-### Metrics
-
-Use a definition list. Keep the label, value, and date together. Align numeric values with tabular figures.
-
-### Tables
-
-Use tables for repeated financial periods and exact comparisons. Keep units in the values or the column heading. Highlight negative values without hiding their sign.
-
-### Graphs and maps
-
-Give selection, hover, and keyboard focus distinct states. A visual mark must have a text equivalent in the detail panel.
-
-### Evidence records
-
-Show authenticated Sectors endpoints as plain API references, not links. A source record includes its title, access mode, path, and retrieval date.
-
-### Empty and gap states
-
-State what is missing and name the next research action. Do not use generic empty-state illustrations.
-
-## Motion
-
-Use motion only to preserve spatial context during graph reflow, map elevation, or panel transitions. Keep durations short and honor `prefers-reduced-motion`.
-
-Do not stagger metric cards, pulse status dots, or animate decoration on page load.
-
-## Product language
-
-Write like an analyst recording evidence.
-
-- Name the company, metric, period, and source.
-- Separate observation from interpretation.
-- Use “not returned by Sectors” instead of “unavailable” when the distinction matters.
-- Use “research priority” instead of “opportunity score.”
-- Never use “buy”, “sell”, “winner”, “dark horse”, or a price target in system-generated copy.
-
-## Accessibility check
-
-Every route must pass these checks:
-
-- Keyboard focus is visible.
-- Text and status colors meet WCAG AA contrast.
-- Color is not the only status signal.
-- Graphs, maps, and bars have textual values.
-- The page has no document-level horizontal overflow at 390px.
-- Reduced-motion mode keeps the full workflow usable.
-
+Keep keyboard focus visible. Provide textual values for visual marks. Use scroll-region names for wide tables and graphs. Keep disclosure summaries reachable and source text wrapped. Preserve the workflow under reduced motion. [Browser specs](../e2e/company.spec.ts) verify narrow-screen evidence containment after opening full endpoints.

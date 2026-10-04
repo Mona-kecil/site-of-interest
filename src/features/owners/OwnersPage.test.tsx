@@ -126,10 +126,11 @@ describe("owners pages", () => {
       "href",
       "/company/ASII",
     );
-    expect(within(screen.getByRole("table")).getByRole("link", { name: "UNTR" })).toHaveAttribute(
-      "href",
-      "/company/UNTR",
-    );
+    expect(
+      within(screen.getByRole("table", { name: "1 reported holdings" })).getByRole("link", {
+        name: "UNTR",
+      }),
+    ).toHaveAttribute("href", "/company/UNTR");
     fireEvent.click(screen.getByText("1 other entity holders"));
     expect(screen.getByRole("link", { name: "Other holder" })).toHaveAttribute(
       "href",
@@ -179,8 +180,8 @@ describe("owners pages", () => {
     render(<GroupPage />);
     expect(screen.getByText(/control has not been verified/)).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "TEST" })).toHaveAttribute("href", "/company/TEST");
-    expect(screen.getByText("Not reported: earnings[2025]")).toBeInTheDocument();
-    expect(screen.getByText("p n/a · 4 peers")).toBeInTheDocument();
+    expect(screen.getByText("Earnings FY2025 not reported")).toBeInTheDocument();
+    expect(screen.queryByText(/peers/)).not.toBeInTheDocument();
     expect(screen.getByText("25.00%")).toBeInTheDocument();
   });
 
@@ -197,5 +198,17 @@ describe("owners pages", () => {
     useQuery.mockReturnValue([]);
     render(<OwnersPage />);
     expect(screen.getByText("No owners match this search and view.")).toBeInTheDocument();
+  });
+  it("labels a custodian on its owner page and in the index", () => {
+    const custodian = { ...owners[1], key: "bank of singapore", name: "Bank Of Singapore Limited" };
+    useParams.mockReturnValue({ key: custodian.key });
+    useQuery.mockReturnValue({ ...custodian, holdings: [], ownHolders: [] });
+    const view = render(<OwnerPage />);
+    expect(screen.getByText("Custodian or nominee account")).toBeInTheDocument();
+    expect(screen.getByText(/may hold shares for clients/)).toBeInTheDocument();
+    view.unmount();
+    useQuery.mockReturnValue([custodian]);
+    render(<OwnersPage />);
+    expect(screen.getByText("Custodian or nominee account")).toBeInTheDocument();
   });
 });
