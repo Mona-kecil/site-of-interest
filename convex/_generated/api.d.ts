@@ -15,6 +15,7 @@ import type * as focus from "../focus.js";
 import type * as fundamentalSignals from "../fundamentalSignals.js";
 import type * as news from "../news.js";
 import type * as seed from "../seed.js";
+import type * as universe from "../universe.js";
 
 import type {
   ApiFromModules,
@@ -30,6 +31,7 @@ declare const fullApi: ApiFromModules<{
   fundamentalSignals: typeof fundamentalSignals;
   news: typeof news;
   seed: typeof seed;
+  universe: typeof universe;
 }>;
 
 /**
