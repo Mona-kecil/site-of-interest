@@ -1,0 +1,424 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-04T12:44:55Z",
+  "title": "Design System: Site of Interest",
+  "extensions": {
+    "colorMeta": {
+      "ultramarine": {
+        "role": "primary",
+        "displayName": "Ultramarine",
+        "canonical": "oklch(43% 0.215 268)",
+        "tonalRamp": [
+          "oklch(15.0% 0.107 268)",
+          "oklch(26.4% 0.189 268)",
+          "oklch(37.9% 0.215 268)",
+          "oklch(49.3% 0.215 268)",
+          "oklch(60.7% 0.215 268)",
+          "oklch(72.1% 0.215 268)",
+          "oklch(83.6% 0.154 268)",
+          "oklch(95.0% 0.075 268)"
+        ]
+      },
+      "ultramarine-deep": {
+        "role": "primary",
+        "displayName": "Deep Ultramarine",
+        "canonical": "oklch(35% 0.18 268)",
+        "tonalRamp": [
+          "oklch(15.0% 0.090 268)",
+          "oklch(26.4% 0.159 268)",
+          "oklch(37.9% 0.180 268)",
+          "oklch(49.3% 0.180 268)",
+          "oklch(60.7% 0.180 268)",
+          "oklch(72.1% 0.180 268)",
+          "oklch(83.6% 0.129 268)",
+          "oklch(95.0% 0.063 268)"
+        ]
+      },
+      "ultramarine-tint": {
+        "role": "primary",
+        "displayName": "Ultramarine Tint",
+        "canonical": "oklch(91.5% 0.045 268)",
+        "tonalRamp": [
+          "oklch(15.0% 0.022 268)",
+          "oklch(26.4% 0.040 268)",
+          "oklch(37.9% 0.045 268)",
+          "oklch(49.3% 0.045 268)",
+          "oklch(60.7% 0.045 268)",
+          "oklch(72.1% 0.045 268)",
+          "oklch(83.6% 0.032 268)",
+          "oklch(95.0% 0.016 268)"
+        ]
+      },
+      "on-ultramarine-muted": {
+        "role": "primary",
+        "displayName": "Muted On-Ultramarine",
+        "canonical": "oklch(88% 0.05 268)",
+        "tonalRamp": [
+          "oklch(15.0% 0.025 268)",
+          "oklch(26.4% 0.044 268)",
+          "oklch(37.9% 0.050 268)",
+          "oklch(49.3% 0.050 268)",
+          "oklch(60.7% 0.050 268)",
+          "oklch(72.1% 0.050 268)",
+          "oklch(83.6% 0.036 268)",
+          "oklch(95.0% 0.017 268)"
+        ]
+      },
+      "flag-red": {
+        "role": "secondary",
+        "displayName": "Flag Red",
+        "canonical": "oklch(53% 0.205 27)",
+        "tonalRamp": [
+          "oklch(15.0% 0.102 27)",
+          "oklch(26.4% 0.181 27)",
+          "oklch(37.9% 0.205 27)",
+          "oklch(49.3% 0.205 27)",
+          "oklch(60.7% 0.205 27)",
+          "oklch(72.1% 0.205 27)",
+          "oklch(83.6% 0.146 27)",
+          "oklch(95.0% 0.072 27)"
+        ]
+      },
+      "flag-red-tint": {
+        "role": "secondary",
+        "displayName": "Flag Red Tint",
+        "canonical": "oklch(92.5% 0.04 22)",
+        "tonalRamp": [
+          "oklch(15.0% 0.020 22)",
+          "oklch(26.4% 0.035 22)",
+          "oklch(37.9% 0.040 22)",
+          "oklch(49.3% 0.040 22)",
+          "oklch(60.7% 0.040 22)",
+          "oklch(72.1% 0.040 22)",
+          "oklch(83.6% 0.029 22)",
+          "oklch(95.0% 0.014 22)"
+        ]
+      },
+      "cool-paper": {
+        "role": "neutral",
+        "displayName": "Cool Paper",
+        "canonical": "oklch(97.2% 0.004 250)",
+        "tonalRamp": [
+          "oklch(15.0% 0.002 250)",
+          "oklch(26.4% 0.004 250)",
+          "oklch(37.9% 0.004 250)",
+          "oklch(49.3% 0.004 250)",
+          "oklch(60.7% 0.004 250)",
+          "oklch(72.1% 0.004 250)",
+          "oklch(83.6% 0.003 250)",
+          "oklch(95.0% 0.001 250)"
+        ]
+      },
+      "cool-paper-shade": {
+        "role": "neutral",
+        "displayName": "Paper Shade",
+        "canonical": "oklch(94.6% 0.007 255)",
+        "tonalRamp": [
+          "oklch(15.0% 0.004 255)",
+          "oklch(26.4% 0.006 255)",
+          "oklch(37.9% 0.007 255)",
+          "oklch(49.3% 0.007 255)",
+          "oklch(60.7% 0.007 255)",
+          "oklch(72.1% 0.007 255)",
+          "oklch(83.6% 0.005 255)",
+          "oklch(95.0% 0.002 255)"
+        ]
+      },
+      "sheet-white": {
+        "role": "neutral",
+        "displayName": "Sheet White",
+        "canonical": "oklch(99.5% 0.002 250)",
+        "tonalRamp": [
+          "oklch(15.0% 0.001 250)",
+          "oklch(26.4% 0.002 250)",
+          "oklch(37.9% 0.002 250)",
+          "oklch(49.3% 0.002 250)",
+          "oklch(60.7% 0.002 250)",
+          "oklch(72.1% 0.002 250)",
+          "oklch(83.6% 0.001 250)",
+          "oklch(95.0% 0.001 250)"
+        ]
+      },
+      "press-ink": {
+        "role": "neutral",
+        "displayName": "Press Ink",
+        "canonical": "oklch(19% 0.022 265)",
+        "tonalRamp": [
+          "oklch(15.0% 0.011 265)",
+          "oklch(26.4% 0.019 265)",
+          "oklch(37.9% 0.022 265)",
+          "oklch(49.3% 0.022 265)",
+          "oklch(60.7% 0.022 265)",
+          "oklch(72.1% 0.022 265)",
+          "oklch(83.6% 0.016 265)",
+          "oklch(95.0% 0.008 265)"
+        ]
+      },
+      "ink-secondary": {
+        "role": "neutral",
+        "displayName": "Secondary Ink",
+        "canonical": "oklch(41% 0.02 265)",
+        "tonalRamp": [
+          "oklch(15.0% 0.010 265)",
+          "oklch(26.4% 0.018 265)",
+          "oklch(37.9% 0.020 265)",
+          "oklch(49.3% 0.020 265)",
+          "oklch(60.7% 0.020 265)",
+          "oklch(72.1% 0.020 265)",
+          "oklch(83.6% 0.014 265)",
+          "oklch(95.0% 0.007 265)"
+        ]
+      },
+      "ink-quiet": {
+        "role": "neutral",
+        "displayName": "Quiet Ink",
+        "canonical": "oklch(53% 0.014 265)",
+        "tonalRamp": [
+          "oklch(15.0% 0.007 265)",
+          "oklch(26.4% 0.012 265)",
+          "oklch(37.9% 0.014 265)",
+          "oklch(49.3% 0.014 265)",
+          "oklch(60.7% 0.014 265)",
+          "oklch(72.1% 0.014 265)",
+          "oklch(83.6% 0.010 265)",
+          "oklch(95.0% 0.005 265)"
+        ]
+      },
+      "hairline": {
+        "role": "neutral",
+        "displayName": "Hairline",
+        "canonical": "oklch(86% 0.008 260)",
+        "tonalRamp": [
+          "oklch(15.0% 0.004 260)",
+          "oklch(26.4% 0.007 260)",
+          "oklch(37.9% 0.008 260)",
+          "oklch(49.3% 0.008 260)",
+          "oklch(60.7% 0.008 260)",
+          "oklch(72.1% 0.008 260)",
+          "oklch(83.6% 0.006 260)",
+          "oklch(95.0% 0.003 260)"
+        ]
+      }
+    },
+    "typographyMeta": {
+      "display": {
+        "displayName": "Display",
+        "purpose": "The landing headline and inner page titles."
+      },
+      "symbol": {
+        "displayName": "Symbol",
+        "purpose": "The ticker on a company page; the largest type in the app."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Section heads that sit on a 4px ink rule."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "The five questions and the verdict rules on the landing."
+      },
+      "intro": {
+        "displayName": "Intro",
+        "purpose": "Page intros and block standfirsts in Secondary Ink."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Running text."
+      },
+      "data": {
+        "displayName": "Data",
+        "purpose": "Every table, with tabular lining figures."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Table headers, field labels and relation-map labels."
+      }
+    },
+    "shadows": [
+      {
+        "name": "pop",
+        "value": "0 16px 40px -14px oklch(19% 0.04 265 / 0.4), 0 2px 6px oklch(19% 0.04 265 / 0.14)",
+        "purpose": "Only for layers that float over content: the landing's mark callout and the screener's gap tooltip."
+      },
+      {
+        "name": "outline",
+        "value": "inset 0 0 0 1.5px var(--ink-3)",
+        "purpose": "Strokes on inputs, outline buttons and stamps, drawn inside so they never shift layout."
+      },
+      {
+        "name": "focus-halo",
+        "value": "inset 0 0 0 2px var(--blue), 0 0 0 4px var(--blue-tint)",
+        "purpose": "Focus on text fields and selects."
+      }
+    ],
+    "motion": [
+      {
+        "name": "ease-out",
+        "value": "cubic-bezier(0.23, 1, 0.32, 1)",
+        "purpose": "The only easing curve; every transition and entrance uses it."
+      },
+      {
+        "name": "state",
+        "value": "160ms",
+        "purpose": "Hover, focus and selection changes on controls."
+      },
+      {
+        "name": "popover",
+        "value": "150ms",
+        "purpose": "Callout and suggestion list open and close, from scale(0.97)."
+      },
+      {
+        "name": "press",
+        "value": "scale(0.97)",
+        "purpose": "Buttons while pressed."
+      },
+      {
+        "name": "mark-fill",
+        "value": "420ms",
+        "purpose": "Landing chart marks fill in row by row from scale(0.45)."
+      },
+      {
+        "name": "stamp",
+        "value": "320ms",
+        "purpose": "Verdict stamps land once from scale(1.12) after their row fills."
+      },
+      {
+        "name": "reduced",
+        "value": "200ms fade",
+        "purpose": "Replaces mark-fill and stamp under prefers-reduced-motion."
+      }
+    ],
+    "breakpoints": [
+      {
+        "name": "phone",
+        "value": "640px"
+      },
+      {
+        "name": "tablet",
+        "value": "1080px"
+      },
+      {
+        "name": "wrap",
+        "value": "1280px"
+      }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "The one forward action on a surface, such as Open the chart or Open Ideas.",
+      "html": "<a class=\"ds-go\" href=\"#\">Open the full chart <svg width=\"16\" height=\"16\" viewBox=\"0 0 16 16\" aria-hidden=\"true\"><path d=\"M3 8h9m-4-4 4 4-4 4\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.8\" stroke-linecap=\"round\" stroke-linejoin=\"round\"/></svg></a>",
+      "css": ".ds-go { display: inline-flex; align-items: center; gap: 10px; height: 50px; border-radius: 8px; padding: 0 22px; background: var(--ink); color: var(--white); font-family: var(--sans); font-size: 16px; font-weight: 700; text-decoration: none; transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out); } .ds-go:hover { background: var(--blue); } .ds-go:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; } .ds-go:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Secondary actions beside or under a table, such as Show more.",
+      "html": "<button class=\"ds-more\" type=\"button\">Show 20 more</button>",
+      "css": ".ds-more { all: unset; display: inline-flex; align-items: center; height: 46px; border-radius: 8px; padding: 0 18px; box-shadow: inset 0 0 0 1.5px var(--ink); color: var(--ink); cursor: pointer; font-family: var(--sans); font-size: 15px; font-weight: 700; transition: transform 160ms var(--ease-out), background-color 160ms var(--ease-out); } .ds-more:hover { background: var(--paper-2); } .ds-more:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; } .ds-more:active { transform: scale(0.97); }"
+    },
+    {
+      "name": "Search Field",
+      "kind": "input",
+      "refersTo": "input",
+      "description": "Screener and owner search and filters; a labelled white field with an ultramarine focus halo.",
+      "html": "<label class=\"ds-field\">Search companies<input type=\"search\" placeholder=\"Symbol or name\"></label>",
+      "css": ".ds-field { display: grid; gap: 6px; max-width: 280px; color: var(--ink-2); font-family: var(--sans); font-size: 13px; font-weight: 650; } .ds-field input { height: 44px; border: 0; border-radius: 8px; padding: 0 12px; background: var(--white); box-shadow: inset 0 0 0 1.5px var(--ink-3); color: var(--ink); caret-color: var(--blue); font: 500 15px var(--sans); transition: box-shadow 160ms var(--ease-out); } .ds-field input:focus-visible { outline: none; box-shadow: inset 0 0 0 2px var(--blue), 0 0 0 4px var(--blue-tint); }"
+    },
+    {
+      "name": "Masthead",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "The ultramarine band on every page: wordmark, section links, data date.",
+      "html": "<header class=\"ds-masthead\"><a class=\"ds-wordmark\" href=\"#\">Site of Interest</a><nav><a href=\"#\" aria-current=\"page\">Ideas</a><a href=\"#\">Screener</a><a href=\"#\">Owners</a><a href=\"#\">Groups</a></nav><span class=\"ds-dateline\">Sectors data · 2 Oct 2026</span></header>",
+      "css": ".ds-masthead { display: flex; align-items: center; gap: 40px; min-height: 60px; padding: 0 24px; background: var(--blue); color: var(--white); font-family: var(--sans); } .ds-wordmark { color: inherit; font-size: 20px; font-weight: 850; letter-spacing: -0.025em; text-decoration: none; white-space: nowrap; } .ds-masthead nav { display: flex; gap: 4px; } .ds-masthead nav a { border-radius: 6px; padding: 8px 12px; color: var(--on-blue-2); font-size: 15px; font-weight: 550; text-decoration: none; transition: background-color 160ms var(--ease-out), color 160ms var(--ease-out); } .ds-masthead nav a:hover { background: oklch(100% 0 0 / 0.1); color: var(--white); } .ds-masthead nav a[aria-current=\"page\"] { background: oklch(100% 0 0 / 0.14); color: var(--white); } .ds-masthead a:focus-visible { outline: 2px solid var(--white); outline-offset: 2px; } .ds-dateline { margin-left: auto; color: var(--on-blue-2); font-size: 14px; white-space: nowrap; }"
+    },
+    {
+      "name": "Lens Tabs",
+      "kind": "nav",
+      "refersTo": null,
+      "description": "In-page tabs that switch a table between lenses or owner views.",
+      "html": "<div class=\"ds-tabs\" role=\"tablist\"><button role=\"tab\" aria-selected=\"true\">Cash</button><button role=\"tab\" aria-selected=\"false\">Returns</button><button role=\"tab\" aria-selected=\"false\">Balance sheet</button><button role=\"tab\" aria-selected=\"false\">Price</button><button role=\"tab\" aria-selected=\"false\">Owners</button><button role=\"tab\" aria-selected=\"false\">Banks</button></div>",
+      "css": ".ds-tabs { display: flex; gap: 4px; border-bottom: 1px solid var(--rule); font-family: var(--sans); } .ds-tabs button { all: unset; padding: 12px 12px 13px; box-shadow: inset 0 -3px 0 transparent; color: var(--ink-2); cursor: pointer; font-size: 15px; font-weight: 650; transition: color 160ms var(--ease-out), box-shadow 160ms var(--ease-out); } .ds-tabs button:hover { color: var(--ink); } .ds-tabs button[aria-selected=\"true\"] { box-shadow: inset 0 -3px 0 var(--blue); color: var(--ink); } .ds-tabs button:focus-visible { outline: 2px solid var(--blue); outline-offset: -2px; }"
+    },
+    {
+      "name": "Verdict Stamps",
+      "kind": "chip",
+      "refersTo": "stamp-worth-a-look",
+      "description": "The four verdicts, set as rubber-stamp boxes; only Worth a look is filled.",
+      "html": "<div class=\"ds-stamps\"><span class=\"ds-stamp ds-idea\">Worth a look</span><span class=\"ds-stamp ds-mixed\">Mixed</span><span class=\"ds-stamp ds-flags\">Red flags</span><span class=\"ds-stamp ds-thin\">Not enough data</span></div>",
+      "css": ".ds-stamps { display: flex; flex-wrap: wrap; gap: 10px; } .ds-stamp { display: inline-flex; align-items: center; height: 30px; border-radius: 4px; padding: 0 11px; font-family: var(--sans); font-size: 14px; font-weight: 750; letter-spacing: -0.005em; white-space: nowrap; } .ds-idea { background: var(--blue); color: var(--white); } .ds-flags { box-shadow: inset 0 0 0 2px var(--red); color: var(--red); } .ds-mixed { box-shadow: inset 0 0 0 2px var(--ink); color: var(--ink); } .ds-thin { box-shadow: inset 0 0 0 1.5px var(--ink-3); color: var(--ink-2); }"
+    },
+    {
+      "name": "Outcome Marks",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "Harvey balls that read each pillar on every page: passes, partly passes, flagged, not reported, not checked.",
+      "html": "<ul class=\"ds-marks\"><li><svg class=\"ds-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"var(--ink)\" stroke=\"var(--ink)\" stroke-width=\"2\"/></svg><span>Passes</span></li><li><svg class=\"ds-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"10\" fill=\"var(--paper)\" stroke=\"var(--ink)\" stroke-width=\"2\"/><path d=\"M12 2a10 10 0 0 1 0 20z\" fill=\"var(--ink)\"/></svg><span>Partly passes</span></li><li><svg class=\"ds-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"11\" fill=\"var(--red)\"/><path d=\"m8 8 8 8m0-8-8 8\" stroke=\"var(--white)\" stroke-width=\"2.4\" stroke-linecap=\"round\"/></svg><span>Flagged</span></li><li><svg class=\"ds-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><circle cx=\"12\" cy=\"12\" r=\"9.5\" fill=\"none\" stroke=\"var(--ink-3)\" stroke-width=\"1.6\" stroke-dasharray=\"2.4 3\"/></svg><span>Not reported</span></li><li><svg class=\"ds-mark\" viewBox=\"0 0 24 24\" aria-hidden=\"true\"><path d=\"M7.5 12h9\" stroke=\"var(--ink-3)\" stroke-width=\"2\" stroke-linecap=\"round\"/></svg><span>Not checked</span></li></ul>",
+      "css": ".ds-marks { display: flex; flex-wrap: wrap; gap: 12px 22px; margin: 0; padding: 0; list-style: none; color: var(--ink-2); font-family: var(--sans); font-size: 13px; font-weight: 600; } .ds-marks li { display: flex; align-items: center; gap: 8px; } .ds-mark { flex: none; width: 24px; height: 24px; overflow: visible; }"
+    },
+    {
+      "name": "Ratings Table",
+      "kind": "custom",
+      "refersTo": null,
+      "description": "The reference table every page shares: pinned identifier, tabular figures, hairline rows, a 1.5px ink rule under the head.",
+      "html": "<table class=\"ds-table\"><caption>Illustrative values</caption><thead><tr><th scope=\"col\">Symbol</th><th scope=\"col\">Market cap</th><th scope=\"col\">P/E</th><th scope=\"col\">ROE</th></tr></thead><tbody><tr><th scope=\"row\">BBCA</th><td>IDR 1,085 T</td><td>18.4</td><td>21.7%</td></tr><tr><th scope=\"row\">TLKM</th><td>IDR 278 T</td><td>11.9</td><td>16.2%</td></tr><tr><th scope=\"row\">DCII</th><td>IDR 432 T</td><td class=\"ds-flag\">412.0</td><td>13.1%</td></tr></tbody></table>",
+      "css": ".ds-table { border-collapse: collapse; color: var(--ink); font-family: var(--sans); font-size: 14.5px; font-variant-numeric: tabular-nums lining-nums; } .ds-table caption { padding: 0 0 10px; color: var(--ink-2); font-size: 14px; text-align: left; } .ds-table th, .ds-table td { border-bottom: 1px solid var(--rule); padding: 12px 14px; text-align: right; white-space: nowrap; } .ds-table thead th { border-bottom: 1.5px solid var(--ink); padding-top: 8px; padding-bottom: 10px; font-size: 13px; font-weight: 700; } .ds-table :is(th, td):first-child { position: sticky; left: 0; background: var(--paper); font-weight: 800; text-align: left; } .ds-table tbody tr:hover > * { background: var(--paper-2); } .ds-flag { color: var(--red); font-weight: 700; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Published Test Report",
+    "overview": "Site of Interest reads like an independent testing lab's ratings page printed for the IDX: a table of marks per company, the method printed beside it, and every number traceable to its source. The page is paper and ink first. Color is reserved for two jobs only, interaction and verdicts, so a reader can tell a working control from a reading at a glance.\n\nDensity is that of a reference table, not a dashboard. Headlines are set heavy and tight in one family; the data below them is tabular and plain. Ornament is replaced by working marks: Harvey balls, rubber-stamp verdict boxes, and heavy ink rules that open each section. Nothing on a page is decorative if it cannot also be read.\n\nThe system refuses the fintech default of a hero, a gradient dashboard mock and three feature cards, and it refuses the earlier dark terminal look this redesign replaced.",
+    "keyCharacteristics": [
+      "Cool paper ground, near-black ink, one ultramarine, red only for flags.",
+      "One typeface, Libre Franklin, served from the app bundle, heavy for headings and tabular for numbers.",
+      "Harvey-ball marks and verdict stamps are the shared vocabulary on every page.",
+      "Sections open on a 4px ink rule; rows separate on hairlines.",
+      "Motion is brief, ease-out, and mostly confined to the landing's chart."
+    ],
+    "rules": [
+      {
+        "name": "The Two Jobs Rule",
+        "body": "Ultramarine means \"you can act here\" or \"Worth a look\"; red means \"flag\". No other hue appears, and neither is used to decorate.",
+        "section": "colors"
+      },
+      {
+        "name": "The Readable Quiet Rule",
+        "body": "The quietest text color still passes 4.5:1. Missing data is shown in Quiet Ink, never hidden or faded further.",
+        "section": "colors"
+      },
+      {
+        "name": "The Tabular Rule",
+        "body": "Every number is set with tabular lining figures so columns align without boxes.",
+        "section": "typography"
+      },
+      {
+        "name": "The Wrap Before Shrink Rule",
+        "body": "Long names and sources wrap; type does not shrink below 11px to make them fit.",
+        "section": "typography"
+      },
+      {
+        "name": "The Flat Page Rule",
+        "body": "Nothing at rest casts a shadow. Pop appears only on layers that float over content.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "**Do** keep the ground Cool Paper and the text Press Ink; reach for Paper Shade or Sheet White before any new color.",
+      "**Do** show every verdict with the shared marks and stamps, and every number with tabular figures.",
+      "**Do** open each major section with a 4px Press Ink rule and a heavy headline.",
+      "**Do** keep motion under 300ms with the ease-out curve (`cubic-bezier(0.23, 1, 0.32, 1)`), except the 420ms mark fill, and gate hover effects behind fine pointers.",
+      "**Do** label missing data in Quiet Ink as Not reported, Not checked or Does not apply."
+    ],
+    "donts": [
+      "**Don't** use Ultramarine or Flag Red for decoration, illustration or emphasis.",
+      "**Don't** add gradients, glass, glows or resting shadows.",
+      "**Don't** introduce a second typeface or load fonts from a third-party host.",
+      "**Don't** lighten Quiet Ink below 4.5:1 on paper.",
+      "**Don't** return to the dark terminal look or the hero, dashboard mock and feature-card landing."
+    ]
+  }
+}

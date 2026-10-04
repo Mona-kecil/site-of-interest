@@ -6,7 +6,8 @@ React 19 renders the research routes through TanStack Router. Convex serves the 
 
 | Route | Task | Convex query |
 | --- | --- | --- |
-| `/` | Ideas, fixed rules, Worth a look and Red flags with evidence | `universe.screen` |
+| `/` | Landing: verdict tally, sample ratings, rule lines and one traced number | `universe.screen`, `universe.check` |
+| `/ideas` | Ideas, fixed rules, Worth a look and Red flags with evidence | `universe.screen` |
 | `/universe` | Search, filter by verdict, sort and inspect six check lenses | `universe.screen`, `universe.check` |
 | `/company/$ticker` | Verdict, pillar evidence, annual/quarterly history, peers and holders | `companyProfile.get` |
 | `/owners` | Search owners and filter listed company owners | `owners.list` |
@@ -21,7 +22,9 @@ The company query accepts lowercase ticker input. Domain route keys use ticker, 
 | Module | Role |
 | --- | --- |
 | [router.tsx](../src/router.tsx) | App shell and route registration |
-| [IdeasPage.tsx](../src/features/ideas/IdeasPage.tsx) | Ideas lists, rules, registry-generated evidence text and verdict descriptions |
+| [LandingPage.tsx](../src/features/landing/LandingPage.tsx) | Landing tally, ratings chart, ticker lookup, rule rulers and source trace |
+| [IdeasPage.tsx](../src/features/ideas/IdeasPage.tsx) | Ideas lists, rules and registry-generated evidence text |
+| [evidence.ts](../src/features/ideas/evidence.ts) | Outcome labels, verdict descriptions and measurement formats shared by the landing, Ideas and company pages |
 | [ideas-model.ts](../src/features/ideas/ideas-model.ts) | Pure pillar rules, class-specific core pillars, verdict labels and assessment shared by all three surfaces |
 | [UniversePage.tsx](../src/features/universe/UniversePage.tsx) | Screener, keyboard lens tabs and evidence panel |
 | [universe-model.ts](../src/features/universe/universe-model.ts) | Pure filters, sort, lens order and number-format exports |
