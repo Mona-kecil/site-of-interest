@@ -7,7 +7,8 @@ import { checkCell, formatInput, formatValue } from "../../universe/presentation
 import { CheckInput } from "../universe/CheckInput";
 import { CustodianLabel } from "../owners/CustodianLabel";
 import { assess, PILLARS, verdictLabels } from "../ideas/ideas-model";
-import { PillarOutcome, verdictDescriptions } from "../ideas/IdeasPage";
+import { verdictDescriptions } from "../ideas/evidence";
+import { PillarOutcome } from "../ideas/IdeasPage";
 import {
   annualPeriods,
   assembleSections,
@@ -308,13 +309,15 @@ export function CompanyProfilePage() {
   const profile = useQuery(api.companyProfile.get, { symbol: ticker });
   if (profile === undefined)
     return (
-      <main className="company-profile profile-state" aria-busy="true">
-        <p role="status">Loading company measurements for {ticker.toUpperCase()}…</p>
+      <main className="page company-profile profile-state wrap" aria-busy="true">
+        <p className="page-loading" role="status">
+          Loading company measurements for {ticker.toUpperCase()}…
+        </p>
       </main>
     );
   if (profile === null)
     return (
-      <main className="company-profile profile-state">
+      <main className="page company-profile profile-state wrap">
         <h1>Company not found</h1>
         <p>No IDX company matches “{ticker.toUpperCase()}”.</p>
         <Link to="/universe">Back to Screener</Link>
@@ -328,13 +331,14 @@ export function CompanyProfilePage() {
     peTtm: company.current.peTtm ?? null,
   });
   return (
-    <main className="company-profile">
+    <main className="page company-profile wrap">
       <header className="profile-header">
-        <Link to="/universe">← Screener</Link>
-        <p className="profile-kicker">IDX / {company.symbol}</p>
-        <h1>{company.name}</h1>
+        <Link className="back" to="/universe">
+          ← Screener
+        </Link>
         <p className="profile-symbol">{company.symbol}</p>
-        <p>
+        <h1>{company.name}</h1>
+        <p className="profile-class">
           {[company.sector, company.subSector, company.industry]
             .map((part) => part ?? "Not reported")
             .join(" › ")}
@@ -375,10 +379,13 @@ export function CompanyProfilePage() {
         </dl>
       </header>
       <section className="profile-verdict" aria-labelledby="profile-verdict-title">
-        <p className="eyebrow">Rules-based verdict</p>
-        <h2 id="profile-verdict-title">{verdictLabels[assessment.verdict]}</h2>
-        <p>{verdictDescriptions[assessment.verdict]} Not investment advice.</p>
-        <div className="profile-checks">
+        <div className="verdict-head">
+          <h2 id="profile-verdict-title" className={`stamp ${assessment.verdict}`}>
+            {verdictLabels[assessment.verdict]}
+          </h2>
+          <p>{verdictDescriptions[assessment.verdict]}</p>
+        </div>
+        <div className="profile-pillars">
           {assessment.pillars.map((result, index) => {
             const sectionId =
               result.id === "balance"
@@ -390,7 +397,7 @@ export function CompanyProfilePage() {
               <article key={result.id} data-pillar={result.id}>
                 <PillarOutcome pillar={PILLARS[index]} result={result} />
                 {sections.some(({ id }) => id === sectionId) && (
-                  <a href={`#profile-${sectionId}`}>
+                  <a className="pillar-link" href={`#profile-${sectionId}`}>
                     View {PILLARS[index].title.toLowerCase()} inputs
                   </a>
                 )}

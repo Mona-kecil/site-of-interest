@@ -13,12 +13,14 @@ export function OwnerPage() {
   const { key } = useParams({ from: "/owner/$key" });
   const owner = useQuery(api.owners.get, { key });
   return (
-    <main className="owners-page">
-      <Link className="owners-back" to="/owners">
+    <main className="page owners-page wrap">
+      <Link className="back" to="/owners">
         ← Owners
       </Link>
       {owner === undefined ? (
-        <p role="status">Loading owner</p>
+        <p className="page-loading" role="status">
+          Loading owner
+        </p>
       ) : owner === null ? (
         <>
           <h1>Owner not found</h1>
@@ -26,25 +28,30 @@ export function OwnerPage() {
         </>
       ) : (
         <>
-          <header className="owners-header">
-            <p className="eyebrow">IDX / {kindLabels[owner.kind]}</p>
+          <header className="page-head">
             <h1>{owner.name}</h1>
-            {isCustodianName(owner.name) && <CustodianLabel />}
-            {owner.listedSymbol && (
-              <Link to="/company/$ticker" params={{ ticker: owner.listedSymbol }}>
-                {owner.listedSymbol} company page →
-              </Link>
-            )}
-            <p>
-              {owner.companyCount} companies held · {formatMarketCap(owner.totalValue)} in reported
-              stake values
-            </p>
-            {owner.kind === "bucket" && (
+            <div className="page-intro">
+              {isCustodianName(owner.name) && <CustodianLabel />}
               <p>
-                This label combines unnamed holders. Stakes across companies do not identify one
-                controlling owner.
+                {kindLabels[owner.kind]} · {owner.companyCount} companies held ·{" "}
+                {formatMarketCap(owner.totalValue)} in reported stake values
               </p>
-            )}
+              {owner.kind === "bucket" && (
+                <p>
+                  This label combines unnamed holders. Stakes across companies do not identify one
+                  controlling owner.
+                </p>
+              )}
+              {owner.listedSymbol && (
+                <Link
+                  className="page-link"
+                  to="/company/$ticker"
+                  params={{ ticker: owner.listedSymbol }}
+                >
+                  {owner.listedSymbol} company page →
+                </Link>
+              )}
+            </div>
           </header>
           <OwnershipGraph owner={owner} />
           <h2 id="owner-holdings">Holdings</h2>

@@ -5,41 +5,60 @@ import { OwnersPage } from "./features/owners/OwnersPage";
 import { OwnerPage } from "./features/owners/OwnerPage";
 import { GroupsPage, GroupPage } from "./features/owners/GroupsPage";
 import { IdeasPage } from "./features/ideas/IdeasPage";
+import { LandingPage } from "./features/landing/LandingPage";
+import manifest from "../data/universe/manifest.json";
+
+const retrieved = new Date(manifest.retrievedAt);
+const dateline = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "short",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(retrieved);
+const footerDate = new Intl.DateTimeFormat("en-GB", {
+  day: "numeric",
+  month: "long",
+  year: "numeric",
+  timeZone: "UTC",
+}).format(retrieved);
+
+function Sections() {
+  return (
+    <>
+      <Link to="/ideas">Ideas</Link>
+      <Link to="/universe">Screener</Link>
+      <Link to="/owners">Owners</Link>
+      <Link to="/groups">Groups</Link>
+    </>
+  );
+}
 
 function RootLayout() {
   return (
     <div className="app-shell">
-      <header className="topbar">
-        <Link className="brand" to="/">
-          <span className="brand-mark" />
-          Site of Interest
-        </Link>
-        <nav aria-label="Product sections">
-          <Link
-            activeProps={{ className: "nav-link is-active" }}
-            activeOptions={{ exact: true }}
-            className="nav-link"
-            to="/"
-          >
-            Ideas
+      <header className="masthead">
+        <div className="wrap">
+          <Link className="wordmark" to="/">
+            Site of Interest
           </Link>
-          <Link
-            activeProps={{ className: "nav-link is-active" }}
-            className="nav-link"
-            to="/universe"
-          >
-            Screener
-          </Link>
-          <Link activeProps={{ className: "nav-link is-active" }} className="nav-link" to="/owners">
-            Owners
-          </Link>
-          <Link activeProps={{ className: "nav-link is-active" }} className="nav-link" to="/groups">
-            Groups
-          </Link>
-        </nav>
-        <span className="product-state">Research build 01</span>
+          <nav aria-label="Product sections">
+            <Sections />
+          </nav>
+          <span className="dateline">Sectors data · {dateline}</span>
+        </div>
       </header>
       <Outlet />
+      <footer className="site-footer">
+        <div className="wrap">
+          <p>
+            <b>Not investment advice.</b> Verdicts apply fixed rules to Sectors data retrieved on{" "}
+            {footerDate} and inherit any errors in it.
+          </p>
+          <nav aria-label="Footer">
+            <Sections />
+          </nav>
+        </div>
+      </footer>
     </div>
   );
 }
@@ -49,6 +68,12 @@ const rootRoute = createRootRoute({ component: RootLayout });
 const indexRoute = createRoute({
   getParentRoute: () => rootRoute,
   path: "/",
+  component: LandingPage,
+});
+
+const ideasRoute = createRoute({
+  getParentRoute: () => rootRoute,
+  path: "/ideas",
   component: IdeasPage,
 });
 
@@ -66,6 +91,7 @@ const universeRoute = createRoute({
 
 const routeTree = rootRoute.addChildren([
   indexRoute,
+  ideasRoute,
   companyRoute,
   universeRoute,
   createRoute({ getParentRoute: () => rootRoute, path: "/owners", component: OwnersPage }),

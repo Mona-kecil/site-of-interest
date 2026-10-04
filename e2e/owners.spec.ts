@@ -97,10 +97,12 @@ test("contains tables and the graph at 390 pixels", async ({ page }) => {
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
         390,
       );
-      const graph = await page
-        .locator(".owners-graph-scroll")
-        .evaluate((element) => ({ content: element.scrollWidth, width: element.clientWidth }));
-      expect(graph.content).toBeGreaterThan(graph.width);
+      await expect(page.locator(".owners-graph-scroll")).toBeHidden();
+      const flow = page.locator(".owners-flow");
+      await expect(flow.getByText("PT Astra International Tbk", { exact: true })).toBeVisible();
+      await expect(flow.getByRole("link", { name: /^AALI\s*79\.68%$/ })).toBeVisible();
+      const fits = await flow.evaluate((element) => element.scrollWidth <= element.clientWidth);
+      expect(fits).toBe(true);
     }
   }
 });
@@ -112,7 +114,7 @@ test("caps Bank of Singapore's nine downstream companies and identifies its acco
   await expect(page.getByText("Custodian or nominee account", { exact: true })).toBeVisible();
   await expect(page.getByText(/may hold shares for clients/)).toBeVisible();
   await expect(page.locator(".owners-node-company")).toHaveCount(8);
-  const more = page.locator('.owners-graph a[href="#owner-holdings"]');
+  const more = page.locator('.owners-graph-scroll a[href="#owner-holdings"]');
   await expect(more).toHaveAccessibleName("+1 more");
   await more.click();
   await expect(page).toHaveURL(/#owner-holdings$/);
