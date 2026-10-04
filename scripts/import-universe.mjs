@@ -34,6 +34,8 @@ const tables = {
   holdings: snapshot.holdings,
   universeSources: snapshot.sources,
   checkResults: checks.results,
+  owners: JSON.parse(await readFile(resolve(root, "data/universe/owners.json"), "utf8")),
+  businessGroups: JSON.parse(await readFile(resolve(root, "data/universe/groups.json"), "utf8")),
 };
 const directory = await mkdtemp(join(tmpdir(), "idx-universe-"));
 const commands = [];

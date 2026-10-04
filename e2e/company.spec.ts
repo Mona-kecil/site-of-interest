@@ -55,3 +55,10 @@ test("redirects the old empire company route", async ({ page }) => {
   await expect(page).toHaveURL(/\/company\/BBCA$/);
   await expect(page.getByRole("heading", { name: "Banks", exact: true })).toBeVisible();
 });
+
+test("links an entity holder to its owner page", async ({ page }) => {
+  await page.goto("/company/AALI");
+  await page.getByRole("link", { name: "PT Astra International Tbk", exact: true }).click();
+  await expect(page).toHaveURL(/\/owner\/astra%20international$/);
+  await expect(page.getByRole("link", { name: /ASII company page/ })).toBeVisible();
+});

@@ -42,6 +42,33 @@ export const universeCheckResult = universeCheckSummary.extend({
   inputs: v.array(universeCheckInput),
 });
 
+export const ownerHolding = v.object({
+  symbol: v.string(),
+  percentage: universeNumber,
+  shares: universeNumber,
+  value: universeNumber,
+  rank: universeNumber,
+  isLargest: v.boolean(),
+  sourceId: v.string(),
+});
+
+export const ownerRecord = v.object({
+  key: v.string(),
+  name: v.string(),
+  kind: v.union(v.literal("company"), v.literal("bucket"), v.literal("holder")),
+  listedSymbol: universeText,
+  holdings: v.array(ownerHolding),
+  companyCount: v.number(),
+  totalValue: universeNumber,
+});
+
+export const businessGroup = v.object({
+  slug: v.string(),
+  label: v.string(),
+  symbols: v.array(v.string()),
+  totalMarketCap: universeNumber,
+});
+
 export const membershipEvidence = v.object({
   kind: v.union(
     v.literal("provider_affiliate"),
@@ -330,4 +357,10 @@ export default defineSchema({
   })
     .index("by_empire", ["empireSlug"])
     .index("by_empire_and_entity_id", ["empireSlug", "entityId"]),
+
+  owners: defineTable(ownerRecord)
+    .index("by_key", ["key"])
+    .index("by_listed_symbol", ["listedSymbol"]),
+
+  businessGroups: defineTable(businessGroup).index("by_slug", ["slug"]),
 });

@@ -1,0 +1,359 @@
+[
+  {
+    "slug": "aguan",
+    "label": "Aguan",
+    "symbols": [
+      "CBDK",
+      "INPC",
+      "JIHD",
+      "PANI",
+      "PDPP"
+    ],
+    "totalMarketCap": 104318771325697
+  },
+  {
+    "slug": "bakrie",
+    "label": "Bakrie",
+    "symbols": [
+      "ALII",
+      "BNBR",
+      "BRMS",
+      "BUMI",
+      "DEWA",
+      "ELTY",
+      "ENRG",
+      "JGLE",
+      "MDIA",
+      "UNSP",
+      "VIVA",
+      "VKTR"
+    ],
+    "totalMarketCap": 272889000217946
+  },
+  {
+    "slug": "barito",
+    "label": "Barito",
+    "symbols": [
+      "BREN",
+      "BRPT",
+      "CDIA",
+      "CUAN",
+      "PTRO",
+      "RATU",
+      "SSIA",
+      "TPIA"
+    ],
+    "totalMarketCap": 904842488983280
+  },
+  {
+    "slug": "boy-thohir",
+    "label": "Boy Thohir",
+    "symbols": [
+      "AADI",
+      "ADMR",
+      "ADRO",
+      "BFIN",
+      "EMAS",
+      "ESSA",
+      "GOTO",
+      "MDKA",
+      "PALM",
+      "TRIM",
+      "WOMF"
+    ],
+    "totalMarketCap": 462938917840556
+  },
+  {
+    "slug": "ciputra",
+    "label": "Ciputra",
+    "symbols": [
+      "CTRA",
+      "JKON",
+      "JRPT",
+      "MTDL",
+      "MTLA",
+      "PJAA"
+    ],
+    "totalMarketCap": 37986436843650
+  },
+  {
+    "slug": "dato-sri-tahir",
+    "label": "Dato Sri Tahir",
+    "symbols": [
+      "MAYA",
+      "MPRO",
+      "SONA",
+      "SRAJ"
+    ],
+    "totalMarketCap": 286373761521248
+  },
+  {
+    "slug": "djarum",
+    "label": "Djarum",
+    "symbols": [
+      "BBCA",
+      "BELI",
+      "DATA",
+      "HEAL",
+      "IBST",
+      "RANC",
+      "SSIA",
+      "SUPR",
+      "TBIG",
+      "TOWR"
+    ],
+    "totalMarketCap": 906124547899995
+  },
+  {
+    "slug": "emtek",
+    "label": "Emtek",
+    "symbols": [
+      "AMOR",
+      "BBHI",
+      "BUKA",
+      "EMTK",
+      "RSGK",
+      "SAME",
+      "SCMA"
+    ],
+    "totalMarketCap": 68780607516125
+  },
+  {
+    "slug": "haji-isam",
+    "label": "Haji Isam",
+    "symbols": [
+      "FAST",
+      "JARR",
+      "PGUN",
+      "TEBE"
+    ],
+    "totalMarketCap": 91477081504634
+  },
+  {
+    "slug": "hapsoro",
+    "label": "Hapsoro",
+    "symbols": [
+      "BUVA",
+      "MINA",
+      "RAJA",
+      "RATU"
+    ],
+    "totalMarketCap": 41423872102990
+  },
+  {
+    "slug": "harita",
+    "label": "Harita",
+    "symbols": [
+      "CITA",
+      "NCKL",
+      "TIRT"
+    ],
+    "totalMarketCap": 68128953290000
+  },
+  {
+    "slug": "hartono",
+    "label": "Hartono",
+    "symbols": [
+      "BBCA",
+      "BELI",
+      "DATA",
+      "HEAL",
+      "IBST",
+      "RANC",
+      "SSIA",
+      "SUPR",
+      "TOWR"
+    ],
+    "totalMarketCap": 873725038693645
+  },
+  {
+    "slug": "lippo",
+    "label": "Lippo",
+    "symbols": [
+      "GMTD",
+      "KBLV",
+      "LPCK",
+      "LPGI",
+      "LPIN",
+      "LPKR",
+      "LPLI",
+      "LPPF",
+      "LPPS",
+      "MLPL",
+      "MLPT",
+      "MPPA",
+      "NOBU",
+      "SILO"
+    ],
+    "totalMarketCap": 89198034315751
+  },
+  {
+    "slug": "low-tuck-kwong",
+    "label": "Low Tuck Kwong",
+    "symbols": [
+      "BYAN",
+      "MYOH",
+      "TRJA",
+      "VOKS"
+    ],
+    "totalMarketCap": 391865415251600
+  },
+  {
+    "slug": "mayapada",
+    "label": "Mayapada",
+    "symbols": [
+      "MAYA",
+      "MPRO",
+      "SRAJ"
+    ],
+    "totalMarketCap": 283571809521248
+  },
+  {
+    "slug": "mnc",
+    "label": "MNC",
+    "symbols": [
+      "BABP",
+      "BCAP",
+      "BHIT",
+      "BMTR",
+      "IATA",
+      "IPTV",
+      "KPIG",
+      "MNCN",
+      "MSIN",
+      "MSKY"
+    ],
+    "totalMarketCap": 28121689108645
+  },
+  {
+    "slug": "prajogo-pangestu",
+    "label": "Prajogo Pangestu",
+    "symbols": [
+      "BREN",
+      "BRPT",
+      "CDIA",
+      "CUAN",
+      "PTRO",
+      "RATU",
+      "SSIA",
+      "TPIA"
+    ],
+    "totalMarketCap": 904842488983280
+  },
+  {
+    "slug": "riady",
+    "label": "Riady",
+    "symbols": [
+      "GMTD",
+      "KBLV",
+      "LPCK",
+      "LPGI",
+      "LPIN",
+      "LPKR",
+      "LPLI",
+      "LPPF",
+      "LPPS",
+      "MLPL",
+      "MLPT",
+      "MPPA",
+      "NOBU",
+      "SILO"
+    ],
+    "totalMarketCap": 89198034315751
+  },
+  {
+    "slug": "salim",
+    "label": "Salim",
+    "symbols": [
+      "AHAP",
+      "AMMN",
+      "BINA",
+      "BRMS",
+      "BUMI",
+      "CBDK",
+      "DCII",
+      "DEWA",
+      "DNET",
+      "EMTK",
+      "FAST",
+      "ICBP",
+      "IMAS",
+      "IMJS",
+      "INDF",
+      "LSIP",
+      "MEDC",
+      "MEGA",
+      "PANI",
+      "PDPP"
+    ],
+    "totalMarketCap": 1452714250198540
+  },
+  {
+    "slug": "saratoga",
+    "label": "Saratoga",
+    "symbols": [
+      "AADI",
+      "ADRO",
+      "AGII",
+      "MDKA",
+      "MPMX",
+      "NRCA",
+      "TBIG"
+    ],
+    "totalMarketCap": 273888184617650
+  },
+  {
+    "slug": "sinarmas",
+    "label": "Sinarmas",
+    "symbols": [
+      "BSDE",
+      "BSIM",
+      "DMAS",
+      "DSSA",
+      "DUTI",
+      "EXCL",
+      "GEMS",
+      "INKP",
+      "LIFE",
+      "SMAR",
+      "SMDM",
+      "SMMA",
+      "TKIM"
+    ],
+    "totalMarketCap": 589824944649973
+  },
+  {
+    "slug": "tommy-winata",
+    "label": "Tommy Winata",
+    "symbols": [
+      "ECII",
+      "INPC",
+      "JIHD"
+    ],
+    "totalMarketCap": 3896732751189
+  },
+  {
+    "slug": "tp-rachmat",
+    "label": "TP Rachmat",
+    "symbols": [
+      "ASSA",
+      "DRMA",
+      "DSNG",
+      "KMTR",
+      "TAPG"
+    ],
+    "totalMarketCap": 62718044771496
+  },
+  {
+    "slug": "triputra",
+    "label": "Triputra",
+    "symbols": [
+      "ASSA",
+      "DRMA",
+      "DSNG",
+      "KMTR",
+      "TAPG"
+    ],
+    "totalMarketCap": 62718044771496
+  }
+]

@@ -7,6 +7,7 @@
     "dev:full": "convex dev --start 'vp dev --host 0.0.0.0'",
     "build": "tsc -b && vp build",
     "build:checks": "node scripts/build-universe-checks.mjs",
+    "build:owners": "node scripts/build-universe-owners.mjs",
     "check": "vp check 'src/**/*.{ts,tsx}' convex vite.config.ts && npm run validate:docs",
     "typecheck": "tsc -b",
     "lint": "vp lint 'src/**/*.{ts,tsx}' convex vite.config.ts",

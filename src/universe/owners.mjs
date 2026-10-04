@@ -1,0 +1,69 @@
+const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
+
+export function ownerKey(name) {
+  const words = name.normalize("NFKC").toLowerCase().replace(/^\s*p\.?t\.(?=\p{L})/u, "pt ").replace(/\./g, "").replace(/[^\p{L}\p{N}\s]/gu, " ").trim().split(/\s+/);
+  while (words[0] === "pt") words.shift();
+  while (["pt", "tbk", "persero", "ltd", "limited"].includes(words.at(-1))) words.pop();
+  return words.join(" ");
+}
+
+export const BUCKET_LABELS = Object.freeze(["Afiliasi", "Afiliasi Pengendali"]);
+const buckets = new Set(BUCKET_LABELS.map(ownerKey));
+
+function reportedSum(values) {
+  const reported = values.filter((value) => value !== null);
+  return reported.length ? reported.reduce((sum, value) => sum + value, 0) : null;
+}
+
+export function buildOwners(snapshot) {
+  const listed = new Map();
+  for (const company of snapshot.companies) {
+    const key = ownerKey(company.name);
+    if (!listed.has(key)) listed.set(key, []);
+    listed.get(key).push(company.symbol);
+  }
+  const entities = snapshot.holdings.filter(({ holderKind }) => holderKind === "entity");
+  const byCompany = new Map();
+  for (const row of entities) {
+    if (!byCompany.has(row.symbol)) byCompany.set(row.symbol, []);
+    byCompany.get(row.symbol).push(row);
+  }
+  const owners = new Map();
+  for (const row of entities) {
+    const key = ownerKey(row.holderName);
+    if (!key) throw new Error(`${row.symbol}: empty owner key`);
+    if (!owners.has(key)) owners.set(key, { spellings: new Map(), holdings: [] });
+    const owner = owners.get(key);
+    owner.spellings.set(row.holderName, (owner.spellings.get(row.holderName) ?? 0) + 1);
+    const rank = row.percentage === null ? null : 1 + byCompany.get(row.symbol).filter((other) => other.percentage !== null && other.percentage > row.percentage).length;
+    const { symbol, percentage, shares, value, sourceId } = row;
+    owner.holdings.push({ symbol, percentage, shares, value, rank, isLargest: rank === 1, sourceId });
+  }
+  return [...owners].sort(([a], [b]) => compare(a, b)).map(([key, owner]) => {
+    const name = [...owner.spellings].sort(([a, n], [b, m]) => m - n || compare(a, b))[0][0];
+    const listedSymbol = listed.get(key)?.length === 1 ? listed.get(key)[0] : null;
+    const holdings = owner.holdings.sort((a, b) => compare(a.symbol, b.symbol) || compare(JSON.stringify(a), JSON.stringify(b)));
+    return {
+      key, name, kind: buckets.has(key) ? "bucket" : listedSymbol ? "company" : "holder", listedSymbol,
+      holdings, companyCount: new Set(holdings.map(({ symbol }) => symbol)).size,
+      totalValue: reportedSum(holdings.map(({ value }) => value)),
+    };
+  });
+}
+
+export function buildGroups(snapshot) {
+  const groups = new Map();
+  for (const company of [...snapshot.companies].sort((a, b) => compare(a.symbol, b.symbol))) {
+    for (const label of new Set(company.affiliates ?? [])) {
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(company);
+    }
+  }
+  const slugs = new Set();
+  return [...groups].map(([label, members]) => {
+    const slug = label.normalize("NFKC").toLowerCase().replace(/[^\p{L}\p{N}]+/gu, "-").replace(/^-|-$/g, "");
+    if (!slug || slugs.has(slug)) throw new Error(`Duplicate or empty group slug: ${label}`);
+    slugs.add(slug);
+    return { slug, label, symbols: members.map(({ symbol }) => symbol), totalMarketCap: reportedSum(members.map(({ current }) => current.marketCap ?? null)) };
+  }).sort((a, b) => compare(a.slug, b.slug));
+}
