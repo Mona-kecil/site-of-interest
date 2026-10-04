@@ -1,5 +1,22 @@
 const compare = (a, b) => a < b ? -1 : a > b ? 1 : 0;
 
+// Holder-name hints only: named intermediaries, account qualifiers, and custody terms.
+// Ddbs is a DBS spelling present in the provider snapshot; BP2S is BNP Paribas Securities Services.
+const custodianPatterns = [
+  /\bbank of singapore\b/i,
+  /\buob kay hian\b/i,
+  /\bjulius baer\b/i,
+  /\bd?dbs bank\b/i,
+  /\bcitibank\b/i,
+  /\bbp2s\b/i,
+  /\b(?:s\s*\/\s*a|a\s*\/\s*c)\b/i,
+  /\b(?:custodian|custody|nominees?|omnibus|clients?)\b/i,
+];
+
+export function isCustodianName(name) {
+  return custodianPatterns.some((pattern) => pattern.test(name.normalize("NFKC")));
+}
+
 export function ownerKey(name) {
   const words = name.normalize("NFKC").toLowerCase().replace(/^\s*p\.?t\.(?=\p{L})/u, "pt ").replace(/\./g, "").replace(/[^\p{L}\p{N}\s]/gu, " ").trim().split(/\s+/);
   while (words[0] === "pt") words.shift();

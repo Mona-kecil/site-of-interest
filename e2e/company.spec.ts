@@ -15,7 +15,12 @@ test("opens cash conversion with its formula and source endpoint", async ({ page
   await cash.getByText("Formula and inputs · Cash conversion", { exact: true }).click();
   await expect(cash.getByText("Formula", { exact: true })).toBeVisible();
   await expect(cash.getByText(/sum\(operating_cash_flow\[2023\.\.2025\]\)/)).toBeVisible();
+  await expect(cash.getByText("Operating cash flow · FY2023", { exact: true })).toBeVisible();
+  await expect(cash.getByText("Sectors · /v2/companies/ · batch 3 of 10 · rows 1–200 · 2 Oct 2026", { exact: true }).first()).toBeVisible();
+  await expect(cash.getByText("IDR 33,746.00 bn", { exact: true })).toHaveAttribute("title", "33746000000000");
+  await cash.getByText("Full endpoint", { exact: true }).first().click();
   await expect(cash.getByText(/\/v2\/companies\//).first()).toBeVisible();
+  await expect(cash.locator(".source-endpoint[open] code").first()).toContainText("where=");
   await expect(cash.getByText("Retrieved", { exact: true }).first()).toBeVisible();
 });
 
@@ -31,6 +36,7 @@ test("contains tables and expanded source endpoints at 390 pixels", async ({ pag
     await page.goto(`/company/${symbol}`);
     await expect(page.locator(".profile-symbol")).toHaveText(symbol);
     await page.locator(".profile-evidence > summary").first().click();
+    await page.getByText("Full endpoint", { exact: true }).first().click();
     expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
     const table = page.locator(".profile-table-wrap").first();
     const widths = await table.evaluate((element) => ({ table: element.scrollWidth, container: element.clientWidth }));
@@ -41,9 +47,11 @@ test("contains tables and expanded source endpoints at 390 pixels", async ({ pag
 test("opens a company from its screener symbol and check panel", async ({ page }) => {
   await page.goto("/universe");
   await page.getByLabel("Search companies").fill("ASII");
+  await page.evaluate(() => { (window as unknown as { researchNavigationMarker: string }).researchNavigationMarker = "retained"; });
   await page.getByRole("link", { name: "ASII", exact: true }).click();
   await expect(page).toHaveURL(/\/company\/ASII$/);
   await expect(page.locator('[data-check="cash_conversion"]')).toBeVisible();
+  expect(await page.evaluate(() => (window as unknown as { researchNavigationMarker: string }).researchNavigationMarker)).toBe("retained");
   await page.goto("/universe");
   await page.getByRole("button", { name: "ASII Cash conversion", exact: true }).click();
   await page.getByRole("link", { name: "Open company", exact: true }).click();

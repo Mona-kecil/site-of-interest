@@ -1,78 +1,52 @@
 # Site of Interest
 
-Site of Interest helps researchers inspect measured signals and sourced relationships across Indonesian conglomerates. The current build covers the Prajogo Pangestu Empire. **What's happening?** is the home page; Empire context sits behind its company records.
+Site of Interest is a fundamentals research tool for all 962 IDX companies in the Sectors snapshot retrieved on 2 October 2026. It shows measurements, reporting gaps, sub-sector peer percentiles, holders of record and provider business-group labels. It provides no investment advice, ratings or price targets.
 
-The application uses the Sectors REST API as its only company-data provider. The repository validator rejects every other source host.
+Start at `/universe`. Filter companies, choose a lens, and open a measurement to inspect its formula, period, inputs and source. Open a company, follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
 
-Before adding a feature, read the [system design](docs/system-design.md), the
-[product design system](docs/product-design-system.md), and the
-[vertical product tickets](docs/tickets/README.md).
+## Run locally
 
-## Run the application
+Install dependencies with `npm install`. For an existing configured and imported dev deployment, run `npm run dev` and open `http://127.0.0.1:5173/universe`. Vite reads `CONVEX_URL` from `.env.local`; the frontend uses `VITE_CONVEX_URL` at build time.
 
-Install the dependencies and start Convex with the Vite+ development server:
+For a fresh local setup, an operator runs `npm run dev:full` to start Convex and Vite together. Convex writes its deployment settings to `.env.local`. After the schema is deployed, import the checked-in universe with `npm run convex:import-universe`. The import replaces eight universe tables and refuses production, preview deployments, deploy keys and environment overrides. Keep credentials out of Git.
 
-```sh
-npm install
-npm run dev:full
+## Data pipeline
+
+```text
+sync:universe → build:checks → build:owners → validate:universe → convex:import-universe
 ```
 
-Open `http://127.0.0.1:5173/happening`. Select a fundamental measurement to inspect
-its inputs and source, then open the company and its Empire context. The feed also
-includes matched news. Choose a date range to inspect stored records and coverage
-gaps. Focus compares the listed companies using their stored fundamental facts.
+Only an uncached Sectors sync spends provider credits. The current manifest has 10 field batches and five pages per batch, or 50 requests for a cold sync. The stored run records zero credits because it used cached responses. Offline builders and validation make no provider requests; importing writes to the selected dev Convex deployment.
 
-Convex creates an anonymous local deployment when no cloud deployment is configured. Seed the checked-in Prajogo corpus after creating a fresh deployment. The command seeds the local, anonymous, or cloud dev deployment configured in `.env.local` and refuses production and deploy keys. It loads the corpus, fundamental measurements, and stored news without Sectors requests:
+An operator sets `SECTORS_API_KEY` in `.env.local` and runs:
 
 ```sh
-npm run convex:seed
+npm run sync:universe -- --max-credits=50 --dry-run
+npm run sync:universe -- --max-credits=50
+npm run build:checks
+npm run build:owners
+npm run validate:universe
+npm run convex:import-universe
 ```
 
-Run the verification suite:
+The dry run prints a plan. `--refresh` bypasses the cache; `--max-credits=0` permits cached pages only. Import is an explicit operator action. See the [data contract](docs/universe-data.md) for provenance, nulls, percentile rules and known limits.
+
+## Verify
 
 ```sh
+npx tsc -b
 npm run check
 npm test
 npm run build
-npm run validate
+npm run validate:universe
 ```
 
-## Sync the data
+Unit tests use fixtures and the stored snapshot. Browser verification reads the imported dev deployment configured in `.env.local`. Push the current functions with `npx convex dev --once`, then run `npm run test:e2e`; it starts Vite itself when no server is running. The browser specs cover sources, gaps, navigation, graph caps, custodians and containment at 390 px.
 
-Create `.env.local` with your API key:
+## Project map
 
-```text
-SECTORS_API_KEY=your-key
-```
-
-Then regenerate the complete corpus:
-
-```sh
-npm run sync:sectors
-```
-
-The sync starts from Sectors' Barito affiliations and conglomerate-group labels, audits them against direct ownership, traverses listed descendants and CUAN's mining ownership, extracts private corporate shareholders, fetches the supporting group-link news record, validates the result, and writes JSON under `data/empires/prajogo/`. Private group entities appear in the default Empire view; outside corporate owners remain available under All owners. The current cold sync uses 53 Sectors credits. Responses are cached under `.cache/sectors/`, so an unchanged rerun uses zero credits. Pass `--refresh` only when you intentionally want fresh API responses. Never commit `.env.local`.
-
-## Collect company news
-
-`npm run sync:news` reads its ticker set from the stored Empire memberships and fetches at most four pages of Sectors IDX news for the date window configured in `scripts/sync-news.mjs`. The snapshot records the requested tickers, dates, returned count, and pagination coverage. Repeat runs use the Sectors response cache. After updating `data/news-snapshot.json`, run `npm run convex:seed` to seed the configured deployment.
-
-## Repository map
-
-```text
-convex/schema.ts                 Convex tables and indexes
-convex/empires.ts                Public Empire graph read model
-convex/companies.ts              Public company-intelligence read model
-convex/seed.ts                   Idempotent Prajogo corpus import
-src/features/empire/             React graph and interaction model
-src/features/today/              Fundamental measurements and news feed
-src/features/focus/              Fundamental comparison board
-src/features/company/           Reusable listed-company intelligence view
-scripts/sync-sectors.mjs         Sectors API client and corpus generator
-scripts/sync-news.mjs            Exact ticker news collector
-data/empires/prajogo/            Generated Sectors-backed corpus
-src/empire-corpus.mjs            Boundary validation and corpus queries
-docs/                            Product and architecture decisions
-```
-
-The product provides information and analysis. It does not provide investment recommendations.
+- [Product brief](docs/product-brief.md): research flow, lenses and registry-derived checks.
+- [System design](docs/system-design.md): data flow, calculations and storage boundaries.
+- [App architecture](docs/real-app-architecture.md): routes, query surfaces and module roles.
+- [Design system](docs/product-design-system.md): cell states, evidence, graphs and accessibility.
+- [Delivery checklist](docs/tickets/README.md): current scope and known follow-ups.

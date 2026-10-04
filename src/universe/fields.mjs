@@ -8,6 +8,28 @@ const company = (key, providerField, unit, target = "current") => ({ key, provid
 const year = (key, providerField, unit = "IDR") => ({ key, providerField, scope: "year", unit, periods: YEARS });
 const quarter = (key, providerField) => ({ key, providerField, scope: "quarter", unit: "IDR", periods: QUARTERS });
 
+const labels = {
+  sector: "Sector", subSector: "Sub-sector", industry: "Industry", subIndustry: "Sub-industry",
+  listingBoard: "Listing board", listingDate: "Listing date", indices: "Indices", affiliates: "Business groups",
+  employees: "Employees", marketCap: "Market cap", freeFloat: "Free float", peTtm: "Trailing P/E",
+  pbMrq: "Current P/B", psTtm: "Trailing P/S", roeTtm: "Trailing ROE", roaTtm: "Trailing ROA",
+  yieldTtm: "Trailing dividend yield", dividendTtm: "Trailing dividend", payoutRatio: "Payout ratio",
+  totalAssetsMrq: "Current total assets", totalEquityMrq: "Current total equity",
+  totalRevenueMrq: "Current revenue", earningsMrq: "Current earnings", majorShareholdersName: "Entity holdings",
+  revenue: "Revenue", grossProfit: "Gross profit", ebit: "EBIT", earningsBeforeTax: "Earnings before tax",
+  tax: "Tax", earnings: "Earnings", operatingCashFlow: "Operating cash flow",
+  capitalExpenditure: "Capital expenditure", freeCashFlow: "Free cash flow", interestExpense: "Interest expense",
+  totalAssets: "Total assets", totalLiabilities: "Total liabilities", totalEquity: "Total equity",
+  totalDebt: "Total debt", cashAndEquivalents: "Cash and equivalents", currentAssets: "Current assets",
+  currentLiabilities: "Current liabilities", outstandingShares: "Outstanding shares", totalDividend: "Total dividend",
+  pe: "P/E", pb: "P/B", grossLoan: "Gross loans", nonPerformingLoan: "Non-performing loans",
+  netInterestMargin: "Net interest margin", loanToDepositRatio: "Loan / deposit ratio",
+  capitalAdequacyRatio: "Capital adequacy ratio", revenueQ: "Quarterly revenue", earningsQ: "Quarterly earnings",
+  operatingCashFlowQ: "Quarterly operating cash flow", freeCashFlowQ: "Quarterly free cash flow",
+  interestCoverageRatio: "Interest coverage ratio", ebitda: "EBITDA", inventories: "Inventories",
+  financingCashFlow: "Financing cash flow",
+};
+
 export const FIELD_DEFINITIONS = Object.freeze([
   company("sector", "sector", "text", "company"),
   company("subSector", "sub_sector", "text", "company"),
@@ -67,7 +89,7 @@ export const FIELD_DEFINITIONS = Object.freeze([
   year("ebitda", "ebitda"),
   year("inventories", "inventories"),
   year("financingCashFlow", "financing_cash_flow"),
-].map(Object.freeze));
+].map((definition) => Object.freeze({ ...definition, label: labels[definition.key] })));
 
 export function fieldReferences(registry = FIELD_DEFINITIONS) {
   return registry.flatMap((definition) => (definition.periods ?? [null]).map((period) => ({

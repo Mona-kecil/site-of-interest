@@ -2,8 +2,11 @@ import { getRouteApi, Link } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
-import { ownerKey } from "../../universe/owners.mjs";
-import { formatInput, formatPeers, formatValue } from "../universe/universe-model";
+import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
+import { formatValue } from "../universe/universe-model";
+import { checkCell, checkQuestion } from "../../universe/presentation.mjs";
+import { CheckInput } from "../universe/CheckInput";
+import { CustodianLabel } from "../owners/CustodianLabel";
 import {
   annualPeriods,
   assembleSections,
@@ -38,7 +41,7 @@ function PeerStrip({
   const selected = strip.points.find((point) => point.selected);
   return (
     <div className="profile-peers">
-      <p>Sub-sector values · diamond marks {symbol}</p>
+      <p>Sub-sector ranks · diamond marks {symbol}</p>
       {strip.points.length ? (
         <>
           <svg
@@ -66,8 +69,9 @@ function PeerStrip({
             )}
           </svg>
           <div className="profile-axis">
-            <span>{reportedValue(strip.min, definition.unit)}</span>
-            <span>{reportedValue(strip.max, definition.unit)}</span>
+            <span>lowest</span>
+            <span>{strip.points.length} peers</span>
+            <span>highest</span>
           </div>
         </>
       ) : (
@@ -76,7 +80,7 @@ function PeerStrip({
       {strip.missing.length > 0 && (
         <details className="profile-peer-gaps">
           <summary>
-            Not reported: {strip.missing.length} {strip.missing.length === 1 ? "peer" : "peers"}
+            Check gaps: {strip.missing.length} {strip.missing.length === 1 ? "peer" : "peers"}
             {strip.missing.includes(symbol) ? `, including ${symbol}` : ""}
           </summary>
           <p>{strip.missing.join(", ")}</p>
@@ -97,30 +101,25 @@ function CheckCard({
   peers: Peer[];
   profile: CompanyProfile;
 }) {
+  const cell = checkCell(result, definition.unit);
   const sources = new Map(profile.sources.map((source) => [source.id, source]));
   return (
     <article className="profile-check" data-check={definition.id}>
       <header>
         <div>
           <h3>{definition.label}</h3>
-          <p>
-            {definition.id === "fcf_yield"
-              ? "What is free cash flow relative to the current market cap?"
-              : definition.question}
-          </p>
+          <p>{checkQuestion(definition)}</p>
         </div>
-        <strong>{reportedValue(result?.value ?? null, definition.unit)}</strong>
+        <strong
+          className={cell.state === "does-not-apply" ? "check-does-not-apply" : undefined}
+          title={cell.reason ?? undefined}
+        >
+          {cell.text}
+        </strong>
       </header>
       <p className="profile-check-period">{result?.period ?? "Period not reported"}</p>
-      <p className="profile-check-rank">
-        {formatPeers(result?.percentile ?? null, result?.peerCount ?? 0)}
-      </p>
-      {result?.percentile == null && (
-        <p className="profile-note">Sub-sector percentile not reported.</p>
-      )}
-      {result?.value == null && (
-        <p className="profile-note">{result?.gap ?? "Not reported: no stored check result"}</p>
-      )}
+      {cell.peers && <p className="profile-check-rank">{cell.peers}</p>}
+      {cell.reason && <p className="profile-note">{cell.reason}</p>}
       <PeerStrip peers={peers} symbol={profile.company.symbol} definition={definition} />
       <details className="profile-evidence">
         <summary>Formula and inputs · {definition.label}</summary>
@@ -136,44 +135,7 @@ function CheckCard({
               const source = sources.get(input.sourceId);
               return (
                 <li key={`${input.field}:${index}`}>
-                  <strong>{input.key}</strong>
-                  {input.label && <p>{input.label}</p>}
-                  <dl>
-                    <div>
-                      <dt>Field</dt>
-                      <dd>
-                        <code>{input.field}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Period</dt>
-                      <dd>{input.period}</dd>
-                    </div>
-                    <div>
-                      <dt>Value</dt>
-                      <dd>{formatInput(input.value)}</dd>
-                    </div>
-                    <div>
-                      <dt>Source</dt>
-                      <dd>{source?.title ?? `Source not reported: ${input.sourceId}`}</dd>
-                    </div>
-                    <div>
-                      <dt>Endpoint</dt>
-                      <dd>
-                        <code>{source?.endpoint ?? "Not reported"}</code>
-                      </dd>
-                    </div>
-                    <div>
-                      <dt>Retrieved</dt>
-                      <dd>
-                        {source ? (
-                          <time dateTime={source.retrievedAt}>{source.retrievedAt}</time>
-                        ) : (
-                          "Not reported"
-                        )}
-                      </dd>
-                    </div>
-                  </dl>
+                  <CheckInput input={input} source={source} unit={definition.unit} />
                 </li>
               );
             })}
@@ -265,6 +227,9 @@ function Holdings({ profile }: { profile: CompanyProfile }) {
                     ) : (
                       holding.holderName
                     )}
+                    {holding.holderKind === "entity" && isCustodianName(holding.holderName) && (
+                      <CustodianLabel />
+                    )}
                   </th>
                   <td>
                     {holding.holderKind === "entity"
@@ -351,7 +316,7 @@ export function CompanyProfilePage() {
       <main className="company-profile profile-state">
         <h1>Company not found</h1>
         <p>No IDX company matches “{ticker.toUpperCase()}”.</p>
-        <a href="/universe">Back to Universe</a>
+        <Link to="/universe">Back to Universe</Link>
       </main>
     );
   const { company } = profile;
@@ -359,7 +324,7 @@ export function CompanyProfilePage() {
   return (
     <main className="company-profile">
       <header className="profile-header">
-        <a href="/universe">← Universe</a>
+        <Link to="/universe">← Universe</Link>
         <p className="profile-kicker">IDX / {company.symbol}</p>
         <h1>{company.name}</h1>
         <p className="profile-symbol">{company.symbol}</p>

@@ -248,6 +248,7 @@ a:focus-visible {
 
 @media (max-width: 1050px) {
   .topbar { height: auto; min-height: 58px; }
+  .topbar .brand { min-height: 48px; }
   .topbar nav { display: flex; grid-column: 1 / -1; order: 3; overflow-x: auto; border-top: 1px solid var(--line); }
   .topbar nav { min-width: 0; }
   .topbar nav .nav-link { flex: none; min-height: 42px; }
@@ -716,3 +717,14 @@ a:focus-visible {
   .owners-controls label { max-width: none; }
 }
 /* End owners and Sectors business groups */
+
+.check-does-not-apply { color: #8b928e; font-weight: 400; }
+.universe-cell.check-does-not-apply { cursor: default; }
+.source-endpoint { min-width: 0; max-width: 100%; }
+.source-endpoint summary { min-height: 30px; cursor: pointer; }
+.source-endpoint code { display: block; margin-top: 8px; white-space: normal; overflow-wrap: anywhere; word-break: break-word; }
+.custodian-label { display: block; margin-top: 6px; color: #aeb6af; font: 11px/1.6 Manrope, sans-serif; white-space: normal; }
+.custodian-label strong { font-weight: 600; }
+.custodian-label span { display: block; font-weight: 400; }
+.profile-holdings th:first-child { max-width: 320px; white-space: normal; }
+#owner-holdings, #owner-upstream { scroll-margin-top: 24px; }

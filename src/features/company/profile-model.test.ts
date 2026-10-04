@@ -80,7 +80,7 @@ describe("Company profile model", () => {
     expect(ids).not.toContain("npl_ratio");
   });
 
-  it("positions peer values on a linear axis, shares tie positions and retains missing peers", () => {
+  it("positions peer values by rank, shares tie positions and retains missing peers", () => {
     const strip = peerStrip(
       [
         { symbol: "A", value: -2 },
@@ -91,12 +91,25 @@ describe("Company profile model", () => {
       ],
       "C",
     );
-    expect(strip.points.map(({ position }) => position)).toEqual([0, 0.25, 0.25, 1]);
+    expect(strip.points.map(({ position }) => position)).toEqual([0, 0.5, 0.5, 1]);
     expect(strip.points.filter(({ selected }) => selected).map(({ symbol }) => symbol)).toEqual([
       "C",
     ]);
     expect(strip.missing).toEqual(["E"]);
     expect([strip.min, strip.max]).toEqual([-2, 6]);
+  });
+
+  it("spaces ordinary peers by rank despite a loan/deposit outlier", () => {
+    const strip = peerStrip(
+      [
+        { symbol: "A", value: 0.8 },
+        { symbol: "B", value: 0.9 },
+        { symbol: "C", value: 1 },
+        { symbol: "D", value: 920.37 },
+      ],
+      "B",
+    );
+    expect(strip.points.map(({ position }) => position)).toEqual([0, 1 / 3, 2 / 3, 1]);
   });
 
   it("centers a single peer and all-equal peers and leaves an empty axis unreported", () => {

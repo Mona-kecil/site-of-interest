@@ -1,5 +1,6 @@
 import { cleanup, fireEvent, render, screen, within } from "@testing-library/react";
 import { afterEach, describe, expect, it, vi } from "vitest";
+import type { ReactNode } from "react";
 import type { FunctionReturnType } from "convex/server";
 import type { api } from "../../../convex/_generated/api";
 import { definitions } from "../../universe/checks.mjs";
@@ -8,6 +9,26 @@ import type { ScreenRow } from "./universe-model";
 
 const { useQuery } = vi.hoisted(() => ({ useQuery: vi.fn() }));
 vi.mock("convex/react", () => ({ useQuery }));
+vi.mock("@tanstack/react-router", () => ({
+  Link: ({
+    to,
+    params = {},
+    children,
+    className,
+  }: {
+    to: string;
+    params?: Record<string, string>;
+    children: ReactNode;
+    className?: string;
+  }) => (
+    <a
+      className={className}
+      href={to.replace(/\$(\w+)/g, (_, key: string) => encodeURIComponent(params[key]))}
+    >
+      {children}
+    </a>
+  ),
+}));
 
 const companies: ScreenRow[] = [
   {
@@ -57,7 +78,7 @@ const detail: NonNullable<FunctionReturnType<typeof api.universe.check>> = {
       value: 2,
       sourceId: "page",
       source: {
-        id: "page",
+        id: "universe-01-0",
         title: "Bank source page",
         endpoint: "/v2/companies/?offset=0",
         retrievedAt: "2026-10-02T09:56:37.757Z",
@@ -95,7 +116,11 @@ describe("Universe page", () => {
       within(panel).getByText("non_performing_loan[2025] / gross_loan[2025]"),
     ).toBeInTheDocument();
     expect(within(panel).getByText("non_performing_loan[2025]")).toBeInTheDocument();
-    expect(within(panel).getByText("Bank source page")).toBeInTheDocument();
+    expect(within(panel).getByText("Non-performing loans · FY2025")).toBeInTheDocument();
+    expect(
+      within(panel).getByText("Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026"),
+    ).toBeInTheDocument();
+    fireEvent.click(within(panel).getByText("Full endpoint"));
     expect(within(panel).getByText("/v2/companies/?offset=0")).toBeInTheDocument();
     expect(within(panel).getByText("2026-10-02T09:56:37.757Z")).toBeInTheDocument();
     fireEvent.keyDown(panel, { key: "Escape" });
@@ -107,8 +132,10 @@ describe("Universe page", () => {
     useQuery.mockReturnValue(companies);
     render(<UniversePage />);
     const cell = screen.getByRole("button", { name: "CASH Cash conversion" });
-    expect(cell).toHaveTextContent("n/a");
-    expect(cell).toHaveAccessibleDescription("Not reported: operating_cash_flow[2024]");
+    expect(cell).toHaveTextContent("Not reported");
+    expect(cell).toHaveAccessibleDescription("Operating cash flow FY2024 not reported");
+    expect(cell).not.toHaveTextContent(/peers/);
+    expect(screen.getAllByText("Does not apply")[0].tagName).toBe("SPAN");
     const cash = screen.getByRole("tab", { name: "Cash" });
     fireEvent.keyDown(cash, { key: "ArrowRight" });
     const returns = screen.getByRole("tab", { name: "Returns" });

@@ -37,3 +37,18 @@ test("contains horizontal table scrolling at 390 pixels and exposes gaps on focu
   await gap.focus();
   await expect(gap.locator("..").getByRole("tooltip")).toBeVisible();
 });
+
+
+test("shows AADI's cash gap category without a percentile line", async ({ page }) => {
+  await page.goto("/universe");
+  await page.getByLabel("Search companies").fill("AADI");
+  const gap = page.getByRole("button", { name: "AADI Cash conversion", exact: true });
+  await expect(gap).toHaveText("Not reported");
+  await expect(gap).not.toContainText(/p\s+n\/a|peers/);
+  await gap.focus();
+  await expect(gap.locator("..").getByRole("tooltip")).toHaveText("Operating cash flow FY2023 not reported");
+  await gap.click();
+  const panel = page.getByRole("complementary", { name: "Check details" });
+  await expect(panel.getByText("Operating cash flow FY2023 not reported", { exact: true })).toBeVisible();
+  await expect(panel.getByText("Sub-sector percentile", { exact: true })).toHaveCount(0);
+});

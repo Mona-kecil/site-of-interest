@@ -15,7 +15,8 @@ export function OwnershipGraph({ owner }: { owner: Owner }) {
         Reported stakes → companies held.{" "}
         {owner.listedSymbol
           ? "Holders of this listed owner appear on the left."
-          : "Each edge shows a reported share percentage."}
+          : "Each edge shows a reported share percentage."}{" "}
+        Columns show the eight largest reported stakes; +N more opens the full table.
       </figcaption>
       <div
         className="owners-graph-scroll"
