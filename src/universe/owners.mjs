@@ -10,7 +10,8 @@ const custodianPatterns = [
   /\bcitibank\b/i,
   /\bbp2s\b/i,
   /\b(?:s\s*\/\s*a|a\s*\/\s*c)\b/i,
-  /\b(?:custodian|custody|nominees?|omnibus|clients?)\b/i,
+  /\bbank of new york mellon\b/i,
+  /\b(?:custodian|custody|safekeeping|nominees?|omnibus|clients?|clt)\b/i,
 ];
 
 export function isCustodianName(name) {

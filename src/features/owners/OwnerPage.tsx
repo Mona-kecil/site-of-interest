@@ -1,4 +1,6 @@
+import manifest from "../../../data/universe/manifest.json";
 import { isCustodianName } from "../../universe/owners.mjs";
+import { sourceIdLine } from "../../universe/presentation.mjs";
 import { CustodianLabel } from "./CustodianLabel";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
@@ -84,7 +86,7 @@ export function OwnerPage() {
                     </td>
                     <td>
                       {formatMarketCap(holding.value)}
-                      <small>Source: {holding.sourceId}</small>
+                      <small>Source: {sourceIdLine(holding.sourceId, manifest)}</small>
                     </td>
                     <td>{holding.subSector ?? "Not reported"}</td>
                     <td>
@@ -147,7 +149,7 @@ export function OwnerPage() {
                           </th>
                           <td>{formatValue(holder.percentage, "percent")}</td>
                           <td>{holder.rank ?? "Not reported"}</td>
-                          <td>{holder.sourceId}</td>
+                          <td>{sourceIdLine(holder.sourceId, manifest)}</td>
                         </tr>
                       ))}
                     </tbody>

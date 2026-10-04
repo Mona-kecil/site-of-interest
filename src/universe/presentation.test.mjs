@@ -3,7 +3,7 @@ import { readFile } from "node:fs/promises";
 import test from "node:test";
 import { FIELD_DEFINITIONS } from "./fields.mjs";
 import { definitions } from "./checks.mjs";
-import { checkCell, checkQuestion, formatInput, gapCategory, humanGap, inputLabel, sourceLine } from "./presentation.mjs";
+import { checkCell, checkQuestion, formatInput, gapCategory, humanGap, inputLabel, sourceIdLine, sourceLine } from "./presentation.mjs";
 
 const read = async (name) => JSON.parse(await readFile(new URL(`../../data/universe/${name}.json`, import.meta.url), "utf8"));
 const result = { value: 2, percentile: 0.84, peerCount: 31, gap: null };
@@ -51,7 +51,15 @@ test("every distinct snapshot gap renders without snake case or brackets", async
   const { results } = await read("checks");
   const gaps = new Set(results.flatMap(({ gap }) => gap ? [gap] : []));
   assert.ok(gaps.size > 0);
-  for (const gap of gaps) assert.doesNotMatch(humanGap(gap), /[a-z]+_[a-z_]+|\[/, gap);
+  const labels = new Map(FIELD_DEFINITIONS.map(({ providerField, label }) => [providerField, label.toLowerCase()]));
+  for (const gap of gaps) {
+    const text = humanGap(gap);
+    assert.doesNotMatch(text, /[a-z]+_[a-z_]+|\[/, gap);
+    if (!gap.startsWith("Not reported: ")) continue;
+    const fields = gap.slice(14).split(", ").map((field) => /^(\w+)\[(\d{4})\]$/.exec(field));
+    assert.equal(text.match(/FY\d{4}/g)?.length ?? 0, fields.filter(Boolean).length, gap);
+    for (const field of fields) if (field) assert.ok(text.toLowerCase().includes(`${labels.get(field[1])} fy${field[2]}`), `${gap} keeps ${field[0]}`);
+  }
 });
 
 test("input values use IDR billions, check units for ratios, and preserve null and zero", () => {
@@ -72,6 +80,10 @@ test("source lines derive field batches, bounded row ranges and UTC dates from t
   assert.equal(sourceLine(sources[0], manifest), "Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026");
   const last = sources.find(({ id }) => id === "universe-10-800");
   assert.equal(sourceLine(last, manifest), "Sectors · /v2/companies/ · batch 10 of 10 · rows 801–962 · 2 Oct 2026");
+  assert.equal(sourceLine(sources.find(({ id }) => id === "universe-04-400"), manifest), "Sectors · /v2/companies/ · batch 4 of 10 · rows 401–600 · 2 Oct 2026");
   assert.doesNotMatch(sourceLine(last, manifest), /\?|where=|offset=/);
+  assert.equal(sourceIdLine("universe-04-400", manifest), "Sectors · batch 4 of 10 · rows 401–600");
+  assert.equal(sourceIdLine("universe-10-800", manifest), "Sectors · batch 10 of 10 · rows 801–962");
+  assert.equal(sourceIdLine("unknown-source", manifest), "unknown-source");
   assert.ok(last.endpoint.length > 1000);
 });
