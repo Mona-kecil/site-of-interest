@@ -6,6 +6,7 @@ import type { api } from "../../../convex/_generated/api";
 import { definitions } from "../../universe/checks.mjs";
 import { UniversePage } from "./UniversePage";
 import type { ScreenRow } from "./universe-model";
+import { IdeasPage } from "../ideas/IdeasPage";
 
 const { useQuery } = vi.hoisted(() => ({ useQuery: vi.fn() }));
 vi.mock("convex/react", () => ({ useQuery }));
@@ -145,5 +146,46 @@ describe("Universe page", () => {
     expect(returns).toHaveFocus();
     fireEvent.change(screen.getByLabelText("Search companies"), { target: { value: "unlisted" } });
     expect(screen.getByText("No companies match these filters.")).toBeInTheDocument();
+  });
+});
+
+describe("Ideas page", () => {
+  it("limits each list to 12, expands it, and retains evidence and the market cap cutoff", () => {
+    const checks = Object.entries({
+      cash_conversion: 1,
+      roic: 0.15,
+      net_debt_to_ebitda: 1,
+      pe_vs_history: 0.8,
+      free_float: 0.3,
+    }).map(([checkId, value]) => ({ checkId, value, percentile: null, peerCount: 1, gap: null }));
+    const rows: ScreenRow[] = Array.from({ length: 14 }, (_, index) => ({
+      ...companies[1],
+      symbol: `IDEA${index}`,
+      marketCap: (index + 1) * 1e12,
+      peTtm: 12,
+      checks,
+    }));
+    rows.push({ ...rows[0], symbol: "SMALL", marketCap: 1e12 - 1 });
+    rows.push({ ...rows[0], symbol: "FLAG", marketCap: 2e12, peTtm: 100 });
+    useQuery.mockReturnValue(rows);
+    render(<IdeasPage />);
+    const ideas = screen.getByRole("region", { name: "Worth a look · 14" });
+    expect(within(ideas).getAllByRole("article")).toHaveLength(12);
+    expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent("IDEA13");
+    expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent(
+      "Cash conversion: 1.00×; meets pass >= 0.80×",
+    );
+    expect(screen.queryByRole("link", { name: "SMALL", exact: true })).not.toBeInTheDocument();
+    fireEvent.click(
+      within(ideas).getByRole("button", { name: "Show all 14 worth a look companies" }),
+    );
+    expect(within(ideas).getAllByRole("article")).toHaveLength(14);
+    const flags = screen.getByRole("region", { name: "Red flags · 1" });
+    expect(flags).toHaveTextContent("Priced for perfection");
+    expect(flags).toHaveTextContent("Current P/E: 100.00×; flags > 50.00×");
+    expect(within(flags).getByRole("link", { name: "FLAG", exact: true })).toHaveAttribute(
+      "href",
+      "/company/FLAG",
+    );
   });
 });

@@ -1,5 +1,43 @@
 import { expect, test } from "@playwright/test";
 
+test("opens Ideas with both lists, rules and company reasons", async ({ page }) => {
+  await page.goto("/");
+  await expect(page).toHaveURL(/\/$/);
+  await expect(page.getByRole("heading", { name: "Ideas", exact: true })).toBeVisible();
+  await expect(page.getByText(/screens all 962 IDX companies/)).toBeVisible();
+  const ideas = page.getByRole("region", { name: /^Worth a look ·/ });
+  const flags = page.getByRole("region", { name: /^Red flags ·/ });
+  await expect(ideas.getByRole("article")).toHaveCount(12);
+  await expect(flags.getByRole("article")).toHaveCount(12);
+  await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText("meets pass");
+  await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText("flags");
+  const dcii = flags.locator('[data-symbol="DCII"]');
+  await expect(dcii).toContainText("Priced for perfection");
+  await expect(dcii).toContainText("Current P/E: 413.61×; flags > 50.00×");
+  await page.getByText("How a stock makes the list", { exact: true }).click();
+  await expect(page.locator(".ideas-method")).toContainText("Cash conversion: pass >= 0.80×; flag < 0.50×");
+  await ideas.getByRole("button", { name: /^Show all/ }).click();
+  await expect.poll(() => ideas.getByRole("article").count()).toBeGreaterThan(12);
+  await flags.getByRole("button", { name: /^Show all/ }).click();
+  await expect.poll(() => flags.getByRole("article").count()).toBeGreaterThan(12);
+  await ideas.getByRole("link", { name: "TLKM", exact: true }).click();
+  await expect(page).toHaveURL(/\/company\/TLKM$/);
+  await page.getByRole("navigation", { name: "Product sections" }).getByRole("link", { name: "Ideas", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+  await page.getByRole("navigation", { name: "Product sections" }).getByRole("link", { name: "Screener", exact: true }).click();
+  await expect(page).toHaveURL(/\/universe$/);
+  await page.getByRole("link", { name: "Site of Interest", exact: true }).click();
+  await expect(page).toHaveURL(/\/$/);
+});
+
+test("contains Ideas cards and expanded rules at 390 pixels", async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 });
+  await page.goto("/");
+  await expect(page.getByRole("region", { name: /^Worth a look ·/ }).getByRole("article")).toHaveCount(12);
+  await page.getByText("How a stock makes the list", { exact: true }).click();
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
+});
+
 test("screens the IDX universe and opens a bank check's sourced calculation", async ({ page }) => {
   await page.goto("/universe");
   await expect(page.getByRole("heading", { name: "Universe", exact: true })).toBeVisible();
