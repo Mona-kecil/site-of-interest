@@ -11,14 +11,17 @@ const groupNote =
 export function GroupsPage() {
   const groups = useQuery(api.owners.groups, {});
   return (
-    <main className="owners-page">
-      <header className="owners-header">
-        <p className="eyebrow">IDX / Sectors labels</p>
+    <main className="page owners-page wrap">
+      <header className="page-head">
         <h1>Groups</h1>
-        <p>{groupNote}</p>
+        <div className="page-intro">
+          <p>{groupNote}</p>
+        </div>
       </header>
       {groups === undefined ? (
-        <p role="status">Loading groups</p>
+        <p className="page-loading" role="status">
+          Loading groups
+        </p>
       ) : (
         <div className="owners-table-wrap" role="region" aria-label="Business groups" tabIndex={0}>
           <table className="owners-table owners-groups">
@@ -61,12 +64,14 @@ export function GroupPage() {
   const { slug } = useParams({ from: "/group/$slug" });
   const group = useQuery(api.owners.group, { slug });
   return (
-    <main className="owners-page">
-      <Link className="owners-back" to="/groups">
+    <main className="page owners-page wrap">
+      <Link className="back" to="/groups">
         ← Groups
       </Link>
       {group === undefined ? (
-        <p role="status">Loading group</p>
+        <p className="page-loading" role="status">
+          Loading group
+        </p>
       ) : group === null ? (
         <>
           <h1>Group not found</h1>
@@ -74,14 +79,15 @@ export function GroupPage() {
         </>
       ) : (
         <>
-          <header className="owners-header">
-            <p className="eyebrow">IDX / Sectors business-group label</p>
+          <header className="page-head">
             <h1>{group.label}</h1>
-            <p>{groupNote}</p>
-            <p>
-              {group.members.length} members · {formatMarketCap(group.totalMarketCap)} combined
-              reported market cap
-            </p>
+            <div className="page-intro">
+              <p>
+                {group.members.length} members · {formatMarketCap(group.totalMarketCap)} combined
+                reported market cap
+              </p>
+              <p>{groupNote}</p>
+            </div>
           </header>
           <p className="owners-note">
             Checks show measurements and sub-sector percentiles, without a direction. Gap categories

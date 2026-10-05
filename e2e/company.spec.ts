@@ -8,7 +8,7 @@ test("opens a lowercase bank symbol with NPL and no ROIC", async ({ page }) => {
   await expect(page.locator('[data-check="roic"]')).toHaveCount(0);
   const verdict = page.getByRole("region", { name: "Worth a look", exact: true });
   await expect(verdict).toBeVisible();
-  await expect(verdict).toContainText("Cash: Does not apply");
+  await expect(verdict).toContainText("Cash: Not checked");
   await expect(verdict).toContainText("NPL ratio 1.65% · pass ≤ 3.00%");
   await expect(verdict.getByRole("link", { name: "View balance sheet inputs" })).toHaveAttribute("href", "#profile-banks");
 });
@@ -17,7 +17,7 @@ test("explains a company price flag before the section navigation", async ({ pag
   await page.goto("/company/DCII");
   const verdict = page.getByRole("region", { name: "Red flags", exact: true });
   await expect(verdict).toBeVisible();
-  await expect(verdict).toContainText("Price: Fail");
+  await expect(verdict).toContainText("Price: Flagged");
   await expect(verdict).toContainText("Priced for perfection");
   await expect(verdict).toContainText("Current P/E 413.61× · flag > 50.00×");
   await verdict.getByRole("link", { name: "View price inputs" }).click();
@@ -70,7 +70,7 @@ test("opens a company from its screener symbol and check panel", async ({ page }
   expect(await page.evaluate(() => (window as unknown as { researchNavigationMarker: string }).researchNavigationMarker)).toBe("retained");
   await page.goto("/universe");
   await page.getByRole("button", { name: "ASII Cash conversion", exact: true }).click();
-  await page.getByRole("link", { name: "Open company", exact: true }).click();
+  await page.getByRole("link", { name: "ASII company page →", exact: true }).click();
   await expect(page).toHaveURL(/\/company\/ASII$/);
 });
 

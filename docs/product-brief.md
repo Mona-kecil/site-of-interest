@@ -1,8 +1,8 @@
 # Product brief
 
-Site of Interest screens all 962 IDX companies in the stored Sectors snapshot with a Ricky Ho-style fundamentals screen. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Verdicts cite the measurements behind their rules. Measurements carry sub-sector peer percentiles and source inputs.
+Site of Interest screens all 962 IDX companies in the stored Sectors snapshot with a five-question fundamentals screen. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Verdicts cite the measurements behind their rules. Measurements carry sub-sector peer percentiles and source inputs.
 
-The application provides no investment advice, trade recommendations, price targets or claims of beneficial ownership. It is not affiliated with or endorsed by Ricky Ho. Verdicts inherit provider errors. Provider group labels remain attributed to Sectors.
+The application provides no investment advice, trade recommendations, price targets or claims of beneficial ownership. Verdicts inherit provider errors. Provider group labels remain attributed to Sectors.
 
 ## Verdicts
 
@@ -31,7 +31,7 @@ Ideas lists companies with market cap >= IDR 1T: Worth a look sorts by passing p
 
 ## Research path
 
-Start at / with Ideas, its rules and company reasons. Open a company for its verdict and pillar evidence, or use /universe to search, filter by verdict and choose a lens. Open a measurement's formula, reporting period, human input labels, raw field codes and source disclosure. Follow the company link for annual and quarterly history, ranked peer dots and reported holders. Open an owner for its stakes, co-holders and upstream list. Open Groups to compare members of a Sectors business-group label.
+Start at / with the landing: the verdict tally, eight sample ratings with a ticker lookup, each rule's pass and flag lines, and one number traced to its source rows. Open /ideas for its rules and company reasons. Open a company for its verdict and pillar evidence, or use /universe to search, filter by verdict and choose a lens. Open a measurement's formula, reporting period, human input labels, raw field codes and source disclosure. Follow the company link for annual and quarterly history, ranked peer dots and reported holders. Open an owner for its stakes, co-holders and upstream list. Open Groups to compare members of a Sectors business-group label.
 
 The company, owner and group pages retain gaps. A name-pattern label marks possible custodian or nominee accounts and states that they may hold for clients. A largest reported stake is a measurement of the entity rows, not proof of control. The [demo](demo.md) follows this path with stored values.
 
@@ -71,4 +71,4 @@ Evidence puts the human field label and fiscal period before the provider code. 
 
 ## Current scope
 
-The app covers Ideas, the screener, company verdicts, history and checks, owners and business-group labels. It reads a stored snapshot through bounded Convex queries. It does not refresh provider data during navigation. Authentication, saved research notes and automated refresh are outside the current surface. The [delivery checklist](tickets/README.md) lists the current scope and known follow-ups.
+The app covers the landing, Ideas, the screener, company verdicts, history and checks, owners and business-group labels. It reads a stored snapshot through bounded Convex queries. It does not refresh provider data during navigation. Authentication, saved research notes and automated refresh are outside the current surface. The [delivery checklist](tickets/README.md) lists the current scope and known follow-ups.

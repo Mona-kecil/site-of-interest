@@ -6,30 +6,18 @@ import manifest from "../../../data/universe/manifest.json";
 import { definitions } from "../../universe/checks.mjs";
 import { formatValue } from "../../universe/presentation.mjs";
 import { formatMarketCap, type ScreenRow } from "../universe/universe-model";
+import { outcomeLabels, shortName, shortTitles, verdictDescriptions } from "./evidence";
 import {
   assess,
   PILLARS,
   verdictLabels,
   type Bound,
   type CompanyClass,
-  type Outcome,
   type Rule,
   type Verdict,
 } from "./ideas-model";
+import { OutcomeMark } from "./OutcomeMark";
 
-const outcomeLabels: Record<Outcome, string> = {
-  pass: "Pass",
-  mixed: "Mixed",
-  fail: "Fail",
-  unknown: "Inputs not reported",
-  na: "Does not apply",
-};
-export const verdictDescriptions: Record<Verdict, string> = {
-  idea: "The core pillars pass (cash and balance sheet; returns and balance sheet for banks) and at most one other pillar falls short of a pass.",
-  mixed: "No measurement hits a flag, but the company does not clear every Worth a look test.",
-  flags: "At least one measurement hits a flag line.",
-  thin: "No measurement hits a flag, but fewer than three pillars have reported numbers.",
-};
 const classLabels: Record<CompanyClass, string> = {
   nonFinancial: "Non-financial companies",
   bank: "Banks",
@@ -67,13 +55,14 @@ export function PillarOutcome({
 }) {
   return (
     <div className="idea-reason">
+      <OutcomeMark outcome={result.outcome} />
       <h3>
         {pillar.title}: {outcomeLabels[result.outcome]}
       </h3>
       {result.outcome === "na" ? (
-        <p>The screen does not apply this pillar to this kind of company.</p>
+        <p>Not checked for this kind of company.</p>
       ) : result.outcome === "unknown" ? (
-        <p>The inputs are not reported.</p>
+        <p>Sectors did not report the inputs.</p>
       ) : (
         <p>{pillar.headlines[result.outcome]}</p>
       )}
@@ -108,40 +97,47 @@ function CompanyCard({
             {company.symbol}
           </Link>
         </h3>
-        <Link to="/company/$ticker" params={{ ticker: company.symbol }}>
-          {company.name}
+        <Link className="idea-name" to="/company/$ticker" params={{ ticker: company.symbol }}>
+          {shortName(company.name)}
         </Link>
         <p>
           {company.subSector ?? "Sub-sector not reported"} · {formatMarketCap(company.marketCap)}
         </p>
       </header>
-      <div className="idea-chips" aria-label="Pillar outcomes">
+      <ol className="idea-marks" aria-label="Pillar outcomes">
         {assessment.pillars.map((result, index) => (
-          <span className={`outcome-chip outcome-${result.outcome}`} key={result.id}>
-            {PILLARS[index].title}: {outcomeLabels[result.outcome]}
-          </span>
+          <li key={result.id}>
+            <OutcomeMark outcome={result.outcome} />
+            <span aria-hidden="true">{shortTitles[index]}</span>
+            <span className="sr-only">
+              {PILLARS[index].title}: {outcomeLabels[result.outcome]}
+            </span>
+          </li>
         ))}
-      </div>
+      </ol>
       <ul className="idea-reasons">
         {reasons.map(({ id, outcome, evidence }) => {
           const pillar = PILLARS.find((item) => item.id === id)!;
           return (
             <li key={id}>
-              <strong>
-                {outcome === "na" || outcome === "unknown"
-                  ? `${pillar.title}: inputs not reported`
-                  : pillar.headlines[outcome]}
-              </strong>
-              {(assessment.verdict === "flags"
-                ? evidence.filter(({ result }) => result === "fail")
-                : outcome === "pass"
-                  ? evidence.slice(0, 1)
-                  : evidence
-              ).map((item) => (
-                <span key={item.key}>
-                  <RuleText rule={item} />
-                </span>
-              ))}
+              <OutcomeMark outcome={outcome} />
+              <div>
+                <strong>
+                  {outcome === "na" || outcome === "unknown"
+                    ? `${pillar.title}: inputs not reported`
+                    : pillar.headlines[outcome]}
+                </strong>
+                {(assessment.verdict === "flags"
+                  ? evidence.filter(({ result }) => result === "fail")
+                  : outcome === "pass"
+                    ? evidence.slice(0, 1)
+                    : evidence
+                ).map((item) => (
+                  <span key={item.key}>
+                    <RuleText rule={item} />
+                  </span>
+                ))}
+              </div>
             </li>
           );
         })}
@@ -168,96 +164,96 @@ export function IdeasPage() {
   const flags = assessed
     .filter(({ assessment }) => assessment.verdict === "flags")
     .sort((a, b) => b.company.marketCap! - a.company.marketCap!);
-  const date = new Intl.DateTimeFormat("en-GB", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    timeZone: "UTC",
-  }).format(new Date(manifest.retrievedAt));
   return (
-    <main className="universe-page ideas-page">
-      <header className="universe-header">
-        <p className="eyebrow">[IDX / ideas]</p>
+    <main className="page ideas-page wrap">
+      <header className="page-head">
         <h1>Ideas</h1>
-        <p>
-          Site of Interest screens all {manifest.companyCount} IDX companies the way value investor
-          Ricky Ho reads a business: cash before profit, returns on capital, a balance sheet that
-          can take a hit, a price that does not assume perfection, fair treatment of minority
-          holders.
-        </p>
-        <p className="universe-note">
-          Sectors data retrieved {date} · FY2025 annual reports and current market data ·
-          Rules-based screen · Not investment advice.
-        </p>
+        <div className="page-intro">
+          <p>
+            Site of Interest screens all {manifest.companyCount} IDX companies on five questions:
+            does profit turn into cash, does the business earn well on its capital, can the balance
+            sheet take a hit, does the price assume perfection, and are minority holders treated
+            fairly.
+          </p>
+        </div>
       </header>
       <details className="ideas-method">
         <summary>How a stock makes the list</summary>
-        <p>
-          Each rule compares one measurement with a pass line, a flag line, or both. Missing numbers
-          are skipped, never counted as zero. A pillar fails when any rule hits its flag, passes
-          when every reported rule passes, and is mixed otherwise. A pillar with no reported numbers
-          shows Inputs not reported. Insurance, financing and investment companies have no
-          balance-sheet rules here, so they can be Mixed at best.
-        </p>
-        <dl>
-          {(Object.keys(verdictLabels) as Verdict[]).map((verdict) => (
-            <div key={verdict}>
-              <dt>{verdictLabels[verdict]}</dt>
-              <dd>{verdictDescriptions[verdict]}</dd>
-            </div>
-          ))}
-        </dl>
-        <div className="ideas-rules">
-          {PILLARS.map((pillar) => {
-            const groups = new Map<string, { rules: Rule[]; classes: CompanyClass[] }>();
-            for (const [companyClass, rules] of Object.entries(pillar.rules) as [
-              CompanyClass,
-              Rule[],
-            ][]) {
-              const key = JSON.stringify(rules);
-              groups.set(key, {
-                rules,
-                classes: [...(groups.get(key)?.classes ?? []), companyClass],
-              });
-            }
-            return (
-              <section key={pillar.id}>
-                <h2>{pillar.title}</h2>
-                <p>{pillar.question}</p>
-                {[...groups.values()].map(({ rules, classes }) => (
-                  <div key={classes.join()}>
-                    <h3>
-                      {classes.length === 3
-                        ? "All companies"
-                        : classes.map((item) => classLabels[item]).join(" · ")}
-                    </h3>
-                    {rules.length ? (
-                      <ul>
-                        {rules.map((rule) => (
-                          <li key={rule.key}>
-                            <RuleText rule={rule} />
-                          </li>
-                        ))}
-                      </ul>
-                    ) : (
-                      <p>Does not apply.</p>
-                    )}
-                  </div>
-                ))}
-              </section>
-            );
-          })}
+        <div className="ideas-method-body">
+          <p>
+            Each rule compares one measurement with a pass line, a flag line, or both. Missing
+            numbers are skipped, never counted as zero. A pillar is flagged when any rule crosses
+            its flag line, passes when every reported rule passes, and partly passes otherwise. A
+            pillar with no reported numbers shows Not reported. Insurance, financing and investment
+            companies have no balance-sheet rules here, so they can be Mixed at best.
+          </p>
+          <dl>
+            {(["idea", "mixed", "flags", "thin"] as const).map((verdict) => (
+              <div key={verdict}>
+                <dt>
+                  <span className={`stamp ${verdict}`}>{verdictLabels[verdict]}</span>
+                </dt>
+                <dd>{verdictDescriptions[verdict]}</dd>
+              </div>
+            ))}
+          </dl>
+          <div className="ideas-rules">
+            {PILLARS.map((pillar) => {
+              const groups = new Map<string, { rules: Rule[]; classes: CompanyClass[] }>();
+              for (const [companyClass, rules] of Object.entries(pillar.rules) as [
+                CompanyClass,
+                Rule[],
+              ][]) {
+                const key = JSON.stringify(rules);
+                groups.set(key, {
+                  rules,
+                  classes: [...(groups.get(key)?.classes ?? []), companyClass],
+                });
+              }
+              return (
+                <section key={pillar.id}>
+                  <h2>{pillar.title}</h2>
+                  <p>{pillar.question}</p>
+                  {[...groups.values()].map(({ rules, classes }) => (
+                    <div key={classes.join()}>
+                      <h3>
+                        {classes.length === 3
+                          ? "All companies"
+                          : classes.map((item) => classLabels[item]).join(" · ")}
+                      </h3>
+                      {rules.length ? (
+                        <ul>
+                          {rules.map((rule) => (
+                            <li key={rule.key}>
+                              <RuleText rule={rule} />
+                            </li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>Not checked.</p>
+                      )}
+                    </div>
+                  ))}
+                </section>
+              );
+            })}
+          </div>
         </div>
       </details>
       {companies === undefined ? (
-        <p role="status">Loading ideas</p>
+        <p className="page-loading" role="status">
+          Loading ideas
+        </p>
       ) : (
         <>
           <section aria-labelledby="ideas-list-title" className="ideas-list">
-            <h2 id="ideas-list-title">Worth a look · {ideas.length}</h2>
-            <p className="universe-note">
-              Market cap at least IDR 1T. Most passing pillars first, then largest market cap.
-            </p>
+            <div className="ideas-list-head">
+              <h2 id="ideas-list-title">Worth a look · {ideas.length}</h2>
+              <p>
+                Companies worth at least IDR 1T. Most passing pillars first, then largest market
+                cap.
+              </p>
+            </div>
             <div className="ideas-grid">
               {(showIdeas ? ideas : ideas.slice(0, 12)).map((item) => (
                 <CompanyCard key={item.company.symbol} {...item} />
@@ -265,14 +261,16 @@ export function IdeasPage() {
             </div>
             {ideas.length === 0 && <p>No companies meet these rules.</p>}
             {!showIdeas && ideas.length > 12 && (
-              <button type="button" onClick={() => setShowIdeas(true)}>
+              <button className="more" type="button" onClick={() => setShowIdeas(true)}>
                 Show all {ideas.length} worth a look companies
               </button>
             )}
           </section>
-          <section aria-labelledby="flags-list-title" className="ideas-list">
-            <h2 id="flags-list-title">Red flags · {flags.length}</h2>
-            <p className="universe-note">Market cap at least IDR 1T. Largest market cap first.</p>
+          <section id="red-flags" aria-labelledby="flags-list-title" className="ideas-list">
+            <div className="ideas-list-head">
+              <h2 id="flags-list-title">Red flags · {flags.length}</h2>
+              <p>Companies worth at least IDR 1T. Largest market cap first.</p>
+            </div>
             <div className="ideas-grid">
               {(showFlags ? flags : flags.slice(0, 12)).map((item) => (
                 <CompanyCard key={item.company.symbol} {...item} />
@@ -280,22 +278,18 @@ export function IdeasPage() {
             </div>
             {flags.length === 0 && <p>No companies meet these rules.</p>}
             {!showFlags && flags.length > 12 && (
-              <button type="button" onClick={() => setShowFlags(true)}>
+              <button className="more" type="button" onClick={() => setShowFlags(true)}>
                 Show all {flags.length} red flag companies
               </button>
             )}
           </section>
         </>
       )}
-      <footer className="ideas-footer">
-        <p>
-          Not affiliated with or endorsed by Ricky Ho. Verdicts apply fixed rules to provider
-          numbers and inherit provider errors. Not investment advice.
-        </p>
-        <Link to="/universe">
-          Open the screener for all {manifest.companyCount} companies, including those under IDR 1T
+      <p className="ideas-end">
+        <Link className="go" to="/universe">
+          Open the screener for all {manifest.companyCount} companies
         </Link>
-      </footer>
+      </p>
     </main>
   );
 }

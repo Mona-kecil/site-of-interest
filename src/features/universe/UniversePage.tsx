@@ -49,18 +49,17 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
       }}
     >
       <header>
-        <p className="eyebrow">{selection.symbol} / measurement</p>
+        <Link
+          className="universe-company-link"
+          to="/company/$ticker"
+          params={{ ticker: selection.symbol }}
+        >
+          {selection.symbol} company page →
+        </Link>
         <button type="button" onClick={close} aria-label="Close check details">
           Close
         </button>
       </header>
-      <Link
-        className="universe-company-link"
-        to="/company/$ticker"
-        params={{ ticker: selection.symbol }}
-      >
-        Open company
-      </Link>
       {result === undefined ? (
         <p role="status">Loading check inputs</p>
       ) : result === null ? (
@@ -139,14 +138,15 @@ export function UniversePage() {
     }));
 
   return (
-    <main className="universe-page">
-      <header className="universe-header">
-        <p className="eyebrow">[IDX / fundamentals]</p>
+    <main className="page universe-page wrap">
+      <header className="page-head">
         <h1>Screener</h1>
-        <p>
-          Cash, capital, obligations, price and ownership. Each measurement opens its formula and
-          source inputs.
-        </p>
+        <div className="page-intro">
+          <p>
+            Every IDX company on every measurement. Pick a lens, filter, and open any number to see
+            its formula and the Sectors rows behind it.
+          </p>
+        </div>
       </header>
       <div className="universe-lenses" role="tablist" aria-label="Check lenses">
         {lenses.map((item, index) => (
@@ -286,6 +286,7 @@ export function UniversePage() {
                     >
                       {row.symbol}
                     </Link>
+                    <small className="universe-row-name">{row.name}</small>
                   </th>
                   <td className="universe-company-name">
                     <Link

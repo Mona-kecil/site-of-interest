@@ -22,13 +22,15 @@ export function OwnersPage() {
   const [sort, setSort] = useState<OwnerSort>(defaultSort);
   const rows = ownerRows(owners ?? [], search, listedOnly, sort);
   return (
-    <main className="owners-page">
-      <header className="owners-header">
-        <p className="eyebrow">IDX / reported shareholdings</p>
+    <main className="page owners-page wrap">
+      <header className="page-head">
         <h1>Owners</h1>
-        <p>
-          Who holds each company, and what else they hold. Legal-form variants share one owner key.
-        </p>
+        <div className="page-intro">
+          <p>
+            Who holds each company, and what else they hold. Legal-form variants share one owner
+            key.
+          </p>
+        </div>
       </header>
       <div className="owners-views" role="tablist" aria-label="Owner views">
         <button
@@ -65,7 +67,9 @@ export function OwnersPage() {
         Largest-holder counts include ties among entity rows and do not establish control.
       </p>
       {owners === undefined ? (
-        <p role="status">Loading owners</p>
+        <p className="page-loading" role="status">
+          Loading owners
+        </p>
       ) : (
         <div className="owners-table-wrap" role="region" aria-label="Owner index" tabIndex={0}>
           <table className="owners-table">

@@ -2,8 +2,9 @@ import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { ConvexProvider, ConvexReactClient } from "convex/react";
 import { RouterProvider } from "@tanstack/react-router";
-import { router } from "./router";
+import "@fontsource-variable/libre-franklin";
 import "./styles.css";
+import { router } from "./router";
 
 const rootElement = document.querySelector<HTMLElement>("#root");
 if (rootElement === null) throw new Error("Missing #root element");
@@ -27,8 +28,8 @@ if (convexUrl === undefined || convexUrl.length === 0) {
   createRoot(rootElement).render(
     <StrictMode>
       <main className="setup-screen">
-        <p className="eyebrow">Backend not configured</p>
         <h1>Start the local Convex deployment.</h1>
+        <p>The backend is not configured.</p>
         <code>npm run convex:dev</code>
       </main>
     </StrictMode>,

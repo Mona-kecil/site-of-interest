@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 import { formatValue } from "../../universe/presentation.mjs";
-import { graphLines, ownershipGraph, type Owner } from "./owners-model";
+import { graphLines, ownershipGraph, type GraphNode, type Owner } from "./owners-model";
 
 export function OwnershipGraph({ owner }: { owner: Owner }) {
   const graph = ownershipGraph(owner);
@@ -9,14 +9,38 @@ export function OwnershipGraph({ owner }: { owner: Owner }) {
     if (scroll.current) scroll.current.scrollTop = (graph.height - scroll.current.clientHeight) / 2;
   }, [owner.key, graph.height]);
   const nodes = new Map(graph.nodes.map((node) => [node.id, node]));
+  const stakes = new Map(
+    graph.edges.map((edge) => [
+      edge.id,
+      edge.percentages.map((value) => formatValue(value, "percent")),
+    ]),
+  );
+  const side = (role: "upstream" | "company", more: string) =>
+    graph.nodes.filter((node) => node.role === role || node.id === more);
+  // Phones read the same capped graph top to bottom: holders, this owner, holdings.
+  const flow = (label: string, items: GraphNode[]) =>
+    items.length > 0 && (
+      <>
+        <p>{label}</p>
+        <ul>
+          {items.map((node) => (
+            <li key={node.id}>
+              <a href={node.href}>
+                {node.label}
+                {stakes.has(node.id) && <span>{stakes.get(node.id)!.join(" · ")}</span>}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </>
+    );
+  const upstream = side("upstream", "more:upstream");
+  const held = side("company", "more:holdings");
   return (
     <figure className="owners-graph">
       <figcaption>
-        Reported stakes → companies held.{" "}
-        {owner.listedSymbol
-          ? "Holders of this listed owner appear on the left."
-          : "Each edge shows a reported share percentage."}{" "}
-        Columns show the eight largest reported stakes; +N more opens the full table.
+        {owner.listedSymbol ? "Who holds this owner, then what it holds" : "What this owner holds"},
+        by reported stake. Shows the eight largest stakes; +N more opens the full table.
       </figcaption>
       <div
         className="owners-graph-scroll"
@@ -52,7 +76,7 @@ export function OwnershipGraph({ owner }: { owner: Owner }) {
             const y1 = from.y + from.height / 2;
             const x2 = to.x;
             const y2 = to.y + to.height / 2;
-            const percentages = edge.percentages.map((value) => formatValue(value, "percent"));
+            const percentages = stakes.get(edge.id)!;
             const labelX = edge.from.startsWith("upstream:") ? x1 + 6 : x2 - 6;
             return (
               <g key={edge.id}>
@@ -96,6 +120,13 @@ export function OwnershipGraph({ owner }: { owner: Owner }) {
             </a>
           ))}
         </svg>
+      </div>
+      <div className="owners-flow">
+        {flow("Held by", upstream)}
+        {upstream.length > 0 && <span aria-hidden="true">↓</span>}
+        <strong>{owner.name}</strong>
+        {held.length > 0 && <span aria-hidden="true">↓</span>}
+        {flow("Holds", held)}
       </div>
     </figure>
   );
