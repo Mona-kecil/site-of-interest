@@ -2,6 +2,7 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import type { Id } from "../../../convex/_generated/dataModel";
+import manifest from "../../../data/universe/manifest.json";
 import { CompanyProfilePage } from "./CompanyProfilePage";
 import type { CompanyProfile, ProfileCheck } from "./profile-model";
 
@@ -23,6 +24,8 @@ vi.mock("@tanstack/react-router", () => ({
     </a>
   ),
 }));
+
+const sourceIds = Object.fromEntries(manifest.groups.map(({ id }) => [id, "page"]));
 
 function profile(subSector: string): CompanyProfile {
   const check: ProfileCheck = {
@@ -61,7 +64,7 @@ function profile(subSector: string): CompanyProfile {
       indices: ["LQ45"],
       affiliates: ["Hartono"],
       current: { marketCap: 700e12, freeFloat: 0.4, peTtm: 12, pbMrq: 2 },
-      sourceIds: { profile: "page" },
+      sourceIds,
       checks: [check],
     },
     years: [
@@ -71,7 +74,7 @@ function profile(subSector: string): CompanyProfile {
         symbol: "BBCA",
         year: 2025,
         values: { revenue: 0, ebit: null },
-        sourceIds: { annual: "page" },
+        sourceIds,
       },
     ],
     quarters: [],

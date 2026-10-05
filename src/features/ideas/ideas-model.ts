@@ -126,23 +126,15 @@ export const CORE: Record<CompanyClass, PillarId[]> = {
   otherFinancial: ["returns", "balance"],
 };
 
-export function assess({
-  subSector,
-  checks,
-  peTtm,
-}: {
-  subSector: string | null;
-  checks: readonly { checkId: string; value: number | null }[];
-  peTtm: number | null;
-}) {
-  const companyClass: CompanyClass =
-    subSector === "Banks"
-      ? "bank"
-      : financialSubSectors.has(subSector ?? "")
-        ? "otherFinancial"
-        : "nonFinancial";
-  const values = new Map(checks.map(({ checkId, value }) => [checkId, value]));
-  values.set("pe_ttm", peTtm);
+export function companyClassOf(subSector: string | null): CompanyClass {
+  return subSector === "Banks"
+    ? "bank"
+    : financialSubSectors.has(subSector ?? "")
+      ? "otherFinancial"
+      : "nonFinancial";
+}
+
+export function judge(rule: Rule, value: number): "pass" | "neutral" | "fail" {
   const holds = (value: number, [operator, threshold]: Bound) => {
     switch (operator) {
       case ">=":
@@ -155,29 +147,49 @@ export function assess({
         return value < threshold;
     }
   };
+  return rule.fail && holds(value, rule.fail)
+    ? "fail"
+    : !rule.pass || holds(value, rule.pass)
+      ? "pass"
+      : "neutral";
+}
+
+export function ratePillar(
+  rules: readonly Rule[],
+  evidence: readonly { result: "pass" | "neutral" | "fail" }[],
+): Outcome {
+  return rules.length === 0
+    ? "na"
+    : evidence.length === 0
+      ? "unknown"
+      : evidence.some(({ result }) => result === "fail")
+        ? "fail"
+        : evidence.every(({ result }) => result === "pass")
+          ? "pass"
+          : "mixed";
+}
+
+export function assess({
+  subSector,
+  checks,
+  peTtm,
+}: {
+  subSector: string | null;
+  checks: readonly { checkId: string; value: number | null }[];
+  peTtm: number | null;
+}) {
+  const companyClass = companyClassOf(subSector);
+  const values = new Map(checks.map(({ checkId, value }) => [checkId, value]));
+  values.set("pe_ttm", peTtm);
   const pillars = PILLARS.map((pillar) => {
     const rules = pillar.rules[companyClass];
     const evidence = rules.flatMap((rule) => {
       const value = values.get(rule.key) ?? null;
       if (value === null) return [];
-      const result: "pass" | "neutral" | "fail" =
-        rule.fail && holds(value, rule.fail)
-          ? "fail"
-          : !rule.pass || holds(value, rule.pass)
-            ? "pass"
-            : "neutral";
+      const result = judge(rule, value);
       return [{ ...rule, value, result }];
     });
-    const outcome: Outcome =
-      rules.length === 0
-        ? "na"
-        : evidence.length === 0
-          ? "unknown"
-          : evidence.some(({ result }) => result === "fail")
-            ? "fail"
-            : evidence.every(({ result }) => result === "pass")
-              ? "pass"
-              : "mixed";
+    const outcome = ratePillar(rules, evidence);
     return { id: pillar.id, outcome, evidence };
   });
   const verdict: Verdict = pillars.some(({ outcome }) => outcome === "fail")

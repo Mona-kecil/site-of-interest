@@ -28,6 +28,9 @@ const labels = {
   operatingCashFlowQ: "Quarterly operating cash flow", freeCashFlowQ: "Quarterly free cash flow",
   interestCoverageRatio: "Interest coverage ratio", ebitda: "EBITDA", inventories: "Inventories",
   financingCashFlow: "Financing cash flow",
+  revenueEstimate2026: "Revenue estimate, FY2026", revenueGrowth2026: "Revenue growth estimate, FY2026",
+  epsEstimate2026: "EPS estimate, FY2026", epsGrowth2026: "EPS growth estimate, FY2026",
+  forwardPe: "Forward P/E",
 };
 
 export const FIELD_DEFINITIONS = Object.freeze([
@@ -89,6 +92,11 @@ export const FIELD_DEFINITIONS = Object.freeze([
   year("ebitda", "ebitda"),
   year("inventories", "inventories"),
   year("financingCashFlow", "financing_cash_flow"),
+  company("revenueEstimate2026", "forecast_revenue_estimate[2026]", "IDR"),
+  company("revenueGrowth2026", "forecast_revenue_growth[2026]", "ratio"),
+  company("epsEstimate2026", "forecast_eps_estimate[2026]", "IDR"),
+  company("epsGrowth2026", "forecast_eps_growth[2026]", "ratio"),
+  company("forwardPe", "forward_pe", "ratio"),
 ].map((definition) => Object.freeze({ ...definition, label: labels[definition.key] })));
 
 export function fieldReferences(registry = FIELD_DEFINITIONS) {

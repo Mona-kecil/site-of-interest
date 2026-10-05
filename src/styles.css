@@ -1105,6 +1105,186 @@ code {
   letter-spacing: -0.03em;
 }
 
+.over-time-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 7fr) minmax(0, 5fr);
+  gap: 48px;
+  margin-top: 24px;
+}
+
+.over-time-grid h3 {
+  margin: 0;
+  font-size: 20px;
+  font-weight: 800;
+  letter-spacing: -0.015em;
+}
+
+.over-time-grid h3 + p {
+  max-width: 56ch;
+  margin: 6px 0 0;
+  color: var(--ink-2);
+  font-size: 15px;
+  text-wrap: pretty;
+}
+
+.over-time-next {
+  border-left: 1px solid var(--rule);
+  padding-left: 32px;
+}
+
+.record-wrap {
+  position: relative;
+  margin-top: 18px;
+  overflow-x: auto;
+}
+
+.record {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  font-size: 13.5px;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.record th,
+.record td {
+  padding: 4px 10px 8px;
+  text-align: right;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
+.record th:first-child {
+  width: 190px;
+  padding-left: 0;
+  color: var(--ink-2);
+  font-weight: 500;
+  text-align: left;
+}
+
+.record thead th {
+  border-bottom: 1.5px solid var(--ink);
+  padding-bottom: 10px;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.record tbody + tbody {
+  border-top: 1px solid var(--rule);
+}
+
+.record tbody tr:last-child > * {
+  padding-bottom: 14px;
+}
+
+.record-pillar > * {
+  padding-top: 14px;
+}
+
+.record .record-pillar th {
+  color: var(--ink);
+  font-size: 15px;
+  font-weight: 800;
+}
+
+.record-pillar small {
+  display: block;
+  margin-top: 2px;
+  color: var(--ink-2);
+  font-size: 12.5px;
+  font-weight: 500;
+}
+
+.record .outcome-mark {
+  width: 20px;
+  height: 20px;
+  vertical-align: middle;
+}
+
+.record td[data-result="fail"] {
+  color: var(--red);
+  font-weight: 650;
+}
+
+.record td[data-reported="false"] {
+  color: var(--ink-3);
+  font-size: 12.5px;
+  line-height: 1.2;
+  white-space: normal;
+}
+
+.record .tiny {
+  display: none;
+}
+
+.record-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  margin: 14px 0 0;
+  padding: 0;
+  color: var(--ink-2);
+  font-size: 13px;
+  list-style: none;
+}
+
+.record-legend li {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  white-space: nowrap;
+}
+
+.record-legend .outcome-mark {
+  width: 14px;
+  height: 14px;
+}
+
+.estimates {
+  margin: 18px 0 0;
+  border-top: 1.5px solid var(--ink);
+}
+
+.estimates > div {
+  border-bottom: 1px solid var(--rule);
+  padding: 12px 0;
+}
+
+.estimates dt {
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.estimates dd {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 14px;
+}
+
+.estimates dt + dd {
+  margin-top: 2px;
+  color: var(--ink);
+  font-size: 22px;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+  font-variant-numeric: tabular-nums lining-nums;
+}
+
+.estimates dt + dd[data-reported="false"] {
+  color: var(--ink-3);
+  font-size: 17px;
+  font-weight: 650;
+}
+
+.estimates-none {
+  margin: 18px 0 0;
+  border-top: 1.5px solid var(--ink);
+  padding-top: 12px;
+  color: var(--ink-3);
+}
+
 .profile-checks {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -1766,6 +1946,22 @@ code {
   .ideas-grid {
     grid-template-columns: minmax(0, 1fr);
   }
+
+  .over-time-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 40px;
+  }
+
+  .over-time-next {
+    border-left: 0;
+    padding-left: 0;
+  }
+
+  .estimates {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 32px;
+  }
 }
 
 @media (max-width: 640px) {
@@ -1886,5 +2082,39 @@ code {
 
   .universe-row-name {
     display: block;
+  }
+
+  .estimates {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .record {
+    table-layout: auto;
+    font-size: 12.5px;
+  }
+
+  .record th,
+  .record td {
+    padding-right: 3px;
+    padding-left: 3px;
+  }
+
+  .record th:first-child {
+    width: 84px;
+    line-height: 1.25;
+    white-space: normal;
+  }
+
+  .record-fy,
+  .record .wide {
+    display: none;
+  }
+
+  .record .tiny {
+    display: inline;
+  }
+
+  .record td[data-reported="false"] {
+    font-size: 11.5px;
   }
 }

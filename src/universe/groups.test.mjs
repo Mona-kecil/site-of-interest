@@ -4,10 +4,10 @@ import { FIELD_DEFINITIONS, fieldReferences, QUARTERS, YEARS } from "./fields.mj
 import { buildQueryGroups, MAX_GROUP_REFERENCES, MAX_WHERE_LENGTH, worstCaseCredits } from "./groups.mjs";
 
 test("registry covers the specified fields and periods", () => {
-  assert.equal(FIELD_DEFINITIONS.length, 58);
+  assert.equal(FIELD_DEFINITIONS.length, 63);
   assert.deepEqual(YEARS, [2019, 2020, 2021, 2022, 2023, 2024, 2025]);
   assert.deepEqual(QUARTERS, ["Q3-2024", "Q4-2024", "Q1-2025", "Q2-2025", "Q3-2025", "Q4-2025", "Q1-2026", "Q2-2026"]);
-  assert.equal(fieldReferences().length, 266);
+  assert.equal(fieldReferences().length, 271);
   assert.equal(FIELD_DEFINITIONS.find(({ providerField }) => providerField === "employee_num").key, "employees");
   assert.deepEqual(FIELD_DEFINITIONS.filter(({ providerField }) => /dividend/.test(providerField)).map(({ providerField, scope }) => `${scope}:${providerField}`), ["company:dividend_ttm", "year:total_dividend"]);
   for (const field of FIELD_DEFINITIONS) {
@@ -26,7 +26,7 @@ test("every expanded registry field appears in one group and one tautology", () 
   }
   const grouped = groups.flatMap(({ fields }) => fields.map(({ field }) => field));
   assert.deepEqual(grouped, fieldReferences().map(({ field }) => field));
-  assert.equal(new Set(grouped).size, 266);
+  assert.equal(new Set(grouped).size, 271);
   for (const group of groups) {
     assert.ok(group.fields.length <= MAX_GROUP_REFERENCES);
     assert.ok(group.where.length <= MAX_WHERE_LENGTH);

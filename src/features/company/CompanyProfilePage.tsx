@@ -25,6 +25,7 @@ import {
   type ProfileSection,
   type SeriesField,
 } from "./profile-model";
+import { TrackRecord } from "./TrackRecord";
 
 const route = getRouteApi("/company/$ticker");
 const holderKindLabels = { entity: "Entity", public: "Public", treasury: "Treasury" };
@@ -412,6 +413,7 @@ export function CompanyProfilePage() {
         record.
       </p>
       {note && <p className="profile-applicability">{note}</p>}
+      <TrackRecord profile={profile} />
       <nav className="profile-nav" aria-label="Company sections">
         {sections.map((section) => (
           <a key={section.id} href={`#profile-${section.id}`}>

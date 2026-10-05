@@ -2,7 +2,6 @@ import { FIELD_DEFINITIONS } from "./fields.mjs";
 
 export const financialSubSectors = new Set(["Banks", "Insurance", "Financing Service", "Investment Service"]);
 const fields = new Map(FIELD_DEFINITIONS.map((field) => [field.key, field]));
-const recentYears = [2023, 2024, 2025];
 const historyYears = [2020, 2021, 2022, 2023, 2024, 2025];
 const annual = (key, year = 2025) => [key, year];
 const current = (key) => [key, null];
@@ -52,12 +51,15 @@ function divide(numerator, denominator, name, positive = false) {
 }
 
 const sum = (values) => values.reduce((total, value) => total + value, 0);
-const reported = (key) => calculate("FY2025", [annual(key)], ([value]) => ({ value }));
-const threeYearRatio = (numerator, denominator, name, numeratorValue = (value) => value) => calculate(
-  "FY2023–FY2025",
-  [...recentYears.map((year) => annual(numerator, year)), ...recentYears.map((year) => annual(denominator, year))],
-  (values) => divide(sum(values.slice(0, 3).map(numeratorValue)), sum(values.slice(3)), name, true),
-);
+const reported = (key) => (data, year = 2025) => calculate(`FY${year}`, [annual(key, year)], ([value]) => ({ value }))(data);
+const threeYearRatio = (numerator, denominator, name, numeratorValue = (value) => value) => (data, year = 2025) => {
+  const years = [year - 2, year - 1, year];
+  return calculate(
+    `FY${year - 2}–FY${year}`,
+    [...years.map((year) => annual(numerator, year)), ...years.map((year) => annual(denominator, year))],
+    (values) => divide(sum(values.slice(0, 3).map(numeratorValue)), sum(values.slice(3)), name, true),
+  )(data);
+};
 
 function historyRatio(key, currentKey) {
   return (data) => {
@@ -88,23 +90,25 @@ export const CHECKS = Object.freeze([
   {
     id: "roic", label: "ROIC", question: "What does the business earn on the capital it uses?", unit: "percent", appliesTo: "nonFinancial",
     formula: "ebit[2025] × (1 − t) / (total_debt[2025] + total_equity[2025] − cash_and_equivalents[2025]); t = tax[2025] / earnings_before_tax[2025] when EBT > 0 and 0 ≤ t ≤ 1, otherwise t = 0.22 (Indonesian statutory fallback); requires positive invested capital",
-    compute(data) {
-      const inputs = ["ebit", "totalDebt", "totalEquity", "cashAndEquivalents", "tax", "earningsBeforeTax"].map((key) => input(data, annual(key)));
+    compute(data, year = 2025) {
+      const inputs = ["ebit", "totalDebt", "totalEquity", "cashAndEquivalents", "tax", "earningsBeforeTax"].map((key) => input(data, annual(key, year)));
       const [ebit, debt, equity, cash, tax, ebt] = inputs.map(({ value }) => value);
       const effective = tax !== null && ebt !== null && ebt > 0 ? tax / ebt : null;
       const usesEffective = effective !== null && effective >= 0 && effective <= 1;
       const rate = usesEffective ? effective : 0.22;
       inputs[4].label = `Tax rate used: ${rate} (${usesEffective ? "tax / EBT" : "Indonesian statutory fallback"})`;
       const missing = inputs.slice(0, 4).filter(({ value }) => value === null);
-      if (missing.length) return result("FY2025", null, `Not reported: ${missing.map(({ field }) => field).join(", ")}`, inputs);
+      if (missing.length) return result(`FY${year}`, null, `Not reported: ${missing.map(({ field }) => field).join(", ")}`, inputs);
       const computed = divide(ebit * (1 - rate), debt + equity - cash, "Invested capital", true);
-      return result("FY2025", computed.value, computed.gap, inputs);
+      return result(`FY${year}`, computed.value, computed.gap, inputs);
     },
   },
   {
     id: "roe", label: "ROE", question: "What does it earn on shareholders' equity?", unit: "percent", appliesTo: "all",
     formula: "earnings[2025] / ((total_equity[2024] + total_equity[2025]) / 2)",
-    compute: calculate("FY2025 / average FY2024–FY2025", [annual("earnings"), annual("totalEquity", 2024), annual("totalEquity")], ([earnings, prior, equity]) => divide(earnings, (prior + equity) / 2, "Average equity")),
+    compute(data, year = 2025) {
+      return calculate(`FY${year} / average FY${year - 1}–FY${year}`, [annual("earnings", year), annual("totalEquity", year - 1), annual("totalEquity", year)], ([earnings, prior, equity]) => divide(earnings, (prior + equity) / 2, "Average equity"))(data);
+    },
   },
   {
     id: "interest_coverage", label: "Interest coverage", question: "How many times does operating profit cover interest?", unit: "multiple", appliesTo: "nonFinancial",
@@ -113,7 +117,9 @@ export const CHECKS = Object.freeze([
   {
     id: "net_debt_to_ebitda", label: "Net debt / EBITDA", question: "How many years of EBITDA would repay net debt?", unit: "multiple", appliesTo: "nonFinancial",
     formula: "(total_debt[2025] − cash_and_equivalents[2025]) / ebitda[2025]; requires positive EBITDA",
-    compute: calculate("FY2025", [annual("totalDebt"), annual("cashAndEquivalents"), annual("ebitda")], ([debt, cash, ebitda]) => divide(debt - cash, ebitda, "EBITDA", true)),
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("totalDebt", year), annual("cashAndEquivalents", year), annual("ebitda", year)], ([debt, cash, ebitda]) => divide(debt - cash, ebitda, "EBITDA", true))(data);
+    },
   },
   {
     id: "current_ratio", label: "Current ratio", question: "Do short-term assets cover short-term obligations?", unit: "multiple", appliesTo: "nonFinancial",
@@ -177,7 +183,9 @@ export const CHECKS = Object.freeze([
   {
     id: "npl_ratio", label: "NPL ratio", question: "What share of loans is non-performing?", unit: "percent", appliesTo: "bank",
     formula: "non_performing_loan[2025] / gross_loan[2025]",
-    compute: calculate("FY2025", [annual("nonPerformingLoan"), annual("grossLoan")], ([npl, loan]) => divide(npl, loan, "Gross loan")),
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("nonPerformingLoan", year), annual("grossLoan", year)], ([npl, loan]) => divide(npl, loan, "Gross loan"))(data);
+    },
   },
   {
     id: "loan_to_deposit", label: "Loan / deposit", question: "How fully are deposits lent out?", unit: "percent", appliesTo: "bank",

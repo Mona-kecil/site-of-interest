@@ -1,6 +1,6 @@
 # IDX universe data
 
-The stored snapshot covers 962 IDX companies and was assembled on 2 October 2026. Sectors is the only company-data provider. React reads imported records through Convex and derives presentation at render time; browsing a company spends no Sectors credits.
+The stored snapshot covers 962 IDX companies and was assembled on 5 October 2026 from source pages retrieved between 2 and 5 October 2026. Sectors is the only company-data provider. React reads imported records through Convex and derives presentation at render time; browsing a company spends no Sectors credits.
 
 ## Pipeline and credits
 
@@ -16,9 +16,9 @@ sync:universe → build:checks → build:owners → validate:universe → convex
 | `npm run validate:universe` | Checks stored base rows and provenance | Zero |
 | `npm run convex:import-universe` | Validates base rows and check freshness; writes JSONL and replaces eight dev Convex tables | Zero; writes to Convex |
 
-Sync requires an explicit credit cap. `--dry-run` prints the plan without requests. `--refresh` bypasses `.cache/sectors/`; `--max-credits=0` uses cached pages only. The manifest has ten field batches and five pages of up to 200 rows per batch, so a cold sync uses 50 requests. The checked-in manifest records zero credits for its cached run. A cache hit keeps its original retrieval date.
+Sync requires an explicit credit cap. `--dry-run` prints the plan without requests. `--refresh` bypasses `.cache/sectors/`; `--max-credits=0` uses cached pages only. The manifest has ten field batches and five pages of up to 200 rows per batch, so a cold sync uses 50 requests. The checked-in manifest records five credits. Adding the forecast fields changed the tenth batch, so its five pages were fetched again and the other 45 came from the cache. A cache hit keeps its original retrieval date.
 
-Field groups have at most 28 references and a 2,000-character where clause. A 1,983-character clause worked in probes; a 6,521-character clause returned an HTML error page. Missing query keys, failed pages, duplicate symbols or count changes abort replacement instead of becoming null fields.
+The ten batches carry 271 field references. Field groups have at most 28 references and a 2,000-character where clause. A 1,983-character clause worked in probes; a 6,521-character clause returned an HTML error page. Missing query keys, failed pages, duplicate symbols or count changes abort replacement instead of becoming null fields.
 
 Import requires a deployed schema and `.env.local` with a `local:`, `anonymous:` or `dev:` deployment. The guard rejects production, preview, deploy keys in the file or environment, and conflicting deployment overrides. `--prod` is an explicit exception: with the dev deployment still named in `.env.local`, it imports into that project's production deployment. It replaces only the eight universe tables. Each table is imported separately. `node scripts/import-universe.mjs --dry-run` validates and writes temporary JSONL without calling Convex; it can run without `.env.local`, with no deployment selected. Deployment, import, code generation and browser verification belong to the operator.
 
@@ -53,6 +53,10 @@ The [check registry](../src/universe/checks.mjs) supplies formulas and applicabi
 Capex is an outflow that Sectors reports with either sign. Reinvestment uses the sum of absolute capex divided by operating cash flow for FY2023–FY2025. ASII FY2025 reports CFO of IDR 44,694 bn, capex of positive IDR 28,176 bn and provider FCF of IDR 16,518 bn. ADES reports capex with a negative sign. In these records FCF equals CFO less absolute capex. Among stored FY2025 rows, capex has 727 positive, 70 negative, seven zero and 76 null values. The app preserves each raw sign in evidence.
 
 ROIC uses the reported effective tax rate when its inputs support a rate from zero to one, and uses 0.22 otherwise. The tax input annotation names the selected rate; reported tax and earnings before tax remain visible. P/E and P/B history use only positive reported annual values and require at least three such years. Dividend years count positive reported dividends and retain missing years in the evidence.
+
+The company page also rates the cash, returns and balance-sheet pillars for each year from FY2021 through FY2025, using today's pass and flag lines. Each statement check takes a fiscal year. Cash conversion sums that year and the two before it, ROE averages equity over that year and the one before, and the other statement checks read that year alone. FCF yield needs today's market cap, so the yearly cash pillar uses free cash flow above zero for that year instead. Price and owners are rated for today only. Past share prices are not in the snapshot, and the owner checks already span 2020 through 2025. For every company with a reported market cap, the FY2025 marks match the current pillar outcomes. At least one pillar can be rated for 845 companies in FY2021 and 867 in FY2025. The yearly marks do not change the verdict.
+
+Analyst estimates come from the Sectors forecast fields for FY2026: revenue and EPS estimates, their growth rates and forward P/E. Each estimate covers 101 companies and forward P/E covers 137. FY2027 and FY2028 are not stored. In a probe of the first 200 companies, 30 had FY2026 estimates, four had FY2027 estimates and none had FY2028 estimates. Growth rates are fractions against the provider's FY2025 base. Revenue growth matches stored FY2025 revenue for all 101 companies. EPS growth matches stored earnings per share within 3% for only 79 of 91 companies, so the page shows the provider's growth rate and computes none. When the estimate or the base it implies is not positive, the page shows no growth figure. A forward P/E at or below zero shows as Not meaningful. Estimates play no part in any check or verdict.
 
 The provider field `total_dividend` is dividend per share in IDR. AALI reports 91, 255, 444, 401, 249 and 184 for 2020 through 2025. History and evidence show IDR per share; the dividend-years check still counts positive years.
 
@@ -93,7 +97,7 @@ The label Custodian or nominee account identifies a possible holder of record fo
 
 - FY2025 current assets are below 0.5% of total assets for 15 reported companies: ARTI, BIPI, BULL, GTBO, GTSI, HEXA, HITS, HUMI, IKBI, ITMA, KARW, MKNT, PSAB, TAMU and TGRA. The app shows these values as reported; it does not rescale them. The set spans market-cap sizes.
 - Provider bank ratios contain outliers, including a loan/deposit value displayed near 92,037%. Rank spacing prevents that value from flattening other peer positions, but preserves its number.
-- Annual coverage stops at FY2025; the quarter slots stop at Q2-2026. Missing periods remain gaps. Current market multiples and annual history use different periods, stated with each check.
+- Annual coverage stops at FY2025; the quarter slots stop at Q2-2026. Analyst estimates cover FY2026 only. Missing periods remain gaps. Current market multiples and annual history use different periods, stated with each check.
 - Holder names and business-group labels describe provider records. They do not prove ultimate ownership or control. Source retrieval times span the cached pages and can precede manifest assembly.
 - Input evidence exposes provider codes and raw numbers so the researcher can inspect reporting differences. The app does not repair provider figures or fill missing reports.
 

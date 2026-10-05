@@ -48,7 +48,7 @@ test("renders an unknown symbol with a return link", async ({ page }) => {
 
 test("contains tables and expanded source endpoints at 390 pixels", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
-  for (const symbol of ["ASII", "BBCA"]) {
+  for (const symbol of ["ASII", "BBCA", "GOTO"]) {
     await page.goto(`/company/${symbol}`);
     await expect(page.locator(".profile-symbol")).toHaveText(symbol);
     await page.locator(".profile-evidence > summary").first().click();

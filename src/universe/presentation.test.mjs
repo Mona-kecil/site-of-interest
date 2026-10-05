@@ -82,7 +82,7 @@ test("source lines derive field batches, bounded row ranges and UTC dates from t
   const manifest = await read("manifest");
   assert.equal(sourceLine(sources[0], manifest), "Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026");
   const last = sources.find(({ id }) => id === "universe-10-800");
-  assert.equal(sourceLine(last, manifest), "Sectors · /v2/companies/ · batch 10 of 10 · rows 801–962 · 2 Oct 2026");
+  assert.equal(sourceLine(last, manifest), "Sectors · /v2/companies/ · batch 10 of 10 · rows 801–962 · 5 Oct 2026");
   assert.equal(sourceLine(sources.find(({ id }) => id === "universe-04-400"), manifest), "Sectors · /v2/companies/ · batch 4 of 10 · rows 401–600 · 2 Oct 2026");
   assert.doesNotMatch(sourceLine(last, manifest), /\?|where=|offset=/);
   assert.equal(sourceIdLine("universe-04-400", manifest), "Sectors · batch 4 of 10 · rows 401–600");
