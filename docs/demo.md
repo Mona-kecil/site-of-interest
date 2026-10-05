@@ -1,6 +1,6 @@
 # Three-minute demo
 
-Use the checked-in 2 October 2026 snapshot in an imported dev deployment. Open `/`. Show the verdict tally and the ratings chart, then type `BREN` in the lookup to rate it. Under Where to start, open Worth a look. On Ideas, show the rules disclosure, Worth a look and Red flags with their evidence. Open TLKM to show its Worth a look panel, or DCII to show its price flag and current P/E above 50. Return through Ideas, then click Screener for the measurement path below. Verdicts apply fixed rules; measurement values retain their units and gaps.
+Use the checked-in 5 October 2026 snapshot in an imported dev deployment. Open `/`. Show the verdict tally and the ratings chart, then type `BREN` in the lookup to rate it. Under Where to start, open Worth a look. On Ideas, show the rules disclosure, Worth a look and Red flags with their evidence. Open TLKM to show its Worth a look panel and its track record from FY2021, or DCII to show its price flag and current P/E above 50. Return through Ideas, then click Screener for the measurement path below. Verdicts apply fixed rules; measurement values retain their units and gaps.
 
 ## Click path
 

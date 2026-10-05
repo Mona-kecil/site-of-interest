@@ -1,6 +1,6 @@
 # Site of Interest
 
-Site of Interest screens all 962 IDX companies in the Sectors snapshot retrieved on 2 October 2026 on five fundamentals questions: does profit turn into cash, does the business earn well on its capital, can the balance sheet take a hit, does the price assume perfection, and are minority holders treated fairly. Ideas shows Worth a look and Red flags for companies worth at least IDR 1T, with the numbers behind each verdict. Company pages and the screener retain measurements, reporting gaps, peer percentiles and source evidence. Fixed rules inherit provider errors and provide no investment advice or price targets.
+Site of Interest screens all 962 IDX companies in the Sectors snapshot assembled on 5 October 2026 on five fundamentals questions: does profit turn into cash, does the business earn well on its capital, can the balance sheet take a hit, does the price assume perfection, and are minority holders treated fairly. Ideas shows Worth a look and Red flags for companies worth at least IDR 1T, with the numbers behind each verdict. Company pages and the screener retain measurements, reporting gaps, peer percentiles and source evidence. Company pages also rate the statement pillars for each year from FY2021 and show FY2026 analyst estimates where Sectors has them. Fixed rules inherit provider errors and provide no investment advice or price targets.
 
 Start at `/`, a landing that shows the verdict tally, rates eight companies or any looked-up ticker, draws each rule's pass and flag lines, and traces Telkom's cash mark back to its Sectors rows. Open Ideas at `/ideas` for the screen's rules and company reasons, then open a company or the Screener at `/universe`. Filter companies by verdict, choose a lens, and open a measurement to inspect its formula, period, inputs and source. Follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
 
@@ -24,7 +24,7 @@ The live app is https://site-of-interest.vercel.app. Its backend is the project'
 sync:universe → build:checks → build:owners → validate:universe → convex:import-universe
 ```
 
-Only an uncached Sectors sync spends provider credits. The current manifest has 10 field batches and five pages per batch, or 50 requests for a cold sync. The stored run records zero credits because it used cached responses. Offline builders and validation make no provider requests; importing writes to the selected dev Convex deployment.
+Only an uncached Sectors sync spends provider credits. The current manifest has 10 field batches and five pages per batch, or 50 requests for a cold sync. The stored run records five credits. The forecast fields changed one batch, and the other pages came from the cache. Offline builders and validation make no provider requests; importing writes to the selected dev Convex deployment.
 
 An operator sets `SECTORS_API_KEY` in `.env.local` and runs:
 
