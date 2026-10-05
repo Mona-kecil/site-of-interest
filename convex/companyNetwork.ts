@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { ownerKey } from "../src/universe/owners.mjs";
 import { query, type QueryCtx } from "./_generated/server";
 import { ownerHolding, ownerRecord } from "./schema";
+import { takeBounded } from "./readBounds";
 
 const limits = { holders: 100, others: 4, holdings: 8 };
 const holding = ownerHolding.pick("symbol", "percentage").extend({
@@ -61,10 +62,12 @@ export const get = query({
     if (!company) return null;
 
     const [rows, owner] = await Promise.all([
-      ctx.db
-        .query("holdings")
-        .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol))
-        .take(limits.holders),
+      takeBounded(
+        ctx.db
+          .query("holdings")
+          .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol)),
+        limits.holders,
+      ),
       ctx.db
         .query("owners")
         .withIndex("by_listed_symbol", (index) => index.eq("listedSymbol", company.symbol))
