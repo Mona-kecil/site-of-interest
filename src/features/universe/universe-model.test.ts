@@ -37,9 +37,13 @@ describe("Universe measurements", () => {
   it("filters each verdict using the same assessment as the ideas and company pages", () => {
     const checks = Object.entries({
       cash_conversion: 1,
+      fcf_yield: 0.05,
       roic: 0.15,
       net_debt_to_ebitda: 1,
+      interest_coverage: 4,
       pe_vs_history: 0.8,
+      share_dilution: 0.05,
+      dividend_years: 4,
       free_float: 0.3,
     }).map(([checkId, value]) => ({ checkId, value, percentile: null, peerCount: 1, gap: null }));
     const idea = row("IDEA", 1, { subSector: "Industrials", checks, peTtm: 12 });

@@ -16,7 +16,7 @@ The application provides no investment advice, trade recommendations, price targ
 | Price | pe_vs_history pass <= 1, fail > 1.5; fcf_yield pass >= 0.05; pe_ttm fail > 50 | pb_vs_history pass <= 1, fail > 1.5; pe_vs_history pass <= 1, fail > 1.5; pe_ttm fail > 50 | Same as bank |
 | Owners | share_dilution pass <= 0.05, fail > 0.25; dividend_years pass >= 4; free_float fail < 0.10 | Same as non-financial | Same as non-financial |
 
-A reported rule fails when its fail bound holds, passes when its pass bound holds or it has no pass bound, and is neutral otherwise. Null values add no evidence. A pillar with no rules is not applicable; one with no reported values is unknown. Any failed evidence fails the pillar, all passing evidence passes it, and the remaining cases are mixed.
+A reported rule fails when its fail bound holds, passes when its pass bound holds or it has no pass bound, and is neutral otherwise. Null values add no evidence. A pillar with no rules is not applicable; one with no reported values is unknown. Any failed evidence fails the pillar. It passes only when every rule with a pass bound has a value and all evidence passes, so a missing value or a rule with only a fail bound can't earn a pass. The remaining cases are mixed, and the pillar lists its rules without values as No data.
 
 Apply verdicts in this order, with the first match winning:
 

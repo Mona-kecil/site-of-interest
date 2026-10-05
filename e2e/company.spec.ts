@@ -9,11 +9,39 @@ test("opens a lowercase bank symbol with NPL and no ROIC", async ({ page }) => {
   const verdict = page.getByRole("region", { name: "Worth a look", exact: true });
   await expect(verdict).toBeVisible();
   await expect(verdict).toContainText("Cash: Not checked");
+  await expect(verdict).toContainText("Loans and capital look sound");
   await expect(verdict).toContainText("NPL ratio 1.65% · passes at 3% or less");
   await expect(verdict.getByRole("link", { name: "See balance sheet details" })).toHaveAttribute(
     "href",
     "#profile-banks",
   );
+});
+
+test("explains the pillars that keep companies with gaps Mixed", async ({ page }) => {
+  for (const [symbol, description] of [
+    [
+      "AADI",
+      "No flags, but Cash, Price and Owners fall short of a pass. Worth a look needs cash and the balance sheet to pass.",
+    ],
+    ["POWR", "No flags, but Price and Owners fall short of a pass. Worth a look allows only one."],
+    [
+      "TOTL",
+      "No flags, but Balance sheet and Price fall short of a pass. Worth a look needs cash and the balance sheet to pass.",
+    ],
+    ["YUPI", "No flags, but Price and Owners fall short of a pass. Worth a look allows only one."],
+  ]) {
+    await page.goto(`/company/${symbol}`);
+    const verdict = page.getByRole("region", { name: "Mixed", exact: true });
+    await expect(verdict.locator(".verdict-head p")).toHaveText(description);
+    await expect(verdict).toContainText("Nothing flagged, but some figures are missing");
+    if (symbol === "AADI") {
+      const cash = verdict.locator(".idea-reason").filter({ hasText: "Cash: Partly passes" });
+      await expect(cash.locator("li")).toHaveText([
+        "FCF yield 10.31% · passes above 0%",
+        "Cash conversion: No data",
+      ]);
+    }
+  }
 });
 
 test("explains a company price flag before the section navigation", async ({ page }) => {

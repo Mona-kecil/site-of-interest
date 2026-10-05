@@ -54,8 +54,8 @@ function RootLayout() {
         <footer className="site-footer">
           <div className="wrap">
             <p>
-              <b>Not investment advice.</b> Verdicts apply fixed rules to Sectors data retrieved on{" "}
-              {footerDate} and inherit any errors in it.
+              <b>Not investment advice.</b> Verdicts apply fixed rules to a Sectors snapshot
+              assembled on {footerDate} and inherit any errors in it.
             </p>
             <nav aria-label="Footer">
               <Sections />

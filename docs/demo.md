@@ -1,35 +1,42 @@
 # Three-minute demo
 
-Use the checked-in 5 October 2026 snapshot in an imported dev deployment. Open `/`. Show the tally, "87 of 962 IDX companies are worth a look. 612 raise a red flag.", and the ratings chart, then type `BREN` in the lookup to see its Red flags rating. Under Where to start, open Worth a look. On Ideas, show the rules disclosure, Worth a look and Red flags with their evidence. Open TLKM to show its Worth a look panel and its track record from FY2021, or DCII to show its price flag and current P/E above 50. Return through Ideas, then click Screener for the measurement path below. Verdicts apply fixed rules; measurement values keep their units and gaps.
+This is the path the judging video follows. Use https://site-of-interest.vercel.app, or the checked-in 5 October 2026 snapshot in an imported dev deployment, in a browser profile that has not opened the site, so the tour invite appears.
 
 ## Click path
 
 | Time | Exact clicks | What to show |
 | --- | --- | --- |
-| 0:00–0:25 | In Search companies, enter `AADI`. Keep Cash selected. Click the AADI Cash conversion cell. | The cell says No data, with "No data for operating cash flow 2023." under it. In the panel, How it's calculated lists Operating cash flow, 2023 as No data beside the five figures the provider has. Close the panel. |
-| 0:25–0:50 | Replace the search with `ASII`. Click ASII Cash conversion. | The value is 1.23× for 2023–2025. The panel explains it in one sentence: "Operating cash flow divided by earnings, each added up over three years." The first figure is Operating cash flow, 2023, IDR 33,746.00 bn. The last line reads "Source: Sectors, retrieved 2 Oct 2026." Close the panel. |
-| 0:50–1:25 | Replace the search with `BBCA`. Click the Banks lens, then BBCA NPL ratio. Click BBCA company page. | The NPL ratio is 1.65% for 2025. On the company page, click Banks in Company sections; Banks becomes the highlighted link. The NPL ratio card says "Ranks 14th of 46 banks with data." The strip reads Worse on the left and Better on the right and marks BBCA with a diamond. Open How it's calculated for Non-performing loans, 2025 and Gross loans, 2025. In the yearly figures, non-performing loans read No data for 2019 to 2021, and the footnote says the data provider doesn't have the figure. |
-| 1:25–2:05 | Click Owners in Company sections. Show the network, then click PT Dwimuria Investama Andalan in the holders table. | The network puts BBCA in the center pill with Dwimuria Investama Andalan above it at 54.94%, and TOWR and SSIA as the other listed companies Dwimuria owns. The owner page draws the same three companies around Dwimuria, BBCA at 54.94%, TOWR at 19.95% and SSIA at 10.24%, each with its other shareholders of at least 1%. |
-| 2:05–2:35 | Click Groups in Product sections. Click Hartono. | The intro says groups are the data provider's labels and don't prove control. The network shows the nine members, each with up to two of its largest shareholders, and dashed blue lines where a shareholder owns another member. BBCA's ROE cell reads 20.79%. |
-| 2:35–3:00 | Click Owners in Product sections. Enter `Bank Of Singapore` in Search owners. Click Bank Of Singapore Limited. In the network, click +1 more. | The page labels the holder Custodian or nominee account and says it may hold shares for clients. The network draws eight of its nine companies; +1 more jumps to the nine-row Companies it holds table. |
+| 0:00–0:20 | Open `/`. | The headline reads "78 of 962 IDX companies are worth a look. 612 raise a red flag." |
+| 0:20–0:30 | In the tour invite, click Start the tour. Press Escape after stop 1. | Stop 1 rings the ratings chart. Escape ends the tour and returns focus to Take the tour. |
+| 0:30–0:55 | In the ratings chart, hover TLKM's five marks, then DCII's Price mark. | TLKM passes all five pillars. DCII's Price callout shows P/E against its history at 1.89× and P/E, trailing at 413.6, both over their flag lines. |
+| 0:55–1:20 | Click Ideas. Open one Worth a look card's lines, then scroll to Red flags. | The heading reads Worth a look · 69, and the subhead reads "Companies worth at least IDR 1T: 69 of the 78 across the market." Each card line gives the number and its pass or flag line. Red flags · 313 lists the line each company crossed. |
+| 1:20–1:55 | Open TLKM. Click See cash details, then scroll to the track record. | The verdict is Worth a look. Cash conversion is 2.82× for FY2023–FY2025: operating cash flow divided by earnings, each added up over three years, with six figures and "Source: Sectors, retrieved 2 Oct 2026." The track record rates each pillar for FY2021 to FY2025. |
+| 1:55–2:15 | Click Screener, enter `AADI` in Search companies and open AADI. | The verdict is Mixed: "No flags, but Cash, Price and Owners fall short of a pass. Worth a look needs cash and the balance sheet to pass." The Cash pillar reads "Nothing flagged, but some figures are missing", with FCF yield passing and Cash conversion, 3 yrs: No data, because operating cash flow for 2023 is not reported. |
+| 2:15–2:38 | Open BBCA, click Owners in Company sections, then click PT Dwimuria Investama Andalan in the holders table. | The network puts Dwimuria Investama Andalan above BBCA at 54.94%. The owner page shows the same holder on BBCA at 54.94%, TOWR at 19.95% and SSIA at 10.24%, and reads "On the shareholder list of 3 companies". |
+| 2:38–3:00 | Show the README's data pipeline, then return to `/`. | One Sectors sync of 10 field batches, five pages each, feeds offline checks, owners and validation. Browsing makes no provider requests. |
 
-Ideas cards, screener symbol and name links, the panel's company page link and network nodes use client-side navigation. The +1 more node stays on the owner page.
+Ideas cards, screener links and network nodes use client-side navigation.
+
+## More to show with time to spare
+
+- In the Screener, choose the Banks lens and open BBCA's NPL ratio: 1.65% for 2025, ranked 14th of 46 banks with data.
+- Under Groups, open Hartono. The network shows the nine members and dashed blue lines where a shareholder owns another member. Groups are the provider's labels and do not prove control.
+- Under Owners, search `Bank Of Singapore`. The page labels it a custodian or nominee account. Its network draws eight of nine companies, and +1 more jumps to the full table.
+- At 390 px, owner and company networks become a Held by and Holds list.
 
 ## Number and gap locators
 
-All raw numbers below come from [checks.json](../data/universe/checks.json), [holdings.json](../data/universe/holdings.json), [years.json](../data/universe/years.json) or [owners.json](../data/universe/owners.json). Reporting periods belong to the cited row, not the source retrieval date.
+All raw numbers below come from [checks.json](../data/universe/checks.json), [holdings.json](../data/universe/holdings.json), [years.json](../data/universe/years.json), [companies.json](../data/universe/companies.json) or [owners.json](../data/universe/owners.json). Reporting periods belong to the cited row, not the source retrieval date.
 
 | Symbol / record | Check or field | Period | Stored value / display |
 | --- | --- | --- | --- |
-| AADI | `cash_conversion`, input `operating_cash_flow[2023]` | FY2023–FY2025; input FY2023 | Check and input null; gap `Not reported: operating_cash_flow[2023]` → No data, "No data for operating cash flow 2023." |
-| ASII | `cash_conversion` | FY2023–FY2025 | `1.2266066620967822` → 1.23× |
-| ASII | `cash_conversion`, input `operating_cash_flow[2023]` | FY2023 | `33746000000000` IDR → IDR 33,746.00 bn |
-| BBCA | `npl_ratio` | FY2025 | `0.016539819950137886` → 1.65%; 46 banks with data, lower is better → Ranks 14th |
-| BBCA | `npl_ratio`, input `non_performing_loan[2025]` | FY2025 | `16047483000000` IDR → IDR 16,047.48 bn |
-| BBCA | `npl_ratio`, input `gross_loan[2025]` | FY2025 | `970233234000000` IDR → IDR 970,233.23 bn |
-| BBCA | `nonPerformingLoan` in years.json | FY2019–FY2021 | null → No data |
+| TLKM | `cash_conversion` | FY2023–FY2025 | `2.8175484300925433` → 2.82× |
+| TLKM | `cash_conversion`, inputs | FY2023–FY2025 | Operating cash flow IDR 60,581.00, 61,600.00 and 63,842.00 bn; earnings IDR 24,560.00, 23,649.00 and 17,814.00 bn; source `universe-03-800`, retrieved 2 Oct 2026 |
+| DCII | `pe_vs_history` | Current against median since 2020 | `1.8887784467626925` → 1.89×, flagged above 1.5× |
+| DCII | `current.peTtm` | Trailing twelve months | `413.610603642159` → 413.6, flagged above 50 |
+| AADI | `cash_conversion`, input `operating_cash_flow[2023]` | FY2023–FY2025; input FY2023 | Check and input null; gap `Not reported: operating_cash_flow[2023]` → No data |
 | BBCA / PT Dwimuria Investama Andalan | `largest_holder`; holding `percentage` | current snapshot | `0.54942` → 54.94% |
-| BBCA / Hartono member | `roe` | FY2025 / average FY2024–FY2025 | `0.2078712625879883` → 20.79% |
+| BBCA | `npl_ratio` | FY2025 | `0.016539819950137886` → 1.65%; 46 banks with data, lower is better → Ranks 14th |
 | Bank Of Singapore Limited | owner key `bank of singapore`, distinct holding symbols | current snapshot | `companyCount: 9`; network shows eight companies and +1 more |
 
 [sources.json](../data/universe/sources.json) keeps the endpoint, field batch and row range behind each input; the screen shows only the provider and retrieval date. [groups.json](../data/universe/groups.json) supplies Hartono membership. These labels report provenance and membership; they do not establish control.

@@ -112,9 +112,9 @@ export const PILLARS: {
     title: "Owners",
     question: "Are minority holders treated fairly?",
     headlines: {
-      pass: "Fair to minority holders",
-      mixed: "Mixed record with minority holders",
-      fail: "Minority holders at risk",
+      pass: "Steady dividends and little dilution",
+      mixed: "Some dilution or patchy dividends",
+      fail: "Heavy dilution or a thin free float",
     },
     rules: { nonFinancial: owners, bank: owners, otherFinancial: owners },
   },
@@ -156,7 +156,7 @@ export function judge(rule: Rule, value: number): "pass" | "neutral" | "fail" {
 
 export function ratePillar(
   rules: readonly Rule[],
-  evidence: readonly { result: "pass" | "neutral" | "fail" }[],
+  evidence: readonly { key: string; result: "pass" | "neutral" | "fail" }[],
 ): Outcome {
   return rules.length === 0
     ? "na"
@@ -164,7 +164,9 @@ export function ratePillar(
       ? "unknown"
       : evidence.some(({ result }) => result === "fail")
         ? "fail"
-        : evidence.every(({ result }) => result === "pass")
+        : rules.some(({ pass }) => pass) &&
+            rules.every(({ key, pass }) => !pass || evidence.some((item) => item.key === key)) &&
+            evidence.every(({ result }) => result === "pass")
           ? "pass"
           : "mixed";
 }
@@ -189,8 +191,23 @@ export function assess({
       const result = judge(rule, value);
       return [{ ...rule, value, result }];
     });
+    const missing = rules.filter((rule) => values.get(rule.key) == null);
     const outcome = ratePillar(rules, evidence);
-    return { id: pillar.id, outcome, evidence };
+    const headline =
+      outcome === "na" || outcome === "unknown"
+        ? null
+        : outcome === "mixed" && evidence.every(({ result }) => result === "pass")
+          ? "Nothing flagged, but some figures are missing"
+          : pillar.id === "balance" && companyClass === "bank"
+            ? {
+                pass: "Loans and capital look sound",
+                mixed: "Some strain on loans or capital",
+                fail: "Loans or capital under strain",
+              }[outcome]
+            : pillar.id === "price" && companyClass !== "nonFinancial" && outcome === "pass"
+              ? "Cheap against its own history"
+              : pillar.headlines[outcome];
+    return { id: pillar.id, outcome, evidence, missing, headline };
   });
   const verdict: Verdict = pillars.some(({ outcome }) => outcome === "fail")
     ? "flags"

@@ -10,7 +10,7 @@ import { checkCopy, peerNoun, rankLine } from "../universe/check-copy";
 import { CustodianLabel } from "../owners/CustodianLabel";
 import { companyNetwork } from "../owners/network";
 import { NetworkGraph } from "../owners/NetworkGraph";
-import { assess, PILLARS, verdictLabels } from "../ideas/ideas-model";
+import { assess, companyClassOf, CORE, PILLARS, verdictLabels } from "../ideas/ideas-model";
 import { verdictDescriptions } from "../ideas/evidence";
 import { PillarOutcome } from "../ideas/IdeasPage";
 import {
@@ -393,6 +393,19 @@ export function CompanyProfilePage() {
     checks: company.checks,
     peTtm: company.current.peTtm ?? null,
   });
+  let verdictDescription = verdictDescriptions[assessment.verdict];
+  if (assessment.verdict === "mixed") {
+    const short = assessment.pillars.filter(
+      ({ outcome }) => outcome !== "na" && outcome !== "pass",
+    );
+    const titles = new Intl.ListFormat("en-GB", { type: "conjunction" }).format(
+      short.map(({ id }) => PILLARS.find((pillar) => pillar.id === id)!.title),
+    );
+    const companyClass = companyClassOf(company.subSector);
+    verdictDescription = short.some(({ id }) => CORE[companyClass].includes(id))
+      ? `No flags, but ${titles} ${short.length > 1 ? "fall" : "falls"} short of a pass. Worth a look needs ${companyClass === "nonFinancial" ? "cash" : "returns"} and the balance sheet to pass.`
+      : `No flags, but ${titles} fall short of a pass. Worth a look allows only one.`;
+  }
   return (
     <main className="page company-profile wrap">
       <header className="profile-header">
@@ -444,7 +457,7 @@ export function CompanyProfilePage() {
           <h2 id="profile-verdict-title" className={`stamp ${assessment.verdict}`}>
             {verdictLabels[assessment.verdict]}
           </h2>
-          <p>{verdictDescriptions[assessment.verdict]}</p>
+          <p>{verdictDescription}</p>
         </div>
         <div className="profile-pillars">
           {assessment.pillars.map((result, index) => {

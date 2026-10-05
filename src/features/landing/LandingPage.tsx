@@ -387,7 +387,7 @@ function Ratings({
           <p>
             Any flag makes it a red flag. Worth a look needs cash and the balance sheet to pass
             (returns and the balance sheet for banks), with at most one other pillar short of a
-            pass. Missing numbers are skipped, never counted as zero.
+            pass. A missing number can’t earn a pass and is never counted as zero.
           </p>
         </div>
         <div>
@@ -432,12 +432,18 @@ function RatingRow({
       <td className="cap">{formatMarketCap(company.marketCap)}</td>
       {pillars.map((result, index) => {
         const evidence = deciding(result.evidence);
+        const missing =
+          result.outcome === "mixed" && result.evidence.every(({ result }) => result === "pass")
+            ? result.missing[0]
+            : undefined;
         const measure = evidence && MEASURES[evidence.key];
-        const said = evidence
-          ? `${measure.label} ${formatReading(evidence.key, evidence.value)}`
-          : result.outcome === "na"
-            ? "not checked for this kind of company"
-            : "no data";
+        const said = missing
+          ? `${MEASURES[missing.key].label} no data`
+          : evidence
+            ? `${measure.label} ${formatReading(evidence.key, evidence.value)}`
+            : result.outcome === "na"
+              ? "not checked for this kind of company"
+              : "no data";
         return (
           <td className="mk" key={result.id}>
             <button
@@ -453,7 +459,13 @@ function RatingRow({
             >
               <OutcomeMark outcome={result.outcome} />
               <span className="reading">
-                {evidence ? (
+                {missing ? (
+                  <>
+                    <small className="wide">{MEASURES[missing.key].short}</small>
+                    <small className="tiny">{MEASURES[missing.key].tiny}</small>
+                    <b className="q">No data</b>
+                  </>
+                ) : evidence ? (
                   <>
                     <small className="wide">{measure.short}</small>
                     <small className="tiny">{measure.tiny}</small>
@@ -618,9 +630,7 @@ function CalloutBody({ company, pillar }: { company: Company; pillar: number }) 
       <p className="callout-q">{meta.question}</p>
       <div className="callout-verdict">
         <OutcomeMark outcome={outcome} />
-        {outcome === "pass" || outcome === "mixed" || outcome === "fail"
-          ? meta.headlines[outcome]
-          : outcomeLabels[outcome]}
+        {result.headline ?? outcomeLabels[outcome]}
       </div>
       {result.evidence.length > 0 && (
         <ul>
@@ -632,6 +642,12 @@ function CalloutBody({ company, pillar }: { company: Company; pillar: number }) 
                 {formatReading(evidence.key, evidence.value)}
               </span>
               <span className="lines">{ruleLines(evidence)}</span>
+            </li>
+          ))}
+          {result.missing.map((rule) => (
+            <li key={rule.key}>
+              <OutcomeMark outcome="unknown" />
+              <span className="lbl">{MEASURES[rule.key].label}: No data</span>
             </li>
           ))}
         </ul>
@@ -904,9 +920,7 @@ function Trace({ company, check }: { company: Company; check: CheckEvidence & { 
           <OutcomeMark outcome={outcome} />
           <span>
             <b>{pillar.title}.</b> {pillar.question}{" "}
-            {outcome === "pass" || outcome === "mixed" || outcome === "fail"
-              ? `${pillar.headlines[outcome]}.`
-              : outcomeLabels[outcome]}
+            {result.headline ? `${result.headline}.` : outcomeLabels[outcome]}
           </span>
         </div>
       </li>

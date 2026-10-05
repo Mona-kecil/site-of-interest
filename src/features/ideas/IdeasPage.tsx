@@ -23,12 +23,14 @@ const classLabels: Record<CompanyClass, string> = {
   otherFinancial: "Insurance, financing and investment companies",
 };
 const definitionById = new Map(definitions.map((definition) => [definition.id, definition]));
+const labelOf = (key: string) =>
+  key === "pe_ttm" ? "Current P/E" : definitionById.get(key)!.label;
 type PillarResult = ReturnType<typeof assess>["pillars"][number];
 type Evidence = PillarResult["evidence"][number];
 
 function RuleText({ rule }: { rule: Rule | Evidence }) {
   const definition = definitionById.get(rule.key);
-  const label = rule.key === "pe_ttm" ? "Current P/E" : definition!.label;
+  const label = labelOf(rule.key);
   const unit = rule.key === "pe_ttm" ? "multiple" : definition!.unit;
   const pass = rule.pass && `passes ${phrase(rule.pass, rule.key)}`;
   const flag = rule.fail && `flagged ${phrase(rule.fail, rule.key)}`;
@@ -60,7 +62,7 @@ export function PillarOutcome({
       ) : result.outcome === "unknown" ? (
         <p>Our data provider doesn’t have the figures.</p>
       ) : (
-        <p>{pillar.headlines[result.outcome]}</p>
+        <p>{result.headline}</p>
       )}
       {result.evidence.length > 0 && (
         <ul>
@@ -68,6 +70,9 @@ export function PillarOutcome({
             <li key={evidence.key}>
               <RuleText rule={evidence} />
             </li>
+          ))}
+          {result.missing.map((rule) => (
+            <li key={rule.key}>{labelOf(rule.key)}: No data</li>
           ))}
         </ul>
       )}
@@ -112,7 +117,7 @@ function CompanyCard({
         ))}
       </ol>
       <ul className="idea-reasons">
-        {reasons.map(({ id, outcome, evidence }) => {
+        {reasons.map(({ id, outcome, evidence, missing, headline }) => {
           const pillar = PILLARS.find((item) => item.id === id)!;
           return (
             <li key={id}>
@@ -123,7 +128,7 @@ function CompanyCard({
                     ? `${pillar.title}: not checked for this kind of company`
                     : outcome === "unknown"
                       ? `${pillar.title}: no data`
-                      : pillar.headlines[outcome]}
+                      : headline}
                 </strong>
                 {(assessment.verdict === "flags"
                   ? evidence.filter(({ result }) => result === "fail")
@@ -135,6 +140,8 @@ function CompanyCard({
                     <RuleText rule={item} />
                   </span>
                 ))}
+                {outcome === "mixed" &&
+                  missing.map((rule) => <span key={rule.key}>{labelOf(rule.key)}: No data</span>)}
               </div>
             </li>
           );
@@ -148,11 +155,12 @@ export function IdeasPage() {
   const companies = useQuery(api.universe.screen, {});
   const [showIdeas, setShowIdeas] = useState(false);
   const [showFlags, setShowFlags] = useState(false);
-  const assessed = (companies ?? [])
-    .filter(({ marketCap }) => marketCap !== null && marketCap >= 1e12)
-    .map((company) => ({ company, assessment: assess(company) }));
+  const assessed = (companies ?? []).map((company) => ({ company, assessment: assess(company) }));
   const ideas = assessed
-    .filter(({ assessment }) => assessment.verdict === "idea")
+    .filter(
+      ({ company, assessment }) =>
+        company.marketCap !== null && company.marketCap >= 1e12 && assessment.verdict === "idea",
+    )
     .sort(
       (a, b) =>
         b.assessment.pillars.filter(({ outcome }) => outcome === "pass").length -
@@ -160,7 +168,10 @@ export function IdeasPage() {
         b.company.marketCap! - a.company.marketCap!,
     );
   const flags = assessed
-    .filter(({ assessment }) => assessment.verdict === "flags")
+    .filter(
+      ({ company, assessment }) =>
+        company.marketCap !== null && company.marketCap >= 1e12 && assessment.verdict === "flags",
+    )
     .sort((a, b) => b.company.marketCap! - a.company.marketCap!);
   return (
     <main className="page ideas-page wrap">
@@ -179,11 +190,12 @@ export function IdeasPage() {
         <summary>How a stock makes the list</summary>
         <div className="ideas-method-body">
           <p>
-            Each rule compares one measurement with a pass line, a flag line, or both. Missing
-            numbers are skipped, never counted as zero. A pillar is flagged when any rule crosses
-            its flag line, passes when every rule with data passes, and partly passes otherwise. A
-            pillar with no numbers shows No data. Insurance, financing and investment companies have
-            no balance-sheet rules here, so they can be Mixed at best.
+            Each rule compares one measurement with a pass line, a flag line, or both. A pillar is
+            flagged when any rule crosses its flag line, and passes only when every pass line has a
+            number that clears it. A missing number can’t earn a pass and is never counted as zero,
+            so the pillar partly passes instead. A pillar with no numbers at all shows No data.
+            Insurance, financing and investment companies have no balance-sheet rules here, so they
+            can be Mixed at best.
           </p>
           <dl>
             {(["idea", "mixed", "flags", "thin"] as const).map((verdict) => (
@@ -248,8 +260,9 @@ export function IdeasPage() {
             <div className="ideas-list-head">
               <h2 id="ideas-list-title">Worth a look · {ideas.length}</h2>
               <p>
-                Companies worth at least IDR 1T. Most passing pillars first, then largest market
-                cap.
+                Companies worth at least IDR 1T: {ideas.length} of the{" "}
+                {assessed.filter(({ assessment }) => assessment.verdict === "idea").length} across
+                the market. Most passing pillars first, then largest market cap.
               </p>
             </div>
             <div className="ideas-grid">
@@ -267,7 +280,11 @@ export function IdeasPage() {
           <section id="red-flags" aria-labelledby="flags-list-title" className="ideas-list">
             <div className="ideas-list-head">
               <h2 id="flags-list-title">Red flags · {flags.length}</h2>
-              <p>Companies worth at least IDR 1T. Largest market cap first.</p>
+              <p>
+                Companies worth at least IDR 1T: {flags.length} of the{" "}
+                {assessed.filter(({ assessment }) => assessment.verdict === "flags").length} across
+                the market. Largest market cap first.
+              </p>
             </div>
             <div className="ideas-grid">
               {(showFlags ? flags : flags.slice(0, 12)).map((item) => (

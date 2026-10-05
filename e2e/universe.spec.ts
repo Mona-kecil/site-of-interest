@@ -3,7 +3,7 @@ import { expect, test } from "@playwright/test";
 test("opens the landing with the tally, ratings and a looked-up ticker", async ({ page }) => {
   await page.goto("/");
   await expect(page.getByRole("heading", { level: 1 })).toHaveText(
-    /^\d+ of 962 IDX companies are worth a look\. \d+ raise a red flag\.$/,
+    "78 of 962 IDX companies are worth a look. 612 raise a red flag.",
   );
   const chart = page.getByRole("region", { name: "The ratings" });
   await expect(chart.locator("tbody tr")).toHaveCount(8);
@@ -30,19 +30,40 @@ test("contains the landing at 390 pixels", async ({ page }) => {
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
+test("shows a missing measurement in AADI's landing rating and Cash callout", async ({ page }) => {
+  await page.goto("/");
+  await page.getByRole("combobox").fill("AADI");
+  await page.getByRole("option", { name: /^AADI/ }).click();
+  const cash = page.getByRole("button", {
+    name: "Cash: Partly passes. Cash conversion, 3 yrs no data",
+    exact: true,
+  });
+  await cash.click();
+  const callout = page.getByRole("tooltip");
+  await expect(callout).toContainText("Nothing flagged, but some figures are missing");
+  await expect(callout.locator("li")).toHaveCount(2);
+  await expect(callout.locator("li").last()).toContainText("Cash conversion, 3 yrs: No data");
+});
+
 test("opens Ideas with both lists, rules and company reasons", async ({ page }) => {
   await page.goto("/ideas");
   await expect(page.getByRole("heading", { name: "Ideas", exact: true })).toBeVisible();
   await expect(page.getByText(/screens all 962 IDX companies/)).toBeVisible();
   const ideas = page.getByRole("region", { name: /^Worth a look ·/ });
   const flags = page.getByRole("region", { name: /^Red flags ·/ });
+  await expect(ideas.locator(".ideas-list-head p")).toHaveText(
+    "Companies worth at least IDR 1T: 69 of the 78 across the market. Most passing pillars first, then largest market cap.",
+  );
+  await expect(flags.locator(".ideas-list-head p")).toHaveText(
+    "Companies worth at least IDR 1T: 313 of the 612 across the market. Largest market cap first.",
+  );
   await expect(ideas.getByRole("article")).toHaveCount(12);
   await expect(flags.getByRole("article")).toHaveCount(12);
   await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText(
-    "· pass ",
+    "· passes ",
   );
   await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText(
-    "· flag ",
+    "· flagged ",
   );
   const dcii = flags.locator('[data-symbol="DCII"]');
   await expect(dcii).toContainText("Priced for perfection");
@@ -53,6 +74,11 @@ test("opens Ideas with both lists, rules and company reasons", async ({ page }) 
   );
   await ideas.getByRole("button", { name: /^Show all/ }).click();
   await expect.poll(() => ideas.getByRole("article").count()).toBeGreaterThan(12);
+  for (const symbol of ["AADI", "POWR", "TOTL", "YUPI"])
+    await expect(ideas.locator(`[data-symbol="${symbol}"]`)).toHaveCount(0);
+  const gap = ideas.locator('[data-symbol="DLTA"]');
+  await expect(gap).toContainText("Nothing flagged, but some figures are missing");
+  await expect(gap).toContainText("Share dilution: No data");
   await flags.getByRole("button", { name: /^Show all/ }).click();
   await expect.poll(() => flags.getByRole("article").count()).toBeGreaterThan(12);
   await ideas.getByRole("link", { name: "TLKM", exact: true }).click();
