@@ -6,6 +6,7 @@ import { OwnerPage } from "./features/owners/OwnerPage";
 import { GroupsPage, GroupPage } from "./features/owners/GroupsPage";
 import { IdeasPage } from "./features/ideas/IdeasPage";
 import { LandingPage } from "./features/landing/LandingPage";
+import { Tour, TourButton } from "./features/tour/Tour";
 import manifest from "../data/universe/manifest.json";
 
 const retrieved = new Date(manifest.retrievedAt);
@@ -35,31 +36,35 @@ function Sections() {
 
 function RootLayout() {
   return (
-    <div className="app-shell">
-      <header className="masthead">
-        <div className="wrap">
-          <Link className="wordmark" to="/">
-            Site of Interest
-          </Link>
-          <nav aria-label="Product sections">
-            <Sections />
-          </nav>
-          <span className="dateline">Sectors data · {dateline}</span>
-        </div>
-      </header>
-      <Outlet />
-      <footer className="site-footer">
-        <div className="wrap">
-          <p>
-            <b>Not investment advice.</b> Verdicts apply fixed rules to Sectors data retrieved on{" "}
-            {footerDate} and inherit any errors in it.
-          </p>
-          <nav aria-label="Footer">
-            <Sections />
-          </nav>
-        </div>
-      </footer>
-    </div>
+    <Tour>
+      <div className="app-shell">
+        <header className="masthead">
+          <div className="wrap">
+            <Link className="wordmark" to="/">
+              Site of Interest
+            </Link>
+            <nav aria-label="Product sections">
+              <Sections />
+            </nav>
+            <span className="dateline">Sectors data · {dateline}</span>
+            <TourButton />
+          </div>
+        </header>
+        <Outlet />
+        <footer className="site-footer">
+          <div className="wrap">
+            <p>
+              <b>Not investment advice.</b> Verdicts apply fixed rules to Sectors data retrieved on{" "}
+              {footerDate} and inherit any errors in it.
+            </p>
+            <nav aria-label="Footer">
+              <Sections />
+              <TourButton />
+            </nav>
+          </div>
+        </footer>
+      </div>
+    </Tour>
   );
 }
 

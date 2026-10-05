@@ -1,0 +1,221 @@
+/* Guided tour: a ring around the feature and a card docked to the corner */
+.tour-button {
+  all: unset;
+  margin-left: -16px;
+  border-radius: 6px;
+  padding: 7px 12px;
+  box-shadow: inset 0 0 0 1.5px oklch(100% 0 0 / 0.4);
+  color: var(--white);
+  cursor: pointer;
+  font-size: 14px;
+  font-weight: 650;
+  white-space: nowrap;
+  transition: background-color 160ms var(--ease-out);
+}
+
+.site-footer .tour-button {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  font-size: inherit;
+  font-weight: 600;
+}
+
+.tour-button:focus-visible {
+  outline: 2px solid var(--white);
+  outline-offset: 2px;
+}
+
+.tour-ring {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 30;
+  border-radius: 12px;
+  box-shadow:
+    0 0 0 3px var(--blue),
+    0 0 0 10px oklch(43% 0.215 268 / 0.14);
+  pointer-events: none;
+  animation: tour-in 260ms var(--ease-out);
+}
+
+.tour-ring[hidden] {
+  display: none;
+}
+
+.tour-ring::before {
+  content: attr(data-step);
+  position: absolute;
+  top: -14px;
+  left: 14px;
+  display: grid;
+  place-items: center;
+  min-width: 26px;
+  height: 26px;
+  border-radius: 13px;
+  padding: 0 8px;
+  box-sizing: border-box;
+  background: var(--blue);
+  color: var(--white);
+  font-size: 13px;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+
+.tour-card {
+  position: fixed;
+  right: 24px;
+  bottom: 24px;
+  z-index: 40;
+  width: 384px;
+  border-top: 4px solid var(--ink);
+  border-radius: 8px;
+  padding: 16px 20px 20px;
+  background: var(--white);
+  box-shadow:
+    var(--shadow-pop),
+    0 0 0 1px var(--rule);
+  animation: tour-card-in 220ms var(--ease-out);
+}
+
+.tour-card h2 {
+  margin: 6px 0 8px;
+  font-size: 21px;
+  font-weight: 800;
+  line-height: 1.15;
+  letter-spacing: -0.02em;
+  outline: none;
+}
+
+.tour-card p {
+  margin: 0;
+  color: var(--ink-2);
+  font-size: 15px;
+}
+
+.tour-card .tour-count {
+  color: var(--blue);
+  font-size: 13px;
+  font-weight: 700;
+}
+
+.tour-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.tour-close {
+  all: unset;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: -6px -8px -6px 0;
+  border-radius: 6px;
+  color: var(--ink-3);
+  cursor: pointer;
+}
+
+.tour-close path {
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+}
+
+.tour-close:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 2px;
+}
+
+.tour-progress {
+  display: flex;
+  gap: 4px;
+  margin: 16px 0 0;
+  padding: 0;
+  list-style: none;
+}
+
+.tour-progress li {
+  flex: 1;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--rule);
+}
+
+.tour-progress li.done {
+  background: var(--ink);
+}
+
+.tour-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 16px;
+}
+
+.tour-card .go,
+.tour-card .more {
+  height: 42px;
+  padding: 0 16px;
+  font-size: 15px;
+}
+
+.tour-card .go {
+  border: 0;
+  cursor: pointer;
+}
+
+@keyframes tour-in {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes tour-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+}
+
+@media (hover: hover) and (pointer: fine) {
+  .masthead .tour-button:hover {
+    background: oklch(100% 0 0 / 0.1);
+  }
+
+  .site-footer .tour-button:hover {
+    text-decoration: underline;
+  }
+
+  .tour-close:hover {
+    background: var(--paper-2);
+    color: var(--ink);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .tour-card {
+    animation-name: tour-in;
+  }
+}
+
+@media (max-width: 640px) {
+  /* The masthead row keeps the data date on phones; the footer carries the tour button. */
+  .masthead .tour-button {
+    display: none;
+  }
+
+  .tour-card {
+    right: 12px;
+    bottom: 12px;
+    left: 12px;
+    width: auto;
+    padding: 14px 16px 16px;
+  }
+
+  .tour-card h2 {
+    font-size: 19px;
+  }
+}

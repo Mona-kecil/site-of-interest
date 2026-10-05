@@ -145,7 +145,11 @@ export function TrackRecord({ profile }: { profile: CompanyProfile }) {
     ({ rules }) => rules.length > 0,
   );
   return (
-    <section className="profile-section" aria-labelledby="profile-over-time-title">
+    <section
+      className="profile-section"
+      aria-labelledby="profile-over-time-title"
+      data-tour="track-record"
+    >
       <h2 id="profile-over-time-title">Track record and forecasts</h2>
       <div className="over-time-grid">
         <div>

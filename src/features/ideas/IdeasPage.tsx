@@ -244,7 +244,7 @@ export function IdeasPage() {
         </p>
       ) : (
         <>
-          <section aria-labelledby="ideas-list-title" className="ideas-list">
+          <section aria-labelledby="ideas-list-title" className="ideas-list" data-tour="ideas">
             <div className="ideas-list-head">
               <h2 id="ideas-list-title">Worth a look · {ideas.length}</h2>
               <p>

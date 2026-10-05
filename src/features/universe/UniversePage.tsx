@@ -116,7 +116,12 @@ export function UniversePage() {
           </p>
         </div>
       </header>
-      <div className="universe-lenses" role="tablist" aria-label="Check lenses">
+      <div
+        className="universe-lenses"
+        role="tablist"
+        aria-label="Check lenses"
+        data-tour="screener"
+      >
         {lenses.map((item, index) => (
           <button
             type="button"
