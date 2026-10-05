@@ -25,7 +25,7 @@ Apply verdicts in this order, with the first match winning:
 3. Worth a look: every core pillar passes and at most one pillar that applies is mixed or unknown.
 4. Mixed: all remaining cases.
 
-Core pillars are cash and balance sheet for non-financial companies, returns and balance sheet for banks and other financial companies. Other financial companies can never be Worth a look because their balance pillar does not apply. A partially reported pillar can pass from its reported evidence.
+Core pillars are cash and balance sheet for non-financial companies, returns and balance sheet for banks and other financial companies. Other financial companies can never be Worth a look because their balance pillar does not apply. A pillar can pass with a flag-only measure missing, never with a pass-line measure missing.
 
 Ideas lists companies with market cap >= IDR 1T: Worth a look sorts by passing pillar count then market cap, Red flags by market cap. Each starts with twelve cards and can expand to the full list. Company pages show all five pillars; the screener's verdict filter covers all 962 companies, including smaller ones.
 
