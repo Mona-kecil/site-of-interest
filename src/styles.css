@@ -1133,6 +1133,7 @@ code {
 }
 
 .record-wrap {
+  position: relative;
   margin-top: 18px;
   overflow-x: auto;
 }
