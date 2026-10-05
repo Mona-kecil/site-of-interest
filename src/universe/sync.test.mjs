@@ -56,7 +56,7 @@ test("dry run prints the plan before any client or filesystem access", async (t)
   const logs = [];
   const result = await syncUniverse({ root: directory, maxCredits: 40, dryRun: true, log: (line) => logs.push(line), createClient: () => assert.fail("client must not be created") });
   assert.equal(result, null);
-  assert.match(logs[0], /10 groups \/ 266 field references/);
+  assert.match(logs[0], /10 groups \/ 271 field references/);
   assert.ok(logs.some((line) => line.startsWith("Worst-case credits: 50")));
   assert.equal(logs.at(-1), "Dry run: no requests or writes.");
   assert.deepEqual(await readdir(directory), []);

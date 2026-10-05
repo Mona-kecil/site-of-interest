@@ -1,6 +1,6 @@
 {
   "provider": "sectors",
-  "retrievedAt": "2026-10-02T10:06:51.003Z",
+  "retrievedAt": "2026-10-05T04:03:50.825Z",
   "companyCount": 962,
   "groups": [
     {
@@ -316,7 +316,12 @@
         "financing_cash_flow[2022]",
         "financing_cash_flow[2023]",
         "financing_cash_flow[2024]",
-        "financing_cash_flow[2025]"
+        "financing_cash_flow[2025]",
+        "forecast_revenue_estimate[2026]",
+        "forecast_revenue_growth[2026]",
+        "forecast_eps_estimate[2026]",
+        "forecast_eps_growth[2026]",
+        "forward_pe"
       ]
     }
   ],
@@ -339,6 +344,6 @@
     "Q1-2026",
     "Q2-2026"
   ],
-  "credits": 0,
+  "credits": 5,
   "schemaVersion": 1
 }
