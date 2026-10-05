@@ -15,7 +15,27 @@ test("indexes owners, merges Danantara, and exposes the listed-owner view", asyn
     .poll(() => page.locator(".owners-holdings tbody tr").count())
     .toBeGreaterThanOrEqual(9);
   await page.goto("/owners");
-  await page.getByRole("tab", { name: "Listed companies that own others" }).click();
+  const all = page.getByRole("tab", { name: "All owners", exact: true });
+  const listed = page.getByRole("tab", { name: "Listed companies", exact: true });
+  await all.focus();
+  await expect(all).toHaveAttribute("tabindex", "0");
+  await expect(listed).toHaveAttribute("tabindex", "-1");
+  for (const key of ["ArrowRight", "ArrowLeft", "End", "Home"]) {
+    await page.keyboard.press(key);
+    const selected = key === "ArrowRight" || key === "End" ? listed : all;
+    const other = selected === listed ? all : listed;
+    await expect(selected).toBeFocused();
+    await expect(selected).toHaveAttribute("aria-selected", "true");
+    await expect(selected).toHaveAttribute("tabindex", "0");
+    await expect(other).toHaveAttribute("aria-selected", "false");
+    await expect(other).toHaveAttribute("tabindex", "-1");
+    await expect(selected).toHaveAttribute("aria-controls", "owners-table-panel");
+    await expect(page.getByRole("tabpanel")).toHaveAttribute(
+      "aria-labelledby",
+      (await selected.getAttribute("id"))!,
+    );
+  }
+  await listed.click();
   await expect.poll(() => rows.count()).toBeGreaterThan(50);
   await expect(page.getByRole("cell", { name: "Not listed", exact: true })).toHaveCount(0);
   await expect(page.getByRole("cell", { name: "Pooled holders", exact: true })).toHaveCount(0);
@@ -130,7 +150,7 @@ test("lists group members with measurements and a network of shared shareholders
   ).toHaveCount(1);
 });
 
-test("contains tables and the scrollable network at 390 pixels", async ({ page }) => {
+test("contains tables and the ownership relation list at 390 pixels", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   for (const path of ["/owners", "/owner/astra%20international", "/groups", "/group/salim"]) {
     await page.goto(path);
@@ -151,21 +171,68 @@ test("contains tables and the scrollable network at 390 pixels", async ({ page }
       expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(
         390,
       );
-      const network = page.getByRole("region", {
-        name: "What PT Astra International Tbk owns",
-        exact: true,
+      const relations = page.locator(".network-relations");
+      await expect(relations).toBeVisible();
+      await expect(page.locator(".network-scroll")).toBeHidden();
+      await expect(relations.locator(".network-center")).toHaveAttribute("href", "/company/ASII");
+      await expect(relations.locator(".network-center")).toContainText("ASII");
+      const heldBy = relations.getByRole("region", { name: "Held by", exact: true });
+      const parent = heldBy.getByRole("link", { name: /Jardine Cycle/ });
+      await expect(parent).toHaveAttribute("href", "/owner/jardine%20cycle%20carriage");
+      await expect(parent).toContainText("50.11%");
+      const holds = relations.getByRole("region", { name: "Holds", exact: true });
+      const holding = holds.getByRole("link", { name: /^AALI/ });
+      await expect(holding).toHaveAttribute("href", "/company/AALI");
+      await expect(holding).toContainText("79.68%");
+      await expect(holding).toContainText("Astra Agro Lestari");
+      const heights = await relations
+        .locator("li a")
+        .evaluateAll((rows) => rows.map((row) => row.getBoundingClientRect().height));
+      expect(heights.length).toBeGreaterThan(0);
+      expect(heights.every((height) => height >= 44)).toBe(true);
+      const children = await page
+        .locator(".network-ring-2")
+        .evaluateAll((links) => links.map((link) => link.getAttribute("href")));
+      for (const href of children) {
+        await expect(relations.locator(`a[href="${href}"]`)).toHaveCount(0);
+      }
+      await page.evaluate(() => {
+        (window as unknown as { networkNavigationMarker: string }).networkNavigationMarker =
+          "retained";
       });
-      await expect(network).toBeVisible();
-      await expect(network).toHaveAttribute("tabindex", "0");
-      await expect(network.locator('a[href="/company/ASII"]')).toContainText("ASII");
-      await expect(network.locator('a[href="/company/AALI"]')).toContainText("79.68%");
-      const widths = await network.evaluate((element) => ({
-        drawing: element.scrollWidth,
-        container: element.clientWidth,
-      }));
-      expect(widths.drawing).toBeGreaterThan(widths.container);
+      await parent.click();
+      await expect(page).toHaveURL(/\/owner\/jardine(?:%20| )cycle(?:%20| )carriage$/);
+      expect(
+        await page.evaluate(
+          () => (window as unknown as { networkNavigationMarker: string }).networkNavigationMarker,
+        ),
+      ).toBe("retained");
+      await page.goto(path);
+      await holding.click();
+      await expect(page).toHaveURL(/\/company\/AALI$/);
+    } else if (path.startsWith("/group/")) {
+      const relations = page.locator(".network-relations");
+      await expect(relations).toBeVisible();
+      await expect(relations.getByRole("region", { name: "Held by", exact: true })).toHaveCount(0);
+      const holds = relations.getByRole("region", { name: "Holds", exact: true });
+      await expect(holds.getByRole("link", { name: /^INDF/ })).toHaveAttribute(
+        "href",
+        "/company/INDF",
+      );
+      await expect(holds.getByRole("link", { name: /^ICBP/ })).toHaveAttribute(
+        "href",
+        "/company/ICBP",
+      );
+      await expect(holds.locator(".network-relation-stake")).toHaveCount(0);
     }
   }
+  await page.setViewportSize({ width: 1440, height: 900 });
+  await page.goto("/owner/astra%20international");
+  const graph = page.locator(".network-scroll");
+  await expect(graph).toBeVisible();
+  await expect(graph.locator("svg")).toBeVisible();
+  await expect(graph).toHaveAttribute("tabindex", "0");
+  await expect(page.locator(".network-relations")).toBeHidden();
 });
 
 test("caps Bank of Singapore's nine downstream companies and identifies its account role", async ({
@@ -188,6 +255,20 @@ test("caps Bank of Singapore's nine downstream companies and identifies its acco
   await more.click();
   await expect(page).toHaveURL(/#owner-holdings$/);
   await expect(page.locator(".owners-holdings tbody tr")).toHaveCount(9);
+  await page.setViewportSize({ width: 390, height: 844 });
+  const relations = page.locator(".network-relations");
+  await expect(relations.getByRole("region", { name: "Held by", exact: true })).toHaveCount(0);
+  await expect(relations.locator(".network-arrow")).toHaveCount(1);
+  const moreRow = relations
+    .getByRole("region", { name: "Holds", exact: true })
+    .getByRole("link", { name: "+1 more", exact: true });
+  await expect(moreRow).toHaveAttribute("href", "#owner-holdings");
+  expect(
+    await moreRow.evaluate((row) => row.getBoundingClientRect().height),
+  ).toBeGreaterThanOrEqual(44);
+  await moreRow.click();
+  await expect(page).toHaveURL(/#owner-holdings$/);
+  await page.setViewportSize({ width: 1440, height: 900 });
   await page.goto("/owners");
   await page.getByLabel("Search owners").fill("Bank Of Singapore");
   await expect(page.getByText("Custodian or nominee account", { exact: true })).toBeVisible();
