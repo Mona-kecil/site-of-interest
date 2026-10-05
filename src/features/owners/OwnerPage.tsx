@@ -36,9 +36,10 @@ export function OwnerPage() {
             <div className="page-intro">
               {isCustodianName(owner.name) && <CustodianLabel />}
               <p>
-                {owner.kind !== "holder" && `${kindLabels[owner.kind]} · `}Holds stakes in{" "}
-                {companies(owner.companyCount)}
-                {owner.totalValue !== null && `, worth ${formatMarketCap(owner.totalValue)}`}
+                {owner.kind !== "holder" && `${kindLabels[owner.kind]} · `}On the shareholder list
+                of {companies(owner.companyCount)}
+                {owner.totalValue !== null &&
+                  `, with shares worth ${formatMarketCap(owner.totalValue)}`}
               </p>
               {owner.kind === "bucket" && (
                 <p>

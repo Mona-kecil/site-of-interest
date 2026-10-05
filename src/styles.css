@@ -1753,6 +1753,10 @@ code {
   box-shadow: inset 0 0 0 1px var(--rule);
 }
 
+.network-relations {
+  display: none;
+}
+
 .network svg {
   display: block;
   max-width: 100%;
@@ -2029,8 +2033,88 @@ code {
     justify-content: space-between;
   }
 
-  .network svg {
-    max-width: none;
+  /* Phones get the relation list; the caption and legend describe the graph's dots. */
+  .network-scroll,
+  .network figcaption {
+    display: none;
+  }
+
+  .network-relations {
+    display: grid;
+    gap: 12px;
+    border-radius: 8px;
+    padding: 16px;
+    background: var(--white);
+    box-shadow: inset 0 0 0 1px var(--rule);
+  }
+
+  .network-relations h3 {
+    margin: 0 0 8px;
+    color: var(--ink-2);
+    font-size: 14px;
+    font-weight: 650;
+  }
+
+  .network-relations ul {
+    display: grid;
+    gap: 8px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .network-relations li a {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 44px;
+    border-radius: 3px;
+    padding: 10px 12px;
+    background: var(--paper);
+    box-shadow: inset 0 0 0 1px var(--ink-3);
+    font-size: 14px;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .network-relations small {
+    display: block;
+    font-size: 12px;
+  }
+
+  .network-relations li small {
+    color: var(--ink-2);
+  }
+
+  .network-relation-stake {
+    flex: none;
+    color: var(--blue);
+    font-weight: 750;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .network-center {
+    border-radius: 3px;
+    padding: 12px;
+    background: var(--blue);
+    color: var(--white);
+    text-align: center;
+    text-decoration: none;
+    overflow-wrap: anywhere;
+  }
+
+  .network-arrow {
+    color: var(--ink-3);
+    font-size: 24px;
+    line-height: 1;
+    text-align: center;
+  }
+
+  .universe-table thead button {
+    display: inline-flex;
+    align-items: center;
+    min-height: 44px;
   }
 
   /* Phones pin each row's identifier and drop the screener's and group's
