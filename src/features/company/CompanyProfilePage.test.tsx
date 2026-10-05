@@ -2,14 +2,29 @@ import { cleanup, fireEvent, render, screen, within } from "@testing-library/rea
 import { afterEach, describe, expect, it, vi } from "vitest";
 import type { ReactNode } from "react";
 import type { Id } from "../../../convex/_generated/dataModel";
+import { getFunctionName } from "convex/server";
 import manifest from "../../../data/universe/manifest.json";
 import { CompanyProfilePage } from "./CompanyProfilePage";
 import type { CompanyProfile, ProfileCheck } from "./profile-model";
+import type { companyNetwork } from "../owners/network";
 
-const { useQuery } = vi.hoisted(() => ({ useQuery: vi.fn() }));
-vi.mock("convex/react", () => ({ useQuery }));
+const { useQuery, profileQuery, networkQuery, historyPush } = vi.hoisted(() => ({
+  useQuery: vi.fn(),
+  profileQuery: vi.fn(),
+  networkQuery: vi.fn(),
+  historyPush: vi.fn(),
+}));
+vi.mock("convex/react", () => ({
+  useQuery: (query: Parameters<typeof getFunctionName>[0], args: unknown) => {
+    useQuery(query, args);
+    return getFunctionName(query) === "companyProfile:get"
+      ? profileQuery(query, args)
+      : networkQuery(query, args);
+  },
+}));
 vi.mock("@tanstack/react-router", () => ({
   getRouteApi: () => ({ useParams: () => ({ ticker: "bbca" }) }),
+  useRouter: () => ({ history: { push: historyPush } }),
   Link: ({
     to,
     params = {},
@@ -103,14 +118,17 @@ function profile(subSector: string): CompanyProfile {
 afterEach(() => {
   cleanup();
   useQuery.mockReset();
+  profileQuery.mockReset();
+  networkQuery.mockReset();
+  historyPush.mockReset();
 });
 
 describe("Company profile page", () => {
   it("renders loading and not-found states with a return link", () => {
-    useQuery.mockReturnValue(undefined);
+    profileQuery.mockReturnValue(undefined);
     const view = render(<CompanyProfilePage />);
     expect(screen.getByRole("status")).toHaveTextContent("Loading company measurements for BBCA");
-    useQuery.mockReturnValue(null);
+    profileQuery.mockReturnValue(null);
     view.rerender(<CompanyProfilePage />);
     expect(screen.getByRole("heading", { name: "Company not found" })).toBeInTheDocument();
     expect(screen.getByRole("link", { name: "Back to Screener" })).toHaveAttribute(
@@ -120,58 +138,56 @@ describe("Company profile page", () => {
   });
 
   it("renders bank checks and expands every sourced input, including a null value", () => {
-    useQuery.mockReturnValue(profile("Banks"));
+    profileQuery.mockReturnValue(profile("Banks"));
     const { container } = render(<CompanyProfilePage />);
     expect(useQuery.mock.calls[0][1]).toEqual({ symbol: "bbca" });
     expect(screen.getByRole("heading", { name: "Banks" })).toBeInTheDocument();
     expect(screen.queryByRole("heading", { name: "ROIC" })).not.toBeInTheDocument();
     const verdict = screen.getByRole("region", { name: "Not enough data" });
     expect(verdict).toHaveTextContent("Cash: Not checked");
-    expect(verdict).toHaveTextContent("Returns: Not reported");
-    expect(verdict).toHaveTextContent("NPL ratio 2.00% · pass ≤ 3.00%");
+    expect(verdict).toHaveTextContent("Returns: No data");
+    expect(verdict).toHaveTextContent("NPL ratio 2.00% · passes at 3% or less");
     expect(
-      within(verdict).getByRole("link", { name: "View balance sheet inputs" }),
+      within(verdict).getByRole("link", { name: "See balance sheet details" }),
     ).toHaveAttribute("href", "#profile-banks");
-    expect(verdict.nextElementSibling).toHaveClass("profile-note");
+    expect(verdict.nextElementSibling).toHaveAccessibleName("Track record and forecasts");
     const card = container.querySelector('[data-check="npl_ratio"]')!;
-    expect(card.querySelector("header > strong")).toHaveTextContent("2.00%");
-    expect(card).toHaveTextContent("p84 · 31 peers");
-    expect(within(card as HTMLElement).getByText("Check gaps: 1 peer")).toBeInTheDocument();
-    fireEvent.click(screen.getByText("Formula and inputs · NPL ratio"));
+    expect(card.querySelector(".profile-check-value > strong")).toHaveTextContent("2.00%");
+    expect(card.querySelector(".profile-check-value > small")).toHaveTextContent("2025");
+    expect(card.querySelector(".profile-check-rank")).toHaveTextContent(
+      "No other banks have this figure.",
+    );
+    fireEvent.click(within(card as HTMLElement).getByText("How it’s calculated"));
     expect(
-      within(card as HTMLElement).getByText("non_performing_loan[2025] / gross_loan[2025]"),
+      within(card as HTMLElement).getByText("Non-performing loans divided by gross loans."),
     ).toBeVisible();
-    expect(within(card as HTMLElement).getByText("non_performing_loan[2025]")).toBeVisible();
-    expect(within(card as HTMLElement).getByText("Non-performing loans · FY2025")).toBeVisible();
+    expect(within(card as HTMLElement).getByText("Non-performing loans, 2025")).toBeVisible();
     expect(
-      within(card as HTMLElement).getByText(
-        "Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026",
-      ),
+      within(card as HTMLElement).getByText("Source: Sectors, retrieved 2 Oct 2026."),
     ).toBeVisible();
-    fireEvent.click(within(card as HTMLElement).getByText("Full endpoint"));
-    expect(within(card as HTMLElement).getByText("/v2/companies/?offset=0")).toBeVisible();
-    expect(within(card as HTMLElement).getByText("2026-10-02T09:56:37.757Z")).toBeVisible();
-    expect(within(card as HTMLElement).getByText("Not reported", { exact: true })).toBeVisible();
+    expect(within(card as HTMLElement).getByText("No data", { exact: true })).toBeVisible();
   });
 
   it("retains seven annual rows and eight quarterly rows with explicit gaps", () => {
-    useQuery.mockReturnValue(profile("Insurance"));
+    profileQuery.mockReturnValue(profile("Insurance"));
     render(<CompanyProfilePage />);
     expect(
-      screen.getByText("Non-financial checks do not apply to its sub-sector (Insurance)."),
+      screen.getByText(
+        "Some checks are built for non-financial companies, so they’re left out for Insurance.",
+      ),
     ).toBeInTheDocument();
-    const annual = screen.getByRole("region", { name: "Returns annual history · 2019–2025" });
+    const annual = screen.getByRole("region", { name: "Returns, yearly figures" });
     expect(within(annual).getAllByRole("row")).toHaveLength(8);
     const latest = within(annual).getAllByRole("row").at(-1)!;
     expect(
       within(latest)
         .getAllByRole("cell")
         .map((cell) => cell.textContent),
-    ).toEqual(["0.00", "Not reported", "Not reported"]);
-    const quarters = screen.getByRole("region", { name: "Eight quarters · Q3-2024–Q2-2026" });
+    ).toEqual(["0.00", "No data", "No data"]);
+    const quarters = screen.getByRole("region", { name: "Last eight quarters" });
     expect(within(quarters).getAllByRole("row")).toHaveLength(9);
-    expect(within(quarters).getAllByRole("row")[1]).toHaveTextContent("Q3-2024Not reported");
-    expect(screen.getByText("Holdings not reported.")).toBeInTheDocument();
+    expect(within(quarters).getAllByRole("row")[1]).toHaveTextContent("Q3 2024No data");
+    expect(screen.getByText("No shareholder data.")).toBeInTheDocument();
   });
   it("displays dividends as IDR per share in history and sourced evidence", () => {
     const data = profile("Banks");
@@ -185,15 +201,21 @@ describe("Company profile page", () => {
         sourceId: "universe-01-0",
       },
     ];
-    useQuery.mockReturnValue(data);
+    profileQuery.mockReturnValue(data);
     render(<CompanyProfilePage />);
     const history = screen.getByRole("region", {
-      name: "Price against own history annual history · 2019–2025",
+      name: "Price against own history, yearly figures",
     });
-    expect(history).toHaveTextContent("Dividend per share (IDR/share)");
+    expect(
+      within(history).getByRole("columnheader", { name: "Dividend per share" }),
+    ).toBeInTheDocument();
     expect(history).toHaveTextContent("IDR 184.00 per share");
-    fireEvent.click(screen.getByText("Formula and inputs · NPL ratio"));
-    expect(screen.getByText("Dividend per share · FY2025")).toBeVisible();
+    fireEvent.click(
+      within(document.querySelector('[data-check="npl_ratio"]') as HTMLElement).getByText(
+        "How it’s calculated",
+      ),
+    );
+    expect(screen.getByText("Dividend per share, 2025")).toBeVisible();
     expect(screen.getAllByText("IDR 184.00 per share")).toHaveLength(2);
   });
   it("shows a gap category without a peer line and retains the human reason", () => {
@@ -204,15 +226,15 @@ describe("Company profile page", () => {
       percentile: null,
       gap: "Not reported: non_performing_loan[2025]",
     };
-    useQuery.mockReturnValue(data);
+    profileQuery.mockReturnValue(data);
     const { container } = render(<CompanyProfilePage />);
     const card = container.querySelector('[data-check="npl_ratio"]')!;
-    expect(card.querySelector("header > strong")).toHaveTextContent("Not reported");
+    expect(card.querySelector(".profile-check-value > strong")).toHaveTextContent("No data");
     expect(card.querySelector(".profile-check-rank")).toBeNull();
-    expect(card).toHaveTextContent("Non-performing loans FY2025 not reported");
+    expect(card).toHaveTextContent("No data for non-performing loans 2025.");
   });
 
-  it("shows IDR input units and preserves the exact raw value in its title", () => {
+  it("shows the plain cash calculation with its IDR input and source date", () => {
     const data = profile("Industrial Goods");
     data.checks[0].inputs = [
       {
@@ -223,10 +245,57 @@ describe("Company profile page", () => {
         sourceId: "universe-01-0",
       },
     ];
-    useQuery.mockReturnValue(data);
+    profileQuery.mockReturnValue(data);
     render(<CompanyProfilePage />);
-    fireEvent.click(screen.getByText("Formula and inputs · Cash conversion"));
-    expect(screen.getByText("Operating cash flow · FY2023")).toBeVisible();
-    expect(screen.getByText("IDR 19,364.41 bn")).toHaveAttribute("title", "19364410000000");
+    fireEvent.click(
+      within(document.querySelector('[data-check="cash_conversion"]') as HTMLElement).getByText(
+        "How it’s calculated",
+      ),
+    );
+    expect(screen.getByText("Operating cash flow, 2023")).toBeVisible();
+    expect(screen.getByText("IDR 19,364.41 bn")).toBeVisible();
+    expect(
+      screen.getByText(
+        "Operating cash flow divided by earnings, each added up over three years. Above 1× means more cash came in than profit was booked.",
+      ),
+    ).toBeVisible();
+    expect(screen.getByText("Source: Sectors, retrieved 2 Oct 2026.")).toBeVisible();
+  });
+
+  it("links the company network to shareholders, their other companies and its holdings", () => {
+    profileQuery.mockReturnValue(profile("Banks"));
+    const data: Parameters<typeof companyNetwork>[0] = {
+      symbol: "BBCA",
+      name: "Bank Central Asia",
+      ownerKey: "bank central asia",
+      holders: [
+        {
+          key: "parent",
+          name: "Parent",
+          kind: "holder",
+          listedSymbol: null,
+          percentage: 0.5,
+          others: [{ symbol: "OTHER", name: "Other Company", percentage: 0.3 }],
+          otherCount: 1,
+        },
+      ],
+      holdings: [{ symbol: "SUBS", name: "Subsidiary", percentage: 0.6 }],
+      holdingCount: 1,
+    };
+    networkQuery.mockReturnValue(data);
+    render(<CompanyProfilePage />);
+    expect(networkQuery).toHaveBeenCalledWith(expect.anything(), { symbol: "BBCA" });
+    const network = screen.getByRole("region", { name: "Who owns BBCA" });
+    const links = within(network).getAllByRole("link");
+    expect(links.map((link) => link.getAttribute("href")).sort()).toEqual([
+      "/company/BBCA",
+      "/company/OTHER",
+      "/company/SUBS",
+      "/owner/parent",
+    ]);
+    expect(within(network).getByText("50.00%", { exact: true })).toBeInTheDocument();
+    expect(within(network).getByText("60.00%", { exact: true })).toBeInTheDocument();
+    fireEvent.click(links.find((link) => link.getAttribute("href") === "/company/OTHER")!);
+    expect(historyPush).toHaveBeenCalledWith("/company/OTHER");
   });
 });

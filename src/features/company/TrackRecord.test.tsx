@@ -45,8 +45,8 @@ describe("Track record and forecasts", () => {
     expect(row("Returns").textContent).toContain("Passed in 0 of 5 years");
     expect(within(row("ROIC")).getAllByText("4.0%")[0].dataset.result).toBe("fail");
 
-    const gap = within(row("Net debt / EBITDA")).getByText("Not reported");
-    expect(gap.title).toBe("EBITDA FY2023 not reported");
+    const gap = within(row("Net debt / EBITDA")).getByText("No data");
+    expect(gap.title).toBe("No data for EBITDA 2023.");
     expect(within(row("Balance sheet")).getAllByText("Passes")).toHaveLength(5);
   });
 

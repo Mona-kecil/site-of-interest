@@ -13,8 +13,8 @@ import {
   type Sort,
 } from "./universe-model";
 
-import { checkCell } from "../../universe/presentation.mjs";
-import { CheckInput } from "./CheckInput";
+import { checkCell, humanPeriod } from "../../universe/presentation.mjs";
+import { CheckCalculation } from "./CheckCalculation";
 import { verdictLabels } from "../ideas/ideas-model";
 
 type Selection = { symbol: string; checkId: string };
@@ -61,53 +61,20 @@ function CheckPanel({ selection, close }: { selection: Selection; close: () => v
         </button>
       </header>
       {result === undefined ? (
-        <p role="status">Loading check inputs</p>
+        <p role="status">Loading…</p>
       ) : result === null ? (
-        <p>No stored result for this check.</p>
+        <p>No figure for this company.</p>
       ) : (
         <>
           <h2>{result.definition.label}</h2>
           <p>{result.definition.question}</p>
-          <dl className="universe-calculation">
-            <div>
-              <dt>Formula</dt>
-              <dd>{result.definition.formula}</dd>
-            </div>
-            <div>
-              <dt>Period</dt>
-              <dd>{result.period}</dd>
-            </div>
-            <div>
-              <dt>Value</dt>
-              <dd>{cell?.text}</dd>
-            </div>
-            {cell?.peers && (
-              <div>
-                <dt>Sub-sector percentile</dt>
-                <dd>
-                  {result.subSector ?? "Not reported"}: {cell.peers}
-                </dd>
-              </div>
-            )}
-            {cell?.reason && (
-              <div>
-                <dt>Gap</dt>
-                <dd>{cell.reason}</dd>
-              </div>
-            )}
-          </dl>
-          <p className="universe-note">
-            Percentiles rank the reported values within the sub-sector. They carry no direction.
-            Fewer than 5 reported peers leaves the percentile unreported.
+          <p className="universe-panel-value">
+            <strong>{cell?.text}</strong>
+            <small>{humanPeriod(result.period)}</small>
           </p>
-          <h3>Inputs and sources</h3>
-          <ol className="universe-inputs">
-            {result.inputs.map((input, index) => (
-              <li key={`${input.field}:${input.key}:${index}`}>
-                <CheckInput input={input} source={input.source} unit={result.definition.unit} />
-              </li>
-            ))}
-          </ol>
+          {cell?.reason && <p className="profile-note">{cell.reason}</p>}
+          <h3>How it’s calculated</h3>
+          <CheckCalculation definition={result.definition} inputs={result.inputs} />
         </>
       )}
     </aside>
@@ -144,7 +111,8 @@ export function UniversePage() {
         <div className="page-intro">
           <p>
             Every IDX company on every measurement. Pick a lens, filter, and open any number to see
-            its formula and the Sectors rows behind it.
+            how it’s calculated. No data means our data provider doesn’t have a figure the
+            measurement needs.
           </p>
         </div>
       </header>
@@ -237,8 +205,7 @@ export function UniversePage() {
       <p className="universe-note" role="status">
         {companies === undefined
           ? "Loading companies"
-          : `${rows.length} of ${companies.length} companies`}{" "}
-        · Percentiles compare reported sub-sector values.
+          : `${rows.length} of ${companies.length} companies`}
       </p>
       <section
         id="universe-table-panel"
@@ -297,7 +264,7 @@ export function UniversePage() {
                       {row.name}
                     </Link>
                   </td>
-                  <td>{row.subSector ?? "Not reported"}</td>
+                  <td>{row.subSector ?? "No data"}</td>
                   <td>{formatMarketCap(row.marketCap)}</td>
                   {checks.map((definition) => {
                     const summary = summaryFor(row, definition.id);
@@ -324,7 +291,6 @@ export function UniversePage() {
                               }
                             >
                               <span>{cell.text}</span>
-                              {cell.peers && <small>{cell.peers}</small>}
                             </button>
                           ) : (
                             <span className="universe-cell check-does-not-apply">{cell.text}</span>

@@ -62,7 +62,7 @@ The provider field `total_dividend` is dividend per share in IDR. AALI reports 9
 
 Peers are applicable, non-null results for the same check and sub-sector. The subject belongs to the peer set. Percentile is `(below + 0.5 × (equal − 1)) / (n − 1)`; fewer than five reported peers yields null. Below counts strictly lower values and equal includes the subject. Untied extrema are zero and one; ties share a midrank. A gap retains its stored peer count but shows no peer line.
 
-Measured cells show a value plus percentile and peer count. With fewer than five peers, they show a value plus `3 peers · no percentile`. Gaps show Not reported for missing inputs, Not meaningful for an undefined base, or Too little history. Excluded checks show Does not apply without a button. Human reasons replace known field codes and years; unknown patterns retain the raw reason. Inputs show human labels, provider codes and source references; IDR uses billions except for dividends per share, with the exact number in a title.
+The screen does not show stored percentiles. Company pages show a rank sentence over the same peers. Gaps show No data for missing inputs, Not meaningful for an undefined base, or Too little history. Excluded checks show Does not apply without a button. Plain reasons replace known field codes and years; unknown patterns retain the raw reason. Inputs show human labels and the source retrieval date; IDR uses billions except for dividends per share.
 
 ## Owners and groups
 

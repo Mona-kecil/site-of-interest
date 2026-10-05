@@ -1,6 +1,6 @@
 # Product brief
 
-Site of Interest screens all 962 IDX companies in the stored Sectors snapshot with a five-question fundamentals screen. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Verdicts cite the measurements behind their rules. Measurements carry sub-sector peer percentiles and source inputs.
+Site of Interest screens all 962 IDX companies in the stored Sectors snapshot with a five-question fundamentals screen. It presents cash, returns on capital, balance-sheet obligations, price against the company's own history and holders of record. Verdicts cite the measurements behind their rules. Measurements carry a rank among sub-sector peers and their source figures.
 
 The application provides no investment advice, trade recommendations, price targets or claims of beneficial ownership. Verdicts inherit provider errors. Provider group labels remain attributed to Sectors.
 
@@ -31,7 +31,7 @@ Ideas lists companies with market cap >= IDR 1T: Worth a look sorts by passing p
 
 ## Research path
 
-Start at / with the landing: the verdict tally, eight sample ratings with a ticker lookup, each rule's pass and flag lines, and one number traced to its source rows. Open /ideas for its rules and company reasons. Open a company for its verdict and pillar evidence, or use /universe to search, filter by verdict and choose a lens. Open a measurement's formula, reporting period, human input labels, raw field codes and source disclosure. Follow the company link for annual and quarterly history, ranked peer dots and reported holders. Open an owner for its stakes, co-holders and upstream list. Open Groups to compare members of a Sectors business-group label.
+Start at / with the landing: the verdict tally, eight sample ratings with a ticker lookup, each rule's pass and flag lines, and one number traced to its source rows. Open /ideas for its rules and company reasons. Open a company for its verdict and pillar evidence, or use /universe to search, filter by verdict and choose a lens. Open a measurement's plain calculation, reporting period, labelled figures and source date. Follow the company link for annual and quarterly history, the peer rank and strip, and an ownership network of shareholders and holdings. Open an owner for its network, stakes and other shareholders. Open Groups to see a group's members, their largest shareholders and the links between them.
 
 The company, owner and group pages retain gaps. A name-pattern label marks possible custodian or nominee accounts and states that they may hold for clients. A largest reported stake is a measurement of the entity rows, not proof of control. The [demo](demo.md) follows this path with stored values.
 
@@ -63,11 +63,11 @@ This table was generated from the exported definitions in [checks.mjs](../src/un
 
 ## Nulls, peers and evidence
 
-A measured result shows its value, percentile and reported peer count. With fewer than five reported peers it shows the value and peer count without a percentile. Missing inputs produce Not reported; undefined bases produce Not meaningful; short positive valuation histories produce Too little history. Excluded checks show Does not apply without a button. Gap cells have no peer line. Unknown reason patterns retain their raw text.
+A measured result shows its value and, on company pages, a rank such as "Ranks 14th of 46 banks with data." Missing inputs produce No data; undefined bases produce Not meaningful; short positive valuation histories produce Too little history. Excluded checks show Does not apply without a button. Gap cells have no rank. Unknown reason patterns retain their raw text.
 
-Null inputs remain Not reported and never become zero. A reported zero remains a number. Percentiles compare only reported, applicable results for the same check and sub-sector, including the subject. Ties share their midrank. The rank-based company strip uses the same reported peer set and a diamond for the subject; it exposes each dot's symbol and value without assigning a rating.
+Null inputs show as No data and never become zero. A reported zero remains a number. Ranks compare only reported, applicable results for the same check and sub-sector, and name ties. The rank-based company strip uses the same reported peer set and a diamond for the subject; it exposes each dot's symbol and value without assigning a rating.
 
-Evidence puts the human field label and fiscal period before the provider code. IDR inputs use billions except for dividends per share, with exact raw values available in titles. A source line shows provider, endpoint path, field batch, row range and retrieval date; a disclosure preserves the full endpoint. The [data contract](universe-data.md) specifies capex signs, ROIC tax handling, ownership names and known provider limits.
+Evidence opens with a plain calculation sentence, then each figure with its label and fiscal period. IDR inputs use billions except for dividends per share. A source line names Sectors and the retrieval date. The [data contract](universe-data.md) specifies capex signs, ROIC tax handling, ownership names and known provider limits.
 
 ## Current scope
 

@@ -16,6 +16,14 @@ const member = v.object({
   marketCap: nullableNumber,
   freeFloat: nullableNumber,
   checks: v.array(universeCheckSummary),
+  holders: v.array(
+    v.object({
+      key: v.string(),
+      name: v.string(),
+      listedSymbol: nullableText,
+      percentage: v.number(),
+    }),
+  ),
 });
 
 async function company(ctx: QueryCtx, symbol: string) {
@@ -151,6 +159,20 @@ export const group = query({
     const members = await Promise.all(
       row.symbols.map(async (symbol) => {
         const held = await company(ctx, symbol);
+        const holders = await Promise.all(
+          (await entityHolders(ctx, symbol))
+            .flatMap(({ key, name, percentage }) =>
+              percentage !== null && percentage >= 0.01 ? [{ key, name, percentage }] : [],
+            )
+            .slice(0, 4)
+            .map(async ({ key, name, percentage }) => {
+              const owner = await ctx.db
+                .query("owners")
+                .withIndex("by_key", (index) => index.eq("key", key))
+                .unique();
+              return { key, name, listedSymbol: owner?.listedSymbol ?? null, percentage };
+            }),
+        );
         return {
           symbol,
           name: held?.name ?? symbol,
@@ -158,6 +180,7 @@ export const group = query({
           marketCap: held?.current.marketCap ?? null,
           freeFloat: held?.current.freeFloat ?? null,
           checks: held?.checks ?? [],
+          holders,
         };
       }),
     );

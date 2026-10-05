@@ -17,7 +17,7 @@ import {
 import { createPortal } from "react-dom";
 import { api } from "../../../convex/_generated/api";
 import manifest from "../../../data/universe/manifest.json";
-import { sourceIdLine, sourceLine } from "../../universe/presentation.mjs";
+import { humanPeriod, sourceLine } from "../../universe/presentation.mjs";
 import {
   deciding,
   formatLine,
@@ -437,7 +437,7 @@ function RatingRow({
           ? `${measure.label} ${formatReading(evidence.key, evidence.value)}`
           : result.outcome === "na"
             ? "not checked for this kind of company"
-            : "not reported";
+            : "no data";
         return (
           <td className="mk" key={result.id}>
             <button
@@ -462,7 +462,7 @@ function RatingRow({
                     </b>
                   </>
                 ) : (
-                  <b className="q">{result.outcome === "na" ? "Not checked" : "Not reported"}</b>
+                  <b className="q">{result.outcome === "na" ? "Not checked" : "No data"}</b>
                 )}
               </span>
             </button>
@@ -646,7 +646,7 @@ function CalloutBody({ company, pillar }: { company: Company; pillar: number }) 
         </p>
       )}
       {outcome === "unknown" && (
-        <p className="gap">Sectors did not report the inputs for this pillar.</p>
+        <p className="gap">Our data provider doesn’t have the figures for this check.</p>
       )}
     </>
   );
@@ -873,7 +873,7 @@ function Trace({ company, check }: { company: Company; check: CheckEvidence & { 
   const pillar = PILLARS[0];
   const rule = pillar.rules.nonFinancial.find(({ key }) => key === check.checkId)!;
   const bn = (value: number | null) =>
-    value === null ? "Not reported" : Math.round(value / 1e9).toLocaleString("en-US");
+    value === null ? "No data" : Math.round(value / 1e9).toLocaleString("en-US");
   const sums = (
     [
       ["operatingCashFlow", "Operating cash flow"],
@@ -884,7 +884,7 @@ function Trace({ company, check }: { company: Company; check: CheckEvidence & { 
     return { label, inputs, total: inputs.reduce((sum, input) => sum + (input.value ?? 0), 0) };
   });
   const first = check.inputs[0];
-  const periods = [...new Set(check.inputs.map(({ period }) => `FY${period}`))];
+  const periods = [...new Set(check.inputs.map(({ period }) => period))];
   const outcome = result.outcome;
   return (
     <ol className="steps">
@@ -914,12 +914,12 @@ function Trace({ company, check }: { company: Company; check: CheckEvidence & { 
         <span className="step-k">Measurement</span>
         <div className="step-v">
           <span className="big">{formatReading(check.checkId, check.value)}</span>
-          <span>cash conversion, {check.period}</span>
+          <span>cash conversion, {humanPeriod(check.period)}</span>
           <small>{ruleLines(rule)}</small>
         </div>
       </li>
       <li className="step">
-        <span className="step-k">Inputs, IDR bn</span>
+        <span className="step-k">Figures, IDR bn</span>
         <div className="step-v">
           <div className="sum-wrap">
             <div className="sum">
@@ -940,12 +940,10 @@ function Trace({ company, check }: { company: Company; check: CheckEvidence & { 
         <span className="step-k">Source</span>
         <div className="step-v">
           <span className="source-line">
-            {first.source
-              ? sourceLine(first.source, manifest)
-              : sourceIdLine(first.sourceId, manifest)}
+            {sourceLine(first.source?.retrievedAt ?? manifest.retrievedAt)}
           </span>
           <small>
-            {periods.slice(0, -1).join(", ")} and {periods.at(-1)} rows for {company.symbol}
+            {company.symbol}’s figures for {periods.slice(0, -1).join(", ")} and {periods.at(-1)}
           </small>
         </div>
       </li>

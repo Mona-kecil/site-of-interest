@@ -25,9 +25,9 @@ const money = (key: string, label: string): SeriesField => ({ key, label, unit: 
 const history: Record<string, SeriesField[]> = {
   Cash: [
     money("earnings", "Earnings"),
-    money("operatingCashFlow", "Operating cash flow (CFO)"),
-    money("freeCashFlow", "Free cash flow (FCF)"),
-    money("capitalExpenditure", "Capex"),
+    money("operatingCashFlow", "Operating cash flow"),
+    money("freeCashFlow", "Free cash flow"),
+    money("capitalExpenditure", "Capital spending"),
   ],
   Returns: [
     money("revenue", "Revenue"),
@@ -45,16 +45,13 @@ const history: Record<string, SeriesField[]> = {
     { key: "totalDividend", label: "Dividend per share", unit: "IDR/share" },
   ],
   Owners: [],
-  Banks: [
-    money("grossLoan", "Gross loans"),
-    money("nonPerformingLoan", "Non-performing loans (NPL)"),
-  ],
+  Banks: [money("grossLoan", "Gross loans"), money("nonPerformingLoan", "Non-performing loans")],
 };
 export const quarterFields = [
   money("revenueQ", "Revenue"),
   money("earningsQ", "Earnings"),
-  money("operatingCashFlowQ", "CFO"),
-  money("freeCashFlowQ", "FCF"),
+  money("operatingCashFlowQ", "Operating cash flow"),
+  money("freeCashFlowQ", "Free cash flow"),
 ];
 export const annualPeriods = manifest.years;
 export const quarterPeriods = manifest.quarters;
@@ -76,7 +73,7 @@ export function assembleSections(company: { subSector: string | null }) {
   });
   const note =
     company.subSector !== "Banks" && financialSubSectors.has(company.subSector ?? "")
-      ? `Non-financial checks do not apply to its sub-sector (${company.subSector}).`
+      ? `Some checks are built for non-financial companies, so they’re left out for ${company.subSector}.`
       : null;
   return { sections, note };
 }
@@ -118,14 +115,14 @@ export function peerStrip(peers: readonly Peer[], symbol: string) {
 
 export function formatIdrAmount(value: number | null) {
   return value === null
-    ? "Not reported"
+    ? "No data"
     : new Intl.NumberFormat("en", { minimumFractionDigits: 2, maximumFractionDigits: 2 }).format(
         value / 1e9,
       );
 }
 
 export function formatIdr(value: number | null) {
-  return value === null ? "Not reported" : `IDR ${formatIdrAmount(value)} bn`;
+  return value === null ? "No data" : `IDR ${formatIdrAmount(value)} bn`;
 }
 
 export function orderHoldings<

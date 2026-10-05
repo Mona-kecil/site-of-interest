@@ -84,12 +84,12 @@ export function filterOptions(
   const reported = [...new Set(values.filter((value): value is string => value !== null))].sort();
   return [
     ...reported.map((value) => ({ value, label: value })),
-    ...(values.includes(null) ? [{ value: UNREPORTED, label: "Not reported" }] : []),
+    ...(values.includes(null) ? [{ value: UNREPORTED, label: "No data" }] : []),
   ];
 }
 
 export function formatMarketCap(value: number | null) {
   return value === null
-    ? "Not reported"
+    ? "No data"
     : `IDR ${new Intl.NumberFormat("en", { notation: "compact", maximumFractionDigits: 2 }).format(value)}`;
 }

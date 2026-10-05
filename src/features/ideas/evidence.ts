@@ -6,7 +6,7 @@ export const outcomeLabels: Record<Outcome, string> = {
   pass: "Passes",
   mixed: "Partly passes",
   fail: "Flagged",
-  unknown: "Not reported",
+  unknown: "No data",
   na: "Not checked",
 };
 // Pillar titles for narrow columns, in PILLARS order.
@@ -23,7 +23,7 @@ export const MEASURES: Record<string, { label: string; short: string; tiny: stri
   {
     cash_conversion: {
       label: "Cash conversion, 3 yrs",
-      short: "Cash conv.",
+      short: "Cash conversion",
       tiny: "Cash conv",
       unit: "×",
     },
@@ -38,7 +38,7 @@ export const MEASURES: Record<string, { label: string; short: string; tiny: stri
     },
     interest_coverage: {
       label: "Interest coverage",
-      short: "Int. cover",
+      short: "Interest cover",
       tiny: "Int cover",
       unit: "×",
     },
@@ -47,13 +47,13 @@ export const MEASURES: Record<string, { label: string; short: string; tiny: stri
     loan_to_deposit: { label: "Loan to deposit", short: "LDR", tiny: "LDR", unit: "%" },
     pe_vs_history: {
       label: "P/E against its history",
-      short: "P/E vs hist.",
+      short: "P/E vs history",
       tiny: "P/E hist",
       unit: "×",
     },
     pb_vs_history: {
       label: "P/B against its history",
-      short: "P/B vs hist.",
+      short: "P/B vs history",
       tiny: "P/B hist",
       unit: "×",
     },
