@@ -2,7 +2,6 @@ import { FIELD_DEFINITIONS } from "./fields.mjs";
 
 export const financialSubSectors = new Set(["Banks", "Insurance", "Financing Service", "Investment Service"]);
 const fields = new Map(FIELD_DEFINITIONS.map((field) => [field.key, field]));
-const recentYears = [2023, 2024, 2025];
 const historyYears = [2020, 2021, 2022, 2023, 2024, 2025];
 const annual = (key, year = 2025) => [key, year];
 const current = (key) => [key, null];
@@ -52,12 +51,15 @@ function divide(numerator, denominator, name, positive = false) {
 }
 
 const sum = (values) => values.reduce((total, value) => total + value, 0);
-const reported = (key) => calculate("FY2025", [annual(key)], ([value]) => ({ value }));
-const threeYearRatio = (numerator, denominator, name, numeratorValue = (value) => value) => calculate(
-  "FY2023–FY2025",
-  [...recentYears.map((year) => annual(numerator, year)), ...recentYears.map((year) => annual(denominator, year))],
-  (values) => divide(sum(values.slice(0, 3).map(numeratorValue)), sum(values.slice(3)), name, true),
-);
+const reported = (key) => (data, year = 2025) => calculate(`FY${year}`, [annual(key, year)], ([value]) => ({ value }))(data);
+const threeYearRatio = (numerator, denominator, name, numeratorValue = (value) => value) => (data, year = 2025) => {
+  const years = [year - 2, year - 1, year];
+  return calculate(
+    `FY${year - 2}–FY${year}`,
+    [...years.map((year) => annual(numerator, year)), ...years.map((year) => annual(denominator, year))],
+    (values) => divide(sum(values.slice(0, 3).map(numeratorValue)), sum(values.slice(3)), name, true),
+  )(data);
+};
 
 function historyRatio(key, currentKey) {
   return (data) => {
@@ -78,13 +80,7 @@ export const CHECKS = Object.freeze([
   {
     id: "cash_conversion", label: "Cash conversion", question: "Does reported profit turn into operating cash?", unit: "multiple", appliesTo: "nonFinancial",
     formula: "sum(operating_cash_flow[2023..2025]) / sum(earnings[2023..2025]); requires all inputs and positive earnings sum",
-    compute(data, year = 2025) {
-      const years = [year - 2, year - 1, year];
-      return calculate(`FY${year - 2}–FY${year}`,
-        [...years.map((year) => annual("operatingCashFlow", year)), ...years.map((year) => annual("earnings", year))],
-        (values) => divide(sum(values.slice(0, 3)), sum(values.slice(3)), "Earnings sum", true),
-      )(data);
-    },
+    compute: threeYearRatio("operatingCashFlow", "earnings", "Earnings sum"),
   },
   {
     id: "fcf_yield", label: "FCF yield", question: "What is free cash flow relative to the current market cap?", unit: "percent", appliesTo: "nonFinancial",
@@ -116,10 +112,7 @@ export const CHECKS = Object.freeze([
   },
   {
     id: "interest_coverage", label: "Interest coverage", question: "How many times does operating profit cover interest?", unit: "multiple", appliesTo: "nonFinancial",
-    formula: "Provider-reported interest_coverage_ratio[2025]",
-    compute(data, year = 2025) {
-      return calculate(`FY${year}`, [annual("interestCoverageRatio", year)], ([value]) => ({ value }))(data);
-    },
+    formula: "Provider-reported interest_coverage_ratio[2025]", compute: reported("interestCoverageRatio"),
   },
   {
     id: "net_debt_to_ebitda", label: "Net debt / EBITDA", question: "How many years of EBITDA would repay net debt?", unit: "multiple", appliesTo: "nonFinancial",
@@ -196,17 +189,11 @@ export const CHECKS = Object.freeze([
   },
   {
     id: "loan_to_deposit", label: "Loan / deposit", question: "How fully are deposits lent out?", unit: "percent", appliesTo: "bank",
-    formula: "Provider-reported loan_to_deposit_ratio[2025]",
-    compute(data, year = 2025) {
-      return calculate(`FY${year}`, [annual("loanToDepositRatio", year)], ([value]) => ({ value }))(data);
-    },
+    formula: "Provider-reported loan_to_deposit_ratio[2025]", compute: reported("loanToDepositRatio"),
   },
   {
     id: "capital_adequacy", label: "Capital adequacy", question: "How much capital backs risk-weighted assets?", unit: "percent", appliesTo: "bank",
-    formula: "Provider-reported capital_adequacy_ratio[2025]",
-    compute(data, year = 2025) {
-      return calculate(`FY${year}`, [annual("capitalAdequacyRatio", year)], ([value]) => ({ value }))(data);
-    },
+    formula: "Provider-reported capital_adequacy_ratio[2025]", compute: reported("capitalAdequacyRatio"),
   },
   {
     id: "net_interest_margin", label: "Net interest margin", question: "What spread does the bank earn on its assets?", unit: "percent", appliesTo: "bank",

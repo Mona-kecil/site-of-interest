@@ -40,16 +40,15 @@ export function pillarRecords(
         id: pillar.id,
         rules,
         years: HISTORY_YEARS.map((year) => {
+          const freeCashFlow = data.years.get(year)?.values.freeCashFlow ?? null;
           const readings = rules.map((rule): Reading => {
-            const computed =
+            const { value, gap } =
               rule.key === "free_cash_flow"
-                ? { value: data.years.get(year)?.values.freeCashFlow ?? null, gap: null }
+                ? {
+                    value: freeCashFlow,
+                    gap: freeCashFlow === null ? `Not reported: free_cash_flow[${year}]` : null,
+                  }
                 : CHECKS.find(({ id }) => id === rule.key)!.compute(data, year);
-            const { value } = computed;
-            const gap =
-              rule.key === "free_cash_flow" && value === null
-                ? `Not reported: free_cash_flow[${year}]`
-                : computed.gap;
             return {
               key: rule.key,
               value,
