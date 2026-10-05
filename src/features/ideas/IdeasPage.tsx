@@ -6,12 +6,11 @@ import manifest from "../../../data/universe/manifest.json";
 import { definitions } from "../../universe/checks.mjs";
 import { formatValue } from "../../universe/presentation.mjs";
 import { formatMarketCap, type ScreenRow } from "../universe/universe-model";
-import { outcomeLabels, shortName, shortTitles, verdictDescriptions } from "./evidence";
+import { outcomeLabels, phrase, shortName, shortTitles, verdictDescriptions } from "./evidence";
 import {
   assess,
   PILLARS,
   verdictLabels,
-  type Bound,
   type CompanyClass,
   type Rule,
   type Verdict,
@@ -24,7 +23,6 @@ const classLabels: Record<CompanyClass, string> = {
   otherFinancial: "Insurance, financing and investment companies",
 };
 const definitionById = new Map(definitions.map((definition) => [definition.id, definition]));
-const symbols = { ">=": "≥", "<=": "≤", ">": ">", "<": "<" };
 type PillarResult = ReturnType<typeof assess>["pillars"][number];
 type Evidence = PillarResult["evidence"][number];
 
@@ -32,17 +30,15 @@ function RuleText({ rule }: { rule: Rule | Evidence }) {
   const definition = definitionById.get(rule.key);
   const label = rule.key === "pe_ttm" ? "Current P/E" : definition!.label;
   const unit = rule.key === "pe_ttm" ? "multiple" : definition!.unit;
-  const bound = ([operator, threshold]: Bound) =>
-    `${symbols[operator]} ${formatValue(threshold, unit)}`;
-  const pass = rule.pass && `pass ${bound(rule.pass)}`;
-  const flag = rule.fail && `flag ${bound(rule.fail)}`;
-  if (!("result" in rule)) return <>{`${label}: ${[pass, flag].filter(Boolean).join(", ")}`}</>;
+  const pass = rule.pass && `passes ${phrase(rule.pass, rule.key)}`;
+  const flag = rule.fail && `flagged ${phrase(rule.fail, rule.key)}`;
+  if (!("result" in rule)) return <>{`${label}: ${[pass, flag].filter(Boolean).join(" · ")}`}</>;
   const threshold =
     rule.result === "fail"
       ? flag
-      : rule.result === "neutral"
-        ? `short of ${pass}`
-        : (pass ?? `clear of ${flag}`);
+      : rule.result === "neutral" && rule.pass
+        ? `passes only ${phrase(rule.pass, rule.key)}`
+        : (pass ?? `flagged only ${phrase(rule.fail!, rule.key)}`);
   return <>{`${label} ${formatValue(rule.value, unit)} · ${threshold}`}</>;
 }
 
@@ -62,7 +58,7 @@ export function PillarOutcome({
       {result.outcome === "na" ? (
         <p>Not checked for this kind of company.</p>
       ) : result.outcome === "unknown" ? (
-        <p>Sectors did not report the inputs.</p>
+        <p>Our data provider doesn’t have the figures.</p>
       ) : (
         <p>{pillar.headlines[result.outcome]}</p>
       )}
@@ -101,7 +97,7 @@ function CompanyCard({
           {shortName(company.name)}
         </Link>
         <p>
-          {company.subSector ?? "Sub-sector not reported"} · {formatMarketCap(company.marketCap)}
+          {company.subSector ?? "Sub-sector unknown"} · {formatMarketCap(company.marketCap)}
         </p>
       </header>
       <ol className="idea-marks" aria-label="Pillar outcomes">
@@ -123,9 +119,11 @@ function CompanyCard({
               <OutcomeMark outcome={outcome} />
               <div>
                 <strong>
-                  {outcome === "na" || outcome === "unknown"
-                    ? `${pillar.title}: inputs not reported`
-                    : pillar.headlines[outcome]}
+                  {outcome === "na"
+                    ? `${pillar.title}: not checked for this kind of company`
+                    : outcome === "unknown"
+                      ? `${pillar.title}: no data`
+                      : pillar.headlines[outcome]}
                 </strong>
                 {(assessment.verdict === "flags"
                   ? evidence.filter(({ result }) => result === "fail")
@@ -183,9 +181,9 @@ export function IdeasPage() {
           <p>
             Each rule compares one measurement with a pass line, a flag line, or both. Missing
             numbers are skipped, never counted as zero. A pillar is flagged when any rule crosses
-            its flag line, passes when every reported rule passes, and partly passes otherwise. A
-            pillar with no reported numbers shows Not reported. Insurance, financing and investment
-            companies have no balance-sheet rules here, so they can be Mixed at best.
+            its flag line, passes when every rule with data passes, and partly passes otherwise. A
+            pillar with no numbers shows No data. Insurance, financing and investment companies have
+            no balance-sheet rules here, so they can be Mixed at best.
           </p>
           <dl>
             {(["idea", "mixed", "flags", "thin"] as const).map((verdict) => (

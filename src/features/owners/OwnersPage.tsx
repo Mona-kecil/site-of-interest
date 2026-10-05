@@ -9,10 +9,10 @@ import { defaultSort, kindLabels, ownerRows, type OwnerSort } from "./owners-mod
 
 const columns: { id: OwnerSort["column"]; label: string }[] = [
   { id: "name", label: "Name" },
-  { id: "kind", label: "Kind" },
+  { id: "kind", label: "Type" },
   { id: "companyCount", label: "Companies held" },
   { id: "totalValue", label: "Total stake value" },
-  { id: "largestHolderCount", label: "Largest-holder count" },
+  { id: "largestHolderCount", label: "Largest shareholder in" },
 ];
 
 export function OwnersPage() {
@@ -26,10 +26,7 @@ export function OwnersPage() {
       <header className="page-head">
         <h1>Owners</h1>
         <div className="page-intro">
-          <p>
-            Who holds each company, and what else they hold. Legal-form variants share one owner
-            key.
-          </p>
+          <p>Who holds each company, and what else they hold.</p>
         </div>
       </header>
       <div className="owners-views" role="tablist" aria-label="Owner views">
@@ -47,7 +44,7 @@ export function OwnersPage() {
           aria-selected={listedOnly}
           onClick={() => setListedOnly(true)}
         >
-          Listed companies that own listed companies
+          Listed companies that own others
         </button>
       </div>
       <div className="owners-controls">
@@ -62,9 +59,9 @@ export function OwnersPage() {
         </label>
       </div>
       <p className="owners-note">
-        Public and treasury rows are excluded. Bucket labels combine unnamed holders across
-        companies. Stake values sum reported amounts; Not reported means none were reported.
-        Largest-holder counts include ties among entity rows and do not establish control.
+        Public shares and shares a company holds in itself are left out. “Largest shareholder in”
+        counts the companies where this owner has the biggest named stake, which doesn’t always mean
+        control.
       </p>
       {owners === undefined ? (
         <p className="page-loading" role="status">

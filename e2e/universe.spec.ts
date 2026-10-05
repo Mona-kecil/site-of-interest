@@ -12,7 +12,10 @@ test("opens the landing with the tally, ratings and a looked-up ticker", async (
   await expect(chart.locator("tbody tr")).toHaveCount(9);
   await expect(chart.locator("tbody tr").first()).toContainText("BREN");
   await page.getByRole("button", { name: "Show the numbers" }).click();
-  await expect(page.getByRole("button", { name: "Show the numbers" })).toHaveAttribute("aria-pressed", "true");
+  await expect(page.getByRole("button", { name: "Show the numbers" })).toHaveAttribute(
+    "aria-pressed",
+    "true",
+  );
   await expect(page.getByText(/Not investment advice\./)).toBeVisible();
   await page.getByRole("link", { name: /Open Telkom’s full evidence/ }).click();
   await expect(page).toHaveURL(/\/company\/TLKM$/);
@@ -21,7 +24,9 @@ test("opens the landing with the tally, ratings and a looked-up ticker", async (
 test("contains the landing at 390 pixels", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/");
-  await expect(page.getByRole("region", { name: "The ratings" }).locator("tbody tr")).toHaveCount(8);
+  await expect(page.getByRole("region", { name: "The ratings" }).locator("tbody tr")).toHaveCount(
+    8,
+  );
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
 
@@ -33,22 +38,34 @@ test("opens Ideas with both lists, rules and company reasons", async ({ page }) 
   const flags = page.getByRole("region", { name: /^Red flags ·/ });
   await expect(ideas.getByRole("article")).toHaveCount(12);
   await expect(flags.getByRole("article")).toHaveCount(12);
-  await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText("· pass ");
-  await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText("· flag ");
+  await expect(ideas.getByRole("article").first().locator(".idea-reasons")).toContainText(
+    "· pass ",
+  );
+  await expect(flags.getByRole("article").first().locator(".idea-reasons")).toContainText(
+    "· flag ",
+  );
   const dcii = flags.locator('[data-symbol="DCII"]');
   await expect(dcii).toContainText("Priced for perfection");
-  await expect(dcii).toContainText("Current P/E 413.61× · flag > 50.00×");
+  await expect(dcii).toContainText("Current P/E 413.61× · flagged above 50");
   await page.getByText("How a stock makes the list", { exact: true }).click();
-  await expect(page.locator(".ideas-method")).toContainText("Cash conversion: pass ≥ 0.80×, flag < 0.50×");
+  await expect(page.locator(".ideas-method")).toContainText(
+    "Cash conversion: passes at 0.8× or more · flagged below 0.5×",
+  );
   await ideas.getByRole("button", { name: /^Show all/ }).click();
   await expect.poll(() => ideas.getByRole("article").count()).toBeGreaterThan(12);
   await flags.getByRole("button", { name: /^Show all/ }).click();
   await expect.poll(() => flags.getByRole("article").count()).toBeGreaterThan(12);
   await ideas.getByRole("link", { name: "TLKM", exact: true }).click();
   await expect(page).toHaveURL(/\/company\/TLKM$/);
-  await page.getByRole("navigation", { name: "Product sections" }).getByRole("link", { name: "Ideas", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Product sections" })
+    .getByRole("link", { name: "Ideas", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/ideas$/);
-  await page.getByRole("navigation", { name: "Product sections" }).getByRole("link", { name: "Screener", exact: true }).click();
+  await page
+    .getByRole("navigation", { name: "Product sections" })
+    .getByRole("link", { name: "Screener", exact: true })
+    .click();
   await expect(page).toHaveURL(/\/universe$/);
   await page.getByRole("link", { name: "Site of Interest", exact: true }).click();
   await expect(page).toHaveURL(/\/$/);
@@ -57,7 +74,9 @@ test("opens Ideas with both lists, rules and company reasons", async ({ page }) 
 test("contains Ideas cards and expanded rules at 390 pixels", async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/ideas");
-  await expect(page.getByRole("region", { name: /^Worth a look ·/ }).getByRole("article")).toHaveCount(12);
+  await expect(
+    page.getByRole("region", { name: /^Worth a look ·/ }).getByRole("article"),
+  ).toHaveCount(12);
   await page.getByText("How a stock makes the list", { exact: true }).click();
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390);
 });
@@ -77,13 +96,22 @@ test("screens the IDX universe and opens a bank check's sourced calculation", as
   await expect(rows.first()).not.toHaveAttribute("data-symbol", first!);
   await npl.filter({ hasText: "%" }).first().click();
   const panel = page.getByRole("complementary", { name: "Check details" });
-  await expect(panel.getByText("Formula", { exact: true })).toBeVisible();
-  await expect(panel.getByText("non_performing_loan[2025] / gross_loan[2025]", { exact: true })).toBeVisible();
-  await expect(panel.getByText(/\/v2\/companies\//).first()).toBeVisible();
-  await expect(panel.getByText("Retrieved", { exact: true }).first()).toBeVisible();
+  await expect(
+    panel.getByRole("heading", { name: "How it’s calculated", exact: true }),
+  ).toBeVisible();
+  await expect(
+    panel.getByText("Non-performing loans divided by gross loans.", { exact: true }),
+  ).toBeVisible();
+  await expect(panel.getByText("Non-performing loans, 2025", { exact: true })).toBeVisible();
+  await expect(panel.getByText("Gross loans, 2025", { exact: true })).toBeVisible();
+  await expect(
+    panel.getByText("Source: Sectors, retrieved 2 Oct 2026.", { exact: true }),
+  ).toBeVisible();
 });
 
-test("contains horizontal table scrolling at 390 pixels and exposes gaps on focus", async ({ page }) => {
+test("contains horizontal table scrolling at 390 pixels and exposes gaps on focus", async ({
+  page,
+}) => {
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto("/universe");
   await expect.poll(() => page.locator(".universe-table tbody tr").count()).toBeGreaterThan(900);
@@ -111,17 +139,20 @@ test("filters the screener by verdict alongside company search", async ({ page }
   await expect(page.locator(".universe-table tbody tr")).toHaveCount(1);
 });
 
-
 test("shows AADI's cash gap category without a percentile line", async ({ page }) => {
   await page.goto("/universe");
   await page.getByLabel("Search companies").fill("AADI");
   const gap = page.getByRole("button", { name: "AADI Cash conversion", exact: true });
-  await expect(gap).toHaveText("Not reported");
+  await expect(gap).toHaveText("No data");
   await expect(gap).not.toContainText(/p\s+n\/a|peers/);
   await gap.focus();
-  await expect(gap.locator("..").getByRole("tooltip")).toHaveText("Operating cash flow FY2023 not reported");
+  await expect(gap.locator("..").getByRole("tooltip")).toHaveText(
+    "No data for operating cash flow 2023.",
+  );
   await gap.click();
   const panel = page.getByRole("complementary", { name: "Check details" });
-  await expect(panel.getByText("Operating cash flow FY2023 not reported", { exact: true })).toBeVisible();
+  await expect(
+    panel.getByText("No data for operating cash flow 2023.", { exact: true }),
+  ).toBeVisible();
   await expect(panel.getByText("Sub-sector percentile", { exact: true })).toHaveCount(0);
 });

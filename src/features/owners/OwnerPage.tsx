@@ -1,13 +1,16 @@
-import manifest from "../../../data/universe/manifest.json";
-import { isCustodianName } from "../../universe/owners.mjs";
-import { formatValue, sourceIdLine } from "../../universe/presentation.mjs";
-import { CustodianLabel } from "./CustodianLabel";
 import { Link, useParams } from "@tanstack/react-router";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
+import manifest from "../../../data/universe/manifest.json";
+import { isCustodianName } from "../../universe/owners.mjs";
+import { formatValue, sourceLine } from "../../universe/presentation.mjs";
 import { formatMarketCap } from "../universe/universe-model";
+import { CustodianLabel } from "./CustodianLabel";
+import { ownerNetwork } from "./network";
+import { NetworkGraph } from "./NetworkGraph";
 import { kindLabels } from "./owners-model";
-import { OwnershipGraph } from "./OwnershipGraph";
+
+const companies = (count: number) => `${count} ${count === 1 ? "company" : "companies"}`;
 
 export function OwnerPage() {
   const { key } = useParams({ from: "/owner/$key" });
@@ -24,7 +27,7 @@ export function OwnerPage() {
       ) : owner === null ? (
         <>
           <h1>Owner not found</h1>
-          <p>No owner has this key in the stored snapshot.</p>
+          <p>We have no shareholder by this name.</p>
         </>
       ) : (
         <>
@@ -33,13 +36,14 @@ export function OwnerPage() {
             <div className="page-intro">
               {isCustodianName(owner.name) && <CustodianLabel />}
               <p>
-                {kindLabels[owner.kind]} · {owner.companyCount} companies held ·{" "}
-                {formatMarketCap(owner.totalValue)} in reported stake values
+                {owner.kind !== "holder" && `${kindLabels[owner.kind]} · `}Holds stakes in{" "}
+                {companies(owner.companyCount)}
+                {owner.totalValue !== null && `, worth ${formatMarketCap(owner.totalValue)}`}
               </p>
               {owner.kind === "bucket" && (
                 <p>
-                  This label combines unnamed holders. Stakes across companies do not identify one
-                  controlling owner.
+                  This name groups shareholders who aren’t listed one by one, so it doesn’t point to
+                  a single owner.
                 </p>
               )}
               {owner.listedSymbol && (
@@ -53,24 +57,32 @@ export function OwnerPage() {
               )}
             </div>
           </header>
-          <OwnershipGraph owner={owner} />
-          <h2 id="owner-holdings">Holdings</h2>
-          <p className="owners-note">
-            Percentages are reported stakes. Rank compares entity rows within each company; ties
-            share a rank. Public and treasury rows are excluded. Not reported marks a missing value.
-            Multiple source rows stay separate.
-          </p>
-          <div className="owners-table-wrap" role="region" aria-label="Owner holdings" tabIndex={0}>
+          <NetworkGraph network={ownerNetwork(owner)} label={`What ${owner.name} owns`}>
+            {owner.ownHolders.length > 0 ? (
+              <>
+                Above, shareholders with at least 1% of {owner.listedSymbol}. Below, the companies
+                it holds
+              </>
+            ) : (
+              <>Around it, the companies it holds</>
+            )}
+            , with their other shareholders of at least 1%. Bigger dots mean bigger stakes.
+          </NetworkGraph>
+          <h2 id="owner-holdings">Companies it holds</h2>
+          <div
+            className="owners-table-wrap"
+            role="region"
+            aria-label="Companies it holds"
+            tabIndex={0}
+          >
             <table className="owners-table owners-holdings">
-              <caption>{owner.holdings.length} reported holdings</caption>
+              <caption>{companies(owner.holdings.length)}</caption>
               <thead>
                 <tr>
                   <th scope="col">Company</th>
-                  <th scope="col">Stake %</th>
-                  <th scope="col">Rank</th>
-                  <th scope="col">Stake value</th>
-                  <th scope="col">Sub-sector</th>
-                  <th scope="col">Other entity holders</th>
+                  <th scope="col">Stake</th>
+                  <th scope="col">Value</th>
+                  <th scope="col">Other shareholders</th>
                 </tr>
               </thead>
               <tbody>
@@ -80,42 +92,33 @@ export function OwnerPage() {
                       <Link to="/company/$ticker" params={{ ticker: holding.symbol }}>
                         {holding.symbol}
                       </Link>
-                      <small>{holding.name ?? "Name not reported"}</small>
+                      {holding.name && <small>{holding.name}</small>}
                       {holding.reportedName !== owner.name && (
-                        <small>Reported as {holding.reportedName}</small>
+                        <small>Named as {holding.reportedName}</small>
                       )}
-                      <small>Market cap: {formatMarketCap(holding.marketCap)}</small>
                     </th>
-                    <td>{formatValue(holding.percentage, "percent")}</td>
                     <td>
-                      {holding.rank ?? "Not reported"}
-                      {holding.isLargest && <small>Largest entity stake</small>}
+                      {formatValue(holding.percentage, "percent")}
+                      {holding.isLargest && <small>Largest shareholder</small>}
                     </td>
-                    <td>
-                      {formatMarketCap(holding.value)}
-                      <small>Source: {sourceIdLine(holding.sourceId, manifest)}</small>
-                    </td>
-                    <td>{holding.subSector ?? "Not reported"}</td>
+                    <td>{formatMarketCap(holding.value)}</td>
                     <td>
                       {holding.coHolders.length ? (
                         <details>
-                          <summary>{holding.coHolders.length} other entity holders</summary>
+                          <summary>{holding.coHolders.length} others</summary>
                           <ul>
                             {holding.coHolders.map((holder, holderIndex) => (
                               <li key={`${holder.key}:${holderIndex}`}>
                                 <Link to="/owner/$key" params={{ key: holder.key }}>
                                   {holder.name}
                                 </Link>
-                                <span>
-                                  {formatValue(holder.percentage, "percent")} · rank{" "}
-                                  {holder.rank ?? "Not reported"}
-                                </span>
+                                <span>{formatValue(holder.percentage, "percent")}</span>
                               </li>
                             ))}
                           </ul>
                         </details>
                       ) : (
-                        "None reported"
+                        "None"
                       )}
                     </td>
                   </tr>
@@ -123,27 +126,26 @@ export function OwnerPage() {
               </tbody>
             </table>
           </div>
+          <p className="owners-note">
+            Stakes are from each company’s shareholder list. Public shares and shares a company
+            holds in itself are left out. Source: {sourceLine(manifest.retrievedAt)}.
+          </p>
           {owner.listedSymbol && (
             <section id="owner-upstream" className="owners-upstream">
-              <h2>Holders of {owner.listedSymbol}</h2>
-              <p className="owners-note">
-                One level above this listed owner, from its reported entity holdings.
-              </p>
+              <h2>Who owns {owner.listedSymbol}</h2>
               {owner.ownHolders.length ? (
                 <div
                   className="owners-table-wrap"
                   role="region"
-                  aria-label="Upstream holders"
+                  aria-label={`Who owns ${owner.listedSymbol}`}
                   tabIndex={0}
                 >
                   <table className="owners-table">
-                    <caption>{owner.ownHolders.length} reported upstream holdings</caption>
+                    <caption>{owner.ownHolders.length} named shareholders</caption>
                     <thead>
                       <tr>
-                        <th scope="col">Holder</th>
-                        <th scope="col">Stake %</th>
-                        <th scope="col">Rank</th>
-                        <th scope="col">Source</th>
+                        <th scope="col">Shareholder</th>
+                        <th scope="col">Stake</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -155,15 +157,13 @@ export function OwnerPage() {
                             </Link>
                           </th>
                           <td>{formatValue(holder.percentage, "percent")}</td>
-                          <td>{holder.rank ?? "Not reported"}</td>
-                          <td>{sourceIdLine(holder.sourceId, manifest)}</td>
                         </tr>
                       ))}
                     </tbody>
                   </table>
                 </div>
               ) : (
-                <p>No entity holders reported.</p>
+                <p>No named shareholders.</p>
               )}
             </section>
           )}

@@ -619,7 +619,6 @@ td,
 .owners-table th:first-child,
 .owners-table :is(th, td):nth-child(2),
 .profile-table-wrap th:first-child,
-.profile-holdings :is(th, td):nth-child(2),
 .owners-holdings :is(th, td):nth-child(n + 5),
 .owners-upstream :is(th, td):nth-child(4) {
   text-align: left;
@@ -715,12 +714,6 @@ td,
   min-height: 40px;
   cursor: pointer;
   font-weight: 600;
-}
-
-.universe-cell small {
-  color: var(--ink-2);
-  font-size: 12px;
-  font-weight: 450;
 }
 
 .universe-cell:focus-visible {
@@ -847,84 +840,27 @@ td,
   font-weight: 750;
 }
 
-.universe-calculation {
+.universe-panel-value {
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
   margin: 20px 0 0;
-  border-top: 1.5px solid var(--ink);
 }
 
-.universe-calculation > div,
-.universe-inputs dl > div,
-.profile-evidence dl > div {
-  display: grid;
-  grid-template-columns: 96px minmax(0, 1fr);
-  gap: 12px;
-  border-bottom: 1px solid var(--rule);
-  padding: 8px 0;
+.universe-panel-value strong {
+  font-size: 28px;
+  font-weight: 850;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums lining-nums;
 }
 
-.universe-calculation dt,
-.universe-inputs dt,
-.profile-evidence dt {
+.universe-panel-value small {
   color: var(--ink-2);
   font-size: 13px;
-  font-weight: 650;
-}
-
-.universe-calculation dd,
-.universe-inputs dd,
-.profile-evidence dd {
-  min-width: 0;
-  margin: 0;
-  overflow-wrap: anywhere;
-}
-
-.universe-inputs {
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.universe-inputs li,
-.profile-evidence li {
-  border-bottom: 1px solid var(--rule);
-  padding: 16px 0;
-}
-
-.universe-inputs li > strong,
-.profile-evidence li > strong {
-  font-weight: 750;
-}
-
-.universe-inputs li > p,
-.profile-evidence li > p {
-  margin: 2px 0 0;
-  color: var(--ink-2);
-  font-size: 14px;
-}
-
-.universe-inputs dl,
-.profile-evidence li dl {
-  margin: 8px 0 0;
-  font-size: 14px;
-}
-
-.universe-inputs dl > div:last-child,
-.profile-evidence li dl > div:last-child {
-  border-bottom: 0;
 }
 
 code {
   font: 500 0.9em/1.4 ui-monospace, "SF Mono", Menlo, monospace;
-}
-
-.source-endpoint summary {
-  cursor: pointer;
-}
-
-.source-endpoint code {
-  display: block;
-  margin-top: 6px;
-  overflow-wrap: anywhere;
 }
 
 /* Company profile */
@@ -1087,6 +1023,12 @@ code {
   font-size: 15px;
   font-weight: 650;
   text-decoration: none;
+  transition: color 160ms var(--ease-out), box-shadow 160ms var(--ease-out);
+}
+
+.profile-nav a[aria-current="true"] {
+  color: var(--ink);
+  box-shadow: inset 0 -3px 0 var(--blue);
 }
 
 .profile-section {
@@ -1321,28 +1263,34 @@ code {
   font-size: 14.5px;
 }
 
-.profile-check header > strong {
+.profile-check-value {
+  display: grid;
   flex: none;
+  justify-items: end;
   max-width: 45%;
+  margin: 0;
+  text-align: right;
+}
+
+.profile-check-value small {
+  margin-top: 4px;
+  color: var(--ink-2);
+  font-size: 13px;
+  font-weight: 500;
+}
+
+.profile-check-value strong {
   font-size: 28px;
   font-weight: 850;
   line-height: 1.1;
   letter-spacing: -0.02em;
   font-variant-numeric: tabular-nums lining-nums;
   overflow-wrap: anywhere;
-  text-align: right;
-}
-
-.profile-check-period,
-.profile-check-rank {
-  margin: 10px 0 0;
-  color: var(--ink-2);
-  font-size: 13.5px;
 }
 
 .profile-check-rank {
-  margin-top: 2px;
-  color: var(--ink);
+  margin: 14px 0 0;
+  font-size: 14.5px;
   font-weight: 600;
 }
 
@@ -1351,19 +1299,27 @@ code {
 }
 
 .profile-peers {
-  margin-top: 16px;
+  position: relative;
+  margin-top: 8px;
+  padding-top: 20px;
   color: var(--ink-2);
   font-size: 13px;
 }
 
-.profile-peers p {
-  margin: 0 0 4px;
+.profile-peer-label {
+  position: absolute;
+  top: 0;
+  translate: -50% 0;
+  color: var(--blue);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
 }
 
 .profile-peers svg {
   display: block;
   width: 100%;
-  height: auto;
+  height: 24px;
   overflow: visible;
 }
 
@@ -1381,6 +1337,7 @@ code {
   fill: var(--blue);
   stroke: var(--white);
   stroke-width: 1.5;
+  vector-effect: non-scaling-stroke;
 }
 
 .profile-axis {
@@ -1390,15 +1347,10 @@ code {
   font-size: 12px;
 }
 
-.profile-peer-gaps summary,
 .profile-evidence > summary,
 .owners-holdings summary {
   cursor: pointer;
   font-weight: 650;
-}
-
-.profile-peer-gaps summary {
-  margin-top: 8px;
 }
 
 .profile-evidence {
@@ -1411,14 +1363,40 @@ code {
   color: var(--ink);
 }
 
-.profile-evidence > dl {
+.check-calculation > p {
   margin: 10px 0 0;
+  color: var(--ink-2);
 }
 
-.profile-evidence ol {
+.check-calculation dl {
+  margin: 12px 0 0;
+  border-top: 1px solid var(--rule);
+}
+
+.check-calculation dl > div {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  border-bottom: 1px solid var(--rule);
+  padding: 7px 0;
+}
+
+.check-calculation dd {
   margin: 0;
-  padding: 0;
-  list-style: none;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums lining-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+
+.check-calculation dd[data-reported="false"] {
+  color: var(--ink-3);
+  font-weight: 500;
+}
+
+.check-calculation .check-source {
+  color: var(--ink-3);
+  font-size: 13px;
 }
 
 .profile-current-price {
@@ -1448,8 +1426,10 @@ code {
   color: var(--ink-3);
 }
 
-.profile-holdings > p {
-  margin: 28px 0 0;
+.profile-table-note {
+  margin: 8px 0 0;
+  color: var(--ink-3);
+  font-size: 13px;
 }
 
 .profile-holdings th:first-child {
@@ -1760,134 +1740,150 @@ code {
   max-width: 220px;
 }
 
-.owners-graph {
+.network {
   min-width: 0;
   max-width: 100%;
-  margin: 28px 0 0;
+  margin: 24px 0 28px;
 }
 
-.owners-graph figcaption {
-  margin-bottom: 10px;
-  color: var(--ink-2);
-  font-size: 14px;
-}
-
-.owners-graph-scroll {
-  min-width: 0;
-  max-width: 100%;
-  max-height: 440px;
-  overflow: auto;
+.network-scroll {
+  overflow-x: auto;
   border-radius: 8px;
   background: var(--white);
   box-shadow: inset 0 0 0 1px var(--rule);
 }
 
-.owners-graph svg {
+.network svg {
   display: block;
+  max-width: 100%;
+  height: auto;
+  margin: 0 auto;
 }
 
-.owners-flow {
-  display: none;
-  padding: 14px;
-  border-radius: 8px;
-  background: var(--white);
-  box-shadow: inset 0 0 0 1px var(--rule);
+.network-edge {
+  stroke: oklch(80% 0.01 260);
+  stroke-width: 1.3;
+  fill: none;
 }
 
-.owners-flow p {
-  margin: 0 0 8px;
-  color: var(--ink-2);
-  font-size: 13px;
-  font-weight: 700;
+.network-edge-branch,
+.network-edge-cross {
+  stroke-dasharray: 3 3;
 }
 
-.owners-flow ul {
-  display: grid;
-  gap: 6px;
-  margin: 0;
-  padding: 0;
-  list-style: none;
+.network-edge-cross {
+  stroke: var(--blue);
+  stroke-opacity: 0.5;
 }
 
-.owners-flow a,
-.owners-flow strong {
-  display: flex;
-  min-height: 44px;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-  border-radius: 3px;
-  padding: 8px 12px;
+.network-node text,
+.network-cross {
+  fill: var(--ink-2);
+  stroke: var(--white);
+  stroke-width: 4px;
+  stroke-linejoin: round;
+  paint-order: stroke;
+  font: 500 11.5px var(--sans);
 }
 
-.owners-flow a {
-  background: var(--paper);
-  box-shadow: inset 0 0 0 1px var(--ink-3);
-  font-size: 14.5px;
+.network-ring-1 text {
+  fill: var(--ink);
   font-weight: 650;
-  text-decoration: none;
 }
 
-.owners-flow a span {
-  flex: none;
-  font-variant-numeric: tabular-nums;
-}
-
-.owners-flow strong {
-  background: var(--blue);
-  color: var(--white);
+.network-ring-0 text {
+  fill: var(--white);
+  stroke: none;
+  font-size: 14px;
   font-weight: 800;
 }
 
-.owners-flow > span {
-  display: block;
-  margin: 6px 0 6px 14px;
-  color: var(--ink-3);
-  line-height: 1;
-}
-
-
-.owners-graph marker path {
-  fill: var(--ink-3);
-}
-
-.owners-edge {
-  fill: none;
-  stroke: var(--ink-3);
-  stroke-width: 1.25;
-}
-
-.owners-edge-label {
+.network-ring-0 rect {
   fill: var(--ink);
-  stroke: var(--white);
-  stroke-width: 4px;
-  paint-order: stroke;
-  font: 650 11px var(--sans);
+}
+
+.network-stake,
+.network-cross {
+  fill: var(--blue);
+  font-weight: 750;
   font-variant-numeric: tabular-nums;
 }
 
-.owners-node rect {
-  fill: var(--paper);
-  stroke: var(--ink-3);
+.network-node circle {
+  fill: var(--ink-3);
+  transition: stroke-width 120ms var(--ease-out);
+  stroke: var(--white);
+  stroke-width: 2;
 }
 
-.owners-node-owner rect {
+.network-listed circle {
   fill: var(--blue);
-  stroke: var(--blue);
 }
 
-.owners-node text {
-  fill: var(--ink);
-  font: 600 12.5px var(--sans);
-}
-
-.owners-node-owner text {
+.network-pooled circle {
   fill: var(--white);
+  stroke: var(--ink-3);
+  stroke-width: 1.5;
 }
 
-.owners-graph a:focus-visible rect {
-  stroke: var(--blue);
+.network-more text {
+  fill: var(--blue);
+  text-decoration: underline;
+}
+
+.network-node:hover circle,
+.network-node:focus-visible circle {
+  stroke: var(--ink);
   stroke-width: 3;
+}
+
+.network-node:focus-visible {
+  outline: none;
+}
+
+.network-ring-1:hover text,
+.network-ring-2:hover text,
+.network-node:focus-visible text {
+  fill: var(--blue);
+}
+
+.network-ring-0:focus-visible rect {
+  fill: var(--blue);
+}
+
+.network figcaption {
+  margin-top: 10px;
+  color: var(--ink-2);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.network-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px 18px;
+  margin-top: 6px;
+  font-size: 13px;
+}
+
+.network-key::before {
+  content: "";
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin-right: 6px;
+  border-radius: 50%;
+  background: var(--ink-3);
+  vertical-align: -1px;
+}
+
+.network-key.network-listed::before {
+  background: var(--blue);
+}
+
+.network-key.network-pooled::before {
+  background: var(--white);
+  box-shadow: inset 0 0 0 1.5px var(--ink-3);
 }
 
 .custodian-label {
@@ -2008,7 +2004,7 @@ code {
     grid-template-columns: minmax(0, 1fr);
   }
 
-  .profile-check header > strong {
+  .profile-check-value strong {
     font-size: 22px;
   }
 
@@ -2033,12 +2029,8 @@ code {
     justify-content: space-between;
   }
 
-  .owners-graph-scroll {
-    display: none;
-  }
-
-  .owners-flow {
-    display: block;
+  .network svg {
+    max-width: none;
   }
 
   /* Phones pin each row's identifier and drop the screener's and group's

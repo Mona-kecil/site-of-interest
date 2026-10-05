@@ -1,11 +1,15 @@
 import { getRouteApi, Link } from "@tanstack/react-router";
+import { useEffect, useRef, useState } from "react";
 import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import type { CheckDefinition } from "../../universe/checks.mjs";
 import { isCustodianName, ownerKey } from "../../universe/owners.mjs";
-import { checkCell, formatInput, formatValue } from "../../universe/presentation.mjs";
-import { CheckInput } from "../universe/CheckInput";
+import { checkCell, formatInput, formatValue, humanPeriod } from "../../universe/presentation.mjs";
+import { CheckCalculation } from "../universe/CheckCalculation";
+import { checkCopy, peerNoun, rankLine } from "../universe/check-copy";
 import { CustodianLabel } from "../owners/CustodianLabel";
+import { companyNetwork } from "../owners/network";
+import { NetworkGraph } from "../owners/NetworkGraph";
 import { assess, PILLARS, verdictLabels } from "../ideas/ideas-model";
 import { verdictDescriptions } from "../ideas/evidence";
 import { PillarOutcome } from "../ideas/IdeasPage";
@@ -28,7 +32,6 @@ import {
 import { TrackRecord } from "./TrackRecord";
 
 const route = getRouteApi("/company/$ticker");
-const holderKindLabels = { entity: "Entity", public: "Public", treasury: "Treasury" };
 
 function PeerStrip({
   peers,
@@ -41,53 +44,48 @@ function PeerStrip({
 }) {
   const strip = peerStrip(peers, symbol);
   const selected = strip.points.find((point) => point.selected);
+  if (!selected || strip.points.length < 2) return null;
+  const { better } = checkCopy[definition.id];
+  const place = (position: number) => (better === "lower" ? 1 - position : position);
+  const [low, high] = better ? ["Worse", "Better"] : ["Lower", "Higher"];
   return (
     <div className="profile-peers">
-      <p>Sub-sector ranks · diamond marks {symbol}</p>
-      {strip.points.length ? (
-        <>
-          <svg
-            viewBox="0 0 400 36"
-            role="img"
-            aria-label={`${definition.label}: ${strip.points.length} reported sub-sector peers; ${symbol} marked by a diamond`}
-          >
-            <line x1="12" x2="388" y1="18" y2="18" />
-            {strip.points.map((point) => (
-              <circle key={point.symbol} cx={12 + point.position * 376} cy="18" r="3">
-                <title>
-                  {point.symbol}: {formatValue(point.value, definition.unit)}
-                </title>
-              </circle>
-            ))}
-            {selected && (
-              <path
-                className="profile-peer-subject"
-                d={`M ${12 + selected.position * 376} 10 l 8 8 l -8 8 l -8 -8 Z`}
-              >
-                <title>
-                  {symbol}: {formatValue(selected.value, definition.unit)}
-                </title>
-              </path>
-            )}
-          </svg>
-          <div className="profile-axis">
-            <span>lowest</span>
-            <span>{strip.points.length} peers</span>
-            <span>highest</span>
-          </div>
-        </>
-      ) : (
-        <p>No reported peer values.</p>
-      )}
-      {strip.missing.length > 0 && (
-        <details className="profile-peer-gaps">
-          <summary>
-            Check gaps: {strip.missing.length} {strip.missing.length === 1 ? "peer" : "peers"}
-            {strip.missing.includes(symbol) ? `, including ${symbol}` : ""}
-          </summary>
-          <p>{strip.missing.join(", ")}</p>
-        </details>
-      )}
+      <span
+        className="profile-peer-label"
+        style={{ left: `${Math.min(Math.max(place(selected.position) * 100, 6), 94)}%` }}
+        aria-hidden="true"
+      >
+        {symbol}
+      </span>
+      <svg
+        viewBox="0 0 400 24"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label={`${symbol} against ${strip.points.length - 1} others, ${low.toLowerCase()} on the left, ${high.toLowerCase()} on the right`}
+      >
+        <line x1="0" x2="400" y1="12" y2="12" />
+        {strip.points
+          .filter((point) => !point.selected)
+          .map((point) => (
+            <circle key={point.symbol} cx={place(point.position) * 400} cy="12" r="3">
+              <title>
+                {point.symbol}: {formatValue(point.value, definition.unit)}
+              </title>
+            </circle>
+          ))}
+        <path
+          className="profile-peer-subject"
+          d={`M ${place(selected.position) * 400} 4 l 8 8 l -8 8 l -8 -8 Z`}
+        >
+          <title>
+            {symbol}: {formatValue(selected.value, definition.unit)}
+          </title>
+        </path>
+      </svg>
+      <div className="profile-axis" aria-hidden="true">
+        <span>{low}</span>
+        <span>{high}</span>
+      </div>
     </div>
   );
 }
@@ -105,6 +103,8 @@ function CheckCard({
 }) {
   const cell = checkCell(result, definition.unit);
   const sources = new Map(profile.sources.map((source) => [source.id, source]));
+  const { symbol, subSector } = profile.company;
+  const rank = rankLine(peers, symbol, checkCopy[definition.id].better, peerNoun(subSector));
   return (
     <article className="profile-check" data-check={definition.id}>
       <header>
@@ -112,147 +112,149 @@ function CheckCard({
           <h3>{definition.label}</h3>
           <p>{definition.question}</p>
         </div>
-        <strong
-          className={cell.state === "does-not-apply" ? "check-does-not-apply" : undefined}
-          title={cell.reason ?? undefined}
-        >
-          {cell.text}
-        </strong>
+        <p className="profile-check-value">
+          <strong className={cell.state === "does-not-apply" ? "check-does-not-apply" : undefined}>
+            {cell.text}
+          </strong>
+          {result && <small>{humanPeriod(result.period)}</small>}
+        </p>
       </header>
-      <p className="profile-check-period">{result?.period ?? "Period not reported"}</p>
-      {cell.peers && <p className="profile-check-rank">{cell.peers}</p>}
       {cell.reason && <p className="profile-note">{cell.reason}</p>}
-      <PeerStrip peers={peers} symbol={profile.company.symbol} definition={definition} />
-      <details className="profile-evidence">
-        <summary>Formula and inputs · {definition.label}</summary>
-        <dl>
-          <div>
-            <dt>Formula</dt>
-            <dd>{definition.formula}</dd>
-          </div>
-        </dl>
-        {result?.inputs.length ? (
-          <ol>
-            {result.inputs.map((input, index) => {
-              const source = sources.get(input.sourceId);
-              return (
-                <li key={`${input.field}:${index}`}>
-                  <CheckInput input={input} source={source} unit={definition.unit} />
-                </li>
-              );
-            })}
-          </ol>
-        ) : (
-          <p>Inputs not reported.</p>
-        )}
-      </details>
+      {result?.value != null && rank && <p className="profile-check-rank">{rank}</p>}
+      {result?.value != null && <PeerStrip peers={peers} symbol={symbol} definition={definition} />}
+      {result && (
+        <details className="profile-evidence">
+          <summary>How it’s calculated</summary>
+          <CheckCalculation
+            definition={definition}
+            inputs={result.inputs.map((input) => ({
+              ...input,
+              source: sources.get(input.sourceId),
+            }))}
+          />
+        </details>
+      )}
     </article>
   );
 }
 
 function HistoryTable({
-  label,
+  caption,
+  period,
   rows,
   fields,
 }: {
-  label: string;
+  caption: string;
+  period: "Year" | "Quarter";
   rows: ReturnType<typeof extractSeries>;
   fields: readonly SeriesField[];
 }) {
+  const money = fields.some((field) => field.unit === "IDR");
+  const gaps = rows.some((row) => row.values.includes(null));
   return (
-    <div className="profile-table-wrap" tabIndex={0} role="region" aria-label={label}>
+    <>
+      <div className="profile-table-wrap" tabIndex={0} role="region" aria-label={caption}>
+        <table>
+          <caption>
+            {caption}
+            {money ? ", IDR billion" : ""}
+          </caption>
+          <thead>
+            <tr>
+              <th scope="col">{period}</th>
+              {fields.map((field) => (
+                <th key={field.key} scope="col">
+                  {field.label}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rows.map((row) => (
+              <tr key={row.period}>
+                <th scope="row">{String(row.period).replace("-", " ")}</th>
+                {row.values.map((value, index) => (
+                  <td key={fields[index].key} data-reported={value !== null}>
+                    {fields[index].unit === "IDR"
+                      ? formatIdrAmount(value)
+                      : fields[index].unit === "IDR/share"
+                        ? formatInput(value, "total_dividend")
+                        : formatValue(value, "multiple")}
+                  </td>
+                ))}
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+      {gaps && (
+        <p className="profile-table-note">
+          No data means our data provider doesn’t have the figure.
+        </p>
+      )}
+    </>
+  );
+}
+
+function OwnerNetwork({ symbol }: { symbol: string }) {
+  const data = useQuery(api.companyNetwork.get, { symbol });
+  if (!data) return null;
+  const network = companyNetwork(data);
+  if (!network.branches.length) return null;
+  const up = network.branches.some(({ side }) => side === "up");
+  const down = network.branches.some(({ side }) => side === "down");
+  return (
+    <NetworkGraph network={network} label={`Who owns ${symbol}`}>
+      {up && (
+        <>Above, shareholders with at least 1% of {symbol} and other listed companies they own. </>
+      )}
+      {down && <>Below, listed companies {symbol} owns. </>}
+      Bigger dots mean bigger stakes.
+    </NetworkGraph>
+  );
+}
+
+function Holdings({ profile }: { profile: CompanyProfile }) {
+  return profile.holdings.length ? (
+    <div
+      className="profile-table-wrap profile-holdings"
+      tabIndex={0}
+      role="region"
+      aria-label="Shareholders"
+    >
       <table>
-        <caption>
-          {label} · IDR billions (bn)
-          {fields.some((field) => field.unit === "multiple")
-            ? "; P/E and P/B in multiples (×)"
-            : ""}
-          {fields.some((field) => field.unit === "IDR/share") ? "; dividends in IDR per share" : ""}
-        </caption>
+        <caption>Shareholders, value in IDR billion</caption>
         <thead>
           <tr>
-            <th scope="col">Period</th>
-            {fields.map((field) => (
-              <th key={field.key} scope="col">
-                {field.label}
-                {field.unit === "IDR"
-                  ? " (bn)"
-                  : field.unit === "IDR/share"
-                    ? " (IDR/share)"
-                    : " (×)"}
-              </th>
-            ))}
+            <th scope="col">Shareholder</th>
+            <th scope="col">Stake</th>
+            <th scope="col">Value</th>
           </tr>
         </thead>
         <tbody>
-          {rows.map((row) => (
-            <tr key={row.period}>
-              <th scope="row">{row.period}</th>
-              {row.values.map((value, index) => (
-                <td key={fields[index].key} data-reported={value !== null}>
-                  {fields[index].unit === "IDR"
-                    ? formatIdrAmount(value)
-                    : fields[index].unit === "IDR/share"
-                      ? formatInput(value, "total_dividend")
-                      : formatValue(value, "multiple")}
-                </td>
-              ))}
+          {orderHoldings(profile.holdings).map((holding) => (
+            <tr key={holding._id}>
+              <th scope="row">
+                {holding.holderKind === "entity" ? (
+                  <Link to="/owner/$key" params={{ key: ownerKey(holding.holderName) }}>
+                    {holding.holderName}
+                  </Link>
+                ) : (
+                  holding.holderName
+                )}
+                {holding.holderKind === "entity" && isCustodianName(holding.holderName) && (
+                  <CustodianLabel />
+                )}
+              </th>
+              <td>{formatValue(holding.percentage, "percent")}</td>
+              <td>{formatIdrAmount(holding.value)}</td>
             </tr>
           ))}
         </tbody>
       </table>
     </div>
-  );
-}
-
-function Holdings({ profile }: { profile: CompanyProfile }) {
-  return (
-    <div className="profile-holdings">
-      <p>
-        Free float:{" "}
-        <strong>{formatValue(profile.company.current.freeFloat ?? null, "percent")}</strong>
-      </p>
-      {profile.holdings.length ? (
-        <div className="profile-table-wrap" tabIndex={0} role="region" aria-label="Holdings table">
-          <table>
-            <caption>Holdings · value in IDR billions (bn)</caption>
-            <thead>
-              <tr>
-                <th scope="col">Holder</th>
-                <th scope="col">Kind</th>
-                <th scope="col">%</th>
-                <th scope="col">Shares</th>
-                <th scope="col">Value (bn)</th>
-              </tr>
-            </thead>
-            <tbody>
-              {orderHoldings(profile.holdings).map((holding) => (
-                <tr key={holding._id}>
-                  <th scope="row">
-                    {holding.holderKind === "entity" ? (
-                      <Link to="/owner/$key" params={{ key: ownerKey(holding.holderName) }}>
-                        {holding.holderName}
-                      </Link>
-                    ) : (
-                      holding.holderName
-                    )}
-                    {holding.holderKind === "entity" && isCustodianName(holding.holderName) && (
-                      <CustodianLabel />
-                    )}
-                  </th>
-                  <td>{holderKindLabels[holding.holderKind]}</td>
-                  <td>{formatValue(holding.percentage, "percent")}</td>
-                  <td>{formatValue(holding.shares, "count")}</td>
-                  <td>{formatIdrAmount(holding.value)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      ) : (
-        <p>Holdings not reported.</p>
-      )}
-    </div>
+  ) : (
+    <p className="profile-note">No shareholder data.</p>
   );
 }
 
@@ -284,30 +286,92 @@ function ResearchSection({
       {section.id === "price" && (
         <dl className="profile-current-price">
           <div>
-            <dt>Current P/E · TTM Q3-2025–Q2-2026</dt>
+            <dt>P/E today</dt>
             <dd>{formatValue(profile.company.current.peTtm ?? null, "multiple")}</dd>
           </div>
           <div>
-            <dt>Current P/B · MRQ Q2-2026</dt>
+            <dt>P/B today</dt>
             <dd>{formatValue(profile.company.current.pbMrq ?? null, "multiple")}</dd>
           </div>
         </dl>
       )}
       {section.series.length > 0 && (
         <HistoryTable
-          label={`${section.label} annual history · 2019–2025`}
+          caption={`${section.label}, yearly figures`}
+          period="Year"
           rows={extractSeries(profile.years, annualPeriods, section.series)}
           fields={section.series}
         />
       )}
-      {section.id === "owners" && <Holdings profile={profile} />}
+      {section.id === "owners" && (
+        <>
+          <OwnerNetwork symbol={profile.company.symbol} />
+          <Holdings profile={profile} />
+        </>
+      )}
     </section>
   );
+}
+
+// The last section whose top has passed a line a third of the way down the view, below the
+// sticky nav, so a heading lights up once it is in the upper part of the screen.
+function useCurrentSection(ids: readonly string[]) {
+  const nav = useRef<HTMLElement>(null);
+  const [current, setCurrent] = useState<string | null>(null);
+  const key = ids.join(" ");
+  useEffect(() => {
+    const sectionIds = key.split(" ").filter(Boolean);
+    let frame = 0;
+    const update = () => {
+      frame = 0;
+      const top = nav.current?.getBoundingClientRect().bottom ?? 0;
+      const line = top + Math.max(24, (innerHeight - top) / 3);
+      setCurrent(
+        sectionIds.reduce<string | null>(
+          (passed, id) =>
+            (document.getElementById(`profile-${id}`)?.getBoundingClientRect().top ?? Infinity) <=
+            line
+              ? id
+              : passed,
+          null,
+        ),
+      );
+    };
+    const schedule = () => {
+      frame ||= requestAnimationFrame(update);
+    };
+    update();
+    addEventListener("scroll", schedule, { passive: true });
+    addEventListener("resize", schedule);
+    return () => {
+      removeEventListener("scroll", schedule);
+      removeEventListener("resize", schedule);
+      cancelAnimationFrame(frame);
+    };
+  }, [key]);
+  useEffect(() => {
+    const link = nav.current?.querySelector<HTMLElement>('[aria-current="true"]');
+    if (!nav.current || !link) return;
+    const { scrollLeft, clientWidth } = nav.current;
+    if (
+      link.offsetLeft < scrollLeft ||
+      link.offsetLeft + link.offsetWidth > scrollLeft + clientWidth
+    )
+      nav.current.scrollTo({ left: link.offsetLeft - 12 });
+  }, [current]);
+  return { nav, current };
 }
 
 export function CompanyProfilePage() {
   const { ticker } = route.useParams();
   const profile = useQuery(api.companyProfile.get, { symbol: ticker });
+  const company = profile?.company;
+  const { sections, note } = company ? assembleSections(company) : { sections: [], note: null };
+  const links = [
+    ...sections.map(({ id, label }) => ({ id, label })),
+    { id: "quarters", label: "Quarterly" },
+  ];
+  const { nav, current } = useCurrentSection(company ? links.map(({ id }) => id) : []);
   if (profile === undefined)
     return (
       <main className="page company-profile profile-state wrap" aria-busy="true">
@@ -316,7 +380,7 @@ export function CompanyProfilePage() {
         </p>
       </main>
     );
-  if (profile === null)
+  if (profile === null || !company)
     return (
       <main className="page company-profile profile-state wrap">
         <h1>Company not found</h1>
@@ -324,8 +388,6 @@ export function CompanyProfilePage() {
         <Link to="/universe">Back to Screener</Link>
       </main>
     );
-  const { company } = profile;
-  const { sections, note } = assembleSections(company);
   const assessment = assess({
     subSector: company.subSector,
     checks: company.checks,
@@ -341,24 +403,18 @@ export function CompanyProfilePage() {
         <h1>{company.name}</h1>
         <p className="profile-class">
           {[company.sector, company.subSector, company.industry]
-            .map((part) => part ?? "Not reported")
+            .map((part) => part ?? "No data")
             .join(" › ")}
         </p>
         <dl className="profile-identity">
           <div>
             <dt>Indices</dt>
-            <dd>
-              {company.indices === null
-                ? "Not reported"
-                : company.indices.join(" · ") || "None reported"}
-            </dd>
+            <dd>{company.indices === null ? "No data" : company.indices.join(" · ") || "None"}</dd>
           </div>
           <div>
             <dt>Business groups</dt>
             <dd>
-              {company.affiliates === null
-                ? "Not reported"
-                : company.affiliates.join(" · ") || "None reported"}
+              {company.affiliates === null ? "No data" : company.affiliates.join(" · ") || "None"}
             </dd>
           </div>
           <div>
@@ -371,11 +427,11 @@ export function CompanyProfilePage() {
           </div>
           <div>
             <dt>Listing board</dt>
-            <dd>{company.listingBoard ?? "Not reported"}</dd>
+            <dd>{company.listingBoard ?? "No data"}</dd>
           </div>
           <div>
-            <dt>Listing date</dt>
-            <dd>{company.listingDate ?? "Not reported"}</dd>
+            <dt>Listed since</dt>
+            <dd>{company.listingDate ?? "No data"}</dd>
           </div>
         </dl>
       </header>
@@ -399,7 +455,7 @@ export function CompanyProfilePage() {
                 <PillarOutcome pillar={PILLARS[index]} result={result} />
                 {sections.some(({ id }) => id === sectionId) && (
                   <a className="pillar-link" href={`#profile-${sectionId}`}>
-                    View {PILLARS[index].title.toLowerCase()} inputs
+                    See {PILLARS[index].title.toLowerCase()} details
                   </a>
                 )}
               </article>
@@ -407,27 +463,31 @@ export function CompanyProfilePage() {
           })}
         </div>
       </section>
-      <p className="profile-note">
-        Percentiles compare reported sub-sector measurements. Annual and quarterly amounts are in
-        IDR billions (bn), except dividends in IDR per share. Not reported marks a gap in the
-        record.
-      </p>
       {note && <p className="profile-applicability">{note}</p>}
       <TrackRecord profile={profile} />
-      <nav className="profile-nav" aria-label="Company sections">
-        {sections.map((section) => (
-          <a key={section.id} href={`#profile-${section.id}`}>
-            {section.label}
+      <nav className="profile-nav" aria-label="Company sections" ref={nav}>
+        {links.map((link) => (
+          <a
+            key={link.id}
+            href={`#profile-${link.id}`}
+            aria-current={current === link.id ? "true" : undefined}
+          >
+            {link.label}
           </a>
         ))}
       </nav>
       {sections.map((section) => (
         <ResearchSection key={section.id} section={section} profile={profile} />
       ))}
-      <section className="profile-section" aria-labelledby="profile-quarter-title">
-        <h2 id="profile-quarter-title">Quarterly record</h2>
+      <section
+        className="profile-section"
+        id="profile-quarters"
+        aria-labelledby="profile-title-quarters"
+      >
+        <h2 id="profile-title-quarters">Quarterly record</h2>
         <HistoryTable
-          label="Eight quarters · Q3-2024–Q2-2026"
+          caption="Last eight quarters"
+          period="Quarter"
           rows={extractSeries(profile.quarters, quarterPeriods, quarterFields)}
           fields={quarterFields}
         />

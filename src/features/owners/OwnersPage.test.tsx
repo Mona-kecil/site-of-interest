@@ -6,10 +6,15 @@ import { OwnerPage } from "./OwnerPage";
 import { GroupsPage, GroupPage } from "./GroupsPage";
 import type { Owner, OwnerSummary } from "./owners-model";
 
-const { useQuery, useParams } = vi.hoisted(() => ({ useQuery: vi.fn(), useParams: vi.fn() }));
+const { useQuery, useParams, historyPush } = vi.hoisted(() => ({
+  useQuery: vi.fn(),
+  useParams: vi.fn(),
+  historyPush: vi.fn(),
+}));
 vi.mock("convex/react", () => ({ useQuery }));
 vi.mock("@tanstack/react-router", () => ({
   useParams,
+  useRouter: () => ({ history: { push: historyPush } }),
   Link: ({
     to,
     params = {},
@@ -34,6 +39,7 @@ afterEach(() => {
   cleanup();
   useQuery.mockReset();
   useParams.mockReset();
+  historyPush.mockReset();
 });
 
 const owners: OwnerSummary[] = [
@@ -111,14 +117,12 @@ describe("owners pages", () => {
       "/owner/danantara%20asset%20management",
     );
     fireEvent.change(screen.getByLabelText("Search owners"), { target: { value: "" } });
-    fireEvent.click(
-      screen.getByRole("tab", { name: "Listed companies that own listed companies" }),
-    );
+    fireEvent.click(screen.getByRole("tab", { name: "Listed companies that own others" }));
     expect(within(table).getAllByRole("row")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "ASII" })).toHaveAttribute("href", "/company/ASII");
   });
 
-  it("shows holdings, co-holders, upstream holders and percentage edges", () => {
+  it("shows holdings and upstream shareholders with a labeled, linked network", () => {
     useParams.mockReturnValue({ key: "astra international" });
     useQuery.mockReturnValue(owner);
     render(<OwnerPage />);
@@ -128,22 +132,42 @@ describe("owners pages", () => {
       "/company/ASII",
     );
     expect(
-      within(screen.getByRole("table", { name: "1 reported holdings" })).getByRole("link", {
+      within(screen.getByRole("table", { name: "1 company" })).getByRole("link", {
         name: "UNTR",
       }),
     ).toHaveAttribute("href", "/company/UNTR");
-    fireEvent.click(screen.getByText("1 other entity holders"));
-    expect(screen.getByRole("link", { name: "Other holder" })).toHaveAttribute(
+    const holdings = screen.getByRole("region", { name: "Companies it holds" });
+    expect(
+      within(holdings)
+        .getAllByRole("columnheader")
+        .map((cell) => cell.textContent),
+    ).toEqual(["Company", "Stake", "Value", "Other shareholders"]);
+    fireEvent.click(within(holdings).getByText("1 others"));
+    expect(within(holdings).getByRole("link", { name: "Other holder" })).toHaveAttribute(
       "href",
       "/owner/other",
     );
-    expect(screen.getByRole("heading", { name: "Holders of ASII" })).toBeInTheDocument();
-    expect(screen.getByRole("img")).toHaveAccessibleName(
-      "Reported ownership links for PT Astra International Tbk",
+    expect(screen.getByRole("heading", { name: "Who owns ASII" })).toBeInTheDocument();
+    const network = screen.getByRole("region", { name: "What PT Astra International Tbk owns" });
+    expect(
+      within(network)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href"))
+        .sort(),
+    ).toEqual(["/company/ASII", "/company/UNTR", "/owner/other", "/owner/parent"]);
+    expect(within(network).getByText("59.50%", { exact: true })).toBeInTheDocument();
+    expect(within(network).getByText("50.00%", { exact: true })).toBeInTheDocument();
+    const company = within(network)
+      .getAllByRole("link")
+      .find((link) => link.getAttribute("href") === "/company/UNTR")!;
+    fireEvent.click(company);
+    expect(historyPush).toHaveBeenCalledWith("/company/UNTR");
+    const upstream = screen.getByRole("region", { name: "Who owns ASII" });
+    expect(within(upstream).getByRole("link", { name: "Parent" })).toHaveAttribute(
+      "href",
+      "/owner/parent",
     );
-    expect(document.querySelectorAll(".owners-edge")).toHaveLength(2);
-    expect(document.querySelector(".owners-graph")).toHaveTextContent("59.50%");
-    expect(document.querySelector(".owners-upstream")).toHaveTextContent("50.00%");
+    expect(upstream).toHaveTextContent("50.00%");
   });
 
   it("shows the reported name for legal-form and spelling merges, only on differing rows", () => {
@@ -154,7 +178,7 @@ describe("owners pages", () => {
     });
     const view = render(<OwnerPage />);
     expect(document.querySelector('[data-symbol="UNTR"]')).toHaveTextContent(
-      "Reported as PT Astra International Tbk.",
+      "Named as PT Astra International Tbk.",
     );
     useParams.mockReturnValue({ key: "edwin soeryadjaya" });
     useQuery.mockReturnValue({
@@ -171,9 +195,9 @@ describe("owners pages", () => {
     });
     view.rerender(<OwnerPage />);
     expect(document.querySelector('[data-symbol="ADRO"]')).toHaveTextContent(
-      "Reported as Edwin Soeryadjaja",
+      "Named as Edwin Soeryadjaja",
     );
-    expect(document.querySelector('[data-symbol="MPMX"]')).not.toHaveTextContent("Reported as");
+    expect(document.querySelector('[data-symbol="MPMX"]')).not.toHaveTextContent("Named as");
   });
 
   it("exposes provider labels, overlapping membership and check gaps", () => {
@@ -196,6 +220,7 @@ describe("owners pages", () => {
           subSector: null,
           marketCap: null,
           freeFloat: 0.25,
+          holders: [{ ...holder, listedSymbol: null }],
           checks: [
             {
               checkId: "cash_conversion",
@@ -209,9 +234,24 @@ describe("owners pages", () => {
       ],
     });
     render(<GroupPage />);
-    expect(screen.getByText(/control has not been verified/)).toBeInTheDocument();
-    expect(screen.getByRole("link", { name: "TEST" })).toHaveAttribute("href", "/company/TEST");
-    expect(screen.getByText("Earnings FY2025 not reported")).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        "Business groups as our data provider labels them. Being in a group doesn’t prove who controls a company, and a company can sit in more than one group.",
+      ),
+    ).toBeInTheDocument();
+    const network = screen.getByRole("region", { name: "Companies in the Salim group" });
+    expect(
+      within(network)
+        .getAllByRole("link")
+        .map((link) => link.getAttribute("href"))
+        .sort(),
+    ).toEqual(["/company/TEST", "/group/salim", "/owner/parent"]);
+    expect(
+      within(screen.getByRole("region", { name: "Group members and checks" })).getByRole("link", {
+        name: "TEST",
+      }),
+    ).toHaveAttribute("href", "/company/TEST");
+    expect(screen.getByText("No data for earnings 2025.")).toBeInTheDocument();
     expect(screen.queryByText(/peers/)).not.toBeInTheDocument();
     expect(screen.getByText("25.00%")).toBeInTheDocument();
   });

@@ -73,7 +73,9 @@ describe("Company profile model", () => {
 
   it("explains non-applicability for an insurer while retaining checks that apply to all", () => {
     const { sections, note } = assembleSections({ subSector: "Insurance" });
-    expect(note).toBe("Non-financial checks do not apply to its sub-sector (Insurance).");
+    expect(note).toBe(
+      "Some checks are built for non-financial companies, so they’re left out for Insurance.",
+    );
     const ids = sections.flatMap(({ checks }) => checks.map(({ id }) => id));
     expect(ids).toContain("roe");
     expect(ids).not.toContain("roic");
@@ -132,8 +134,8 @@ describe("Company profile model", () => {
     expect(formatIdr(1.25e12)).toBe("IDR 1,250.00 bn");
     expect(formatIdr(-2.5e9)).toBe("IDR -2.50 bn");
     expect(formatIdr(0)).toBe("IDR 0.00 bn");
-    expect(formatIdr(null)).toBe("Not reported");
-    expect(formatIdrAmount(null)).toBe("Not reported");
+    expect(formatIdr(null)).toBe("No data");
+    expect(formatIdrAmount(null)).toBe("No data");
   });
 
   it("orders entities by percentage, then public, then treasury, without mutating rows", () => {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { formatInput, formatPeers, formatValue } from "../../universe/presentation.mjs";
+import { formatInput, formatValue } from "../../universe/presentation.mjs";
 import {
   filterOptions,
   formatMarketCap,
@@ -148,7 +148,7 @@ describe("Universe measurements", () => {
     ];
     expect(filterOptions(rows, "indices")).toEqual([
       { value: "LQ45", label: "LQ45" },
-      { value: UNREPORTED, label: "Not reported" },
+      { value: UNREPORTED, label: "No data" },
     ]);
     expect(
       screenRows(
@@ -171,12 +171,10 @@ describe("Universe measurements", () => {
     expect(formatValue(-0.125, "percent")).toBe("-12.50%");
     expect(formatValue(2, "multiple")).toBe("2.00×");
     expect(formatValue(0, "count")).toBe("0");
-    expect(formatValue(null, "percent")).toBe("Not reported");
+    expect(formatValue(null, "percent")).toBe("No data");
     expect(formatMarketCap(182580824661400)).toBe("IDR 182.58T");
-    expect(formatMarketCap(null)).toBe("Not reported");
-    expect(formatInput(null)).toBe("Not reported");
+    expect(formatMarketCap(null)).toBe("No data");
+    expect(formatInput(null)).toBe("No data");
     expect(formatInput(0.025)).toBe("0.025");
-    expect(formatPeers(0.84, 31)).toBe("p84 · 31 peers");
-    expect(formatPeers(null, 4)).toBe("4 peers · no percentile");
   });
 });

@@ -121,23 +121,25 @@ describe("Universe page", () => {
     expect(screen.getByRole("status")).toHaveTextContent("1 of 2 companies");
     const cell = screen.getByRole("button", { name: "BANK NPL ratio" });
     expect(cell).toHaveTextContent("2.00%");
-    expect(cell).toHaveTextContent("p50 · 48 peers");
+    expect(cell.textContent).toBe("2.00%");
+    expect(cell).toHaveAttribute("aria-expanded", "false");
     cell.focus();
     fireEvent.click(cell);
     const panel = screen.getByRole("complementary", { name: "Check details" });
     expect(panel).toHaveFocus();
     expect(within(panel).getByText("What share of loans is non-performing?")).toBeInTheDocument();
     expect(
-      within(panel).getByText("non_performing_loan[2025] / gross_loan[2025]"),
+      within(panel).getByText("Non-performing loans divided by gross loans."),
     ).toBeInTheDocument();
-    expect(within(panel).getByText("non_performing_loan[2025]")).toBeInTheDocument();
-    expect(within(panel).getByText("Non-performing loans · FY2025")).toBeInTheDocument();
-    expect(
-      within(panel).getByText("Sectors · /v2/companies/ · batch 1 of 10 · rows 1–200 · 2 Oct 2026"),
-    ).toBeInTheDocument();
-    fireEvent.click(within(panel).getByText("Full endpoint"));
-    expect(within(panel).getByText("/v2/companies/?offset=0")).toBeInTheDocument();
-    expect(within(panel).getByText("2026-10-02T09:56:37.757Z")).toBeInTheDocument();
+    expect(within(panel).getByRole("heading", { name: "How it’s calculated" })).toBeInTheDocument();
+    expect(within(panel).getByText("Non-performing loans, 2025")).toBeInTheDocument();
+    expect(within(panel).getByText("IDR 0.00 bn")).toBeInTheDocument();
+    expect(within(panel).getByText("Source: Sectors, retrieved 2 Oct 2026.")).toBeInTheDocument();
+    expect(within(panel).getByRole("link", { name: "BANK company page →" })).toHaveAttribute(
+      "href",
+      "/company/BANK",
+    );
+    expect(cell).toHaveAttribute("aria-expanded", "true");
     fireEvent.keyDown(panel, { key: "Escape" });
     expect(screen.queryByRole("complementary")).not.toBeInTheDocument();
     expect(cell).toHaveFocus();
@@ -147,8 +149,8 @@ describe("Universe page", () => {
     useQuery.mockReturnValue(companies);
     render(<UniversePage />);
     const cell = screen.getByRole("button", { name: "CASH Cash conversion" });
-    expect(cell).toHaveTextContent("Not reported");
-    expect(cell).toHaveAccessibleDescription("Operating cash flow FY2024 not reported");
+    expect(cell).toHaveTextContent("No data");
+    expect(cell).toHaveAccessibleDescription("No data for operating cash flow 2024.");
     expect(cell).not.toHaveTextContent(/peers/);
     expect(screen.getAllByText("Does not apply")[0].tagName).toBe("SPAN");
     const cash = screen.getByRole("tab", { name: "Cash" });
@@ -185,7 +187,7 @@ describe("Ideas page", () => {
     expect(within(ideas).getAllByRole("article")).toHaveLength(12);
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent("IDEA13");
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent(
-      "Cash conversion 1.00× · pass ≥ 0.80×",
+      "Cash conversion 1.00× · passes at 0.8× or more",
     );
     expect(screen.queryByRole("link", { name: "SMALL" })).not.toBeInTheDocument();
     fireEvent.click(
@@ -194,7 +196,7 @@ describe("Ideas page", () => {
     expect(within(ideas).getAllByRole("article")).toHaveLength(14);
     const flags = screen.getByRole("region", { name: "Red flags · 1" });
     expect(flags).toHaveTextContent("Priced for perfection");
-    expect(flags).toHaveTextContent("Current P/E 100.00× · flag > 50.00×");
+    expect(flags).toHaveTextContent("Current P/E 100.00× · flagged above 50");
     expect(within(flags).getByRole("link", { name: "FLAG" })).toHaveAttribute(
       "href",
       "/company/FLAG",

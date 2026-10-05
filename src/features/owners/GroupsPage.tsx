@@ -4,9 +4,11 @@ import { useQuery } from "convex/react";
 import { api } from "../../../convex/_generated/api";
 import { definitions } from "../../universe/checks.mjs";
 import { formatMarketCap } from "../universe/universe-model";
+import { groupNetwork } from "./network";
+import { NetworkGraph } from "./NetworkGraph";
 
 const groupNote =
-  "Sectors business-group labels. Membership follows the provider's affiliates field; control has not been verified. A company can carry more than one label.";
+  "Business groups as our data provider labels them. Being in a group doesn’t prove who controls a company, and a company can sit in more than one group.";
 
 export function GroupsPage() {
   const groups = useQuery(api.owners.groups, {});
@@ -25,11 +27,11 @@ export function GroupsPage() {
       ) : (
         <div className="owners-table-wrap" role="region" aria-label="Business groups" tabIndex={0}>
           <table className="owners-table owners-groups">
-            <caption>{groups.length} Sectors business-group labels</caption>
+            <caption>{groups.length} business groups</caption>
             <thead>
               <tr>
-                <th scope="col">Label</th>
-                <th scope="col">Members</th>
+                <th scope="col">Group</th>
+                <th scope="col">Companies</th>
                 <th scope="col">Combined market cap</th>
               </tr>
             </thead>
@@ -47,14 +49,12 @@ export function GroupsPage() {
               ))}
             </tbody>
           </table>
-          {groups.length === 0 && (
-            <p className="owners-empty">No business-group labels in the stored snapshot.</p>
-          )}
+          {groups.length === 0 && <p className="owners-empty">No business groups.</p>}
         </div>
       )}
       <p className="owners-note">
-        Combined market cap sums reported company values. Not reported means none were reported.
-        Values can overlap across labels and include both a parent and its listed subsidiaries.
+        Combined market cap adds up each company’s value, so a parent and its listed subsidiaries
+        both count, and a company in two groups counts in both.
       </p>
     </main>
   );
@@ -75,7 +75,7 @@ export function GroupPage() {
       ) : group === null ? (
         <>
           <h1>Group not found</h1>
-          <p>No group has this label in the stored snapshot.</p>
+          <p>We have no business group by this name.</p>
         </>
       ) : (
         <>
@@ -83,17 +83,20 @@ export function GroupPage() {
             <h1>{group.label}</h1>
             <div className="page-intro">
               <p>
-                {group.members.length} members · {formatMarketCap(group.totalMarketCap)} combined
-                reported market cap
+                {group.members.length} companies · {formatMarketCap(group.totalMarketCap)} combined
+                market cap
               </p>
               <p>{groupNote}</p>
             </div>
           </header>
-          <p className="owners-note">
-            Checks show measurements and sub-sector percentiles, without a direction. Gap categories
-            name missing inputs, undefined bases or short histories. Does not apply marks excluded
-            checks. Market caps sum reported values, including listed parents and subsidiaries.
-          </p>
+          <NetworkGraph
+            network={groupNetwork(group)}
+            label={`Companies in the ${group.label} group`}
+          >
+            Each company in the group with up to two of its largest shareholders. A dashed blue line
+            links a shareholder to another company it owns in the group. Bigger dots mean bigger
+            stakes.
+          </NetworkGraph>
           <div
             className="owners-table-wrap"
             role="region"
@@ -102,7 +105,7 @@ export function GroupPage() {
           >
             <table className="owners-table owners-members">
               <caption>
-                {group.members.length} members · Sectors business-group label: {group.label}
+                {group.members.length} companies in the {group.label} group
               </caption>
               <thead>
                 <tr>
@@ -126,7 +129,7 @@ export function GroupPage() {
                       </Link>
                       <small>{company.name}</small>
                     </th>
-                    <td>{company.subSector ?? "Not reported"}</td>
+                    <td>{company.subSector ?? "No data"}</td>
                     <td>{formatMarketCap(company.marketCap)}</td>
                     <td>{formatValue(company.freeFloat, "percent")}</td>
                     {definitions.map((definition) => {
@@ -141,7 +144,6 @@ export function GroupPage() {
                           >
                             {cell.text}
                           </span>
-                          {cell.peers && <small>{cell.peers}</small>}
                           {cell.reason && <small className="owners-check-gap">{cell.reason}</small>}
                         </td>
                       );

@@ -1144,6 +1144,13 @@ td.vd {
 
 /* Tablet */
 @media (max-width: 1080px) {
+  .mark .reading small {
+    max-width: 100%;
+    text-align: center;
+    white-space: normal;
+    line-height: 1.1;
+  }
+
   .opening h1 {
     grid-column: 1 / 13;
   }

@@ -1,8 +1,8 @@
 # Site of Interest
 
-Site of Interest screens all 962 IDX companies in the Sectors snapshot assembled on 5 October 2026 on five fundamentals questions: does profit turn into cash, does the business earn well on its capital, can the balance sheet take a hit, does the price assume perfection, and are minority holders treated fairly. Ideas shows Worth a look and Red flags for companies worth at least IDR 1T, with the numbers behind each verdict. Company pages and the screener retain measurements, reporting gaps, peer percentiles and source evidence. Company pages also rate the statement pillars for each year from FY2021 and show FY2026 analyst estimates where Sectors has them. Fixed rules inherit provider errors and provide no investment advice or price targets.
+Site of Interest screens all 962 IDX companies in the Sectors snapshot assembled on 5 October 2026 on five fundamentals questions: does profit turn into cash, does the business earn well on its capital, can the balance sheet take a hit, does the price assume perfection, and are minority holders treated fairly. Ideas shows Worth a look and Red flags for companies worth at least IDR 1T, with the numbers behind each verdict. Company pages and the screener retain measurements, reporting gaps, peer ranks and source evidence. Company, owner and group pages draw who owns what as a network. Company pages also rate the statement pillars for each year from FY2021 and show FY2026 analyst estimates where Sectors has them. Fixed rules inherit provider errors and provide no investment advice or price targets.
 
-Start at `/`, a landing that shows the verdict tally, rates eight companies or any looked-up ticker, draws each rule's pass and flag lines, and traces Telkom's cash mark back to its Sectors rows. Open Ideas at `/ideas` for the screen's rules and company reasons, then open a company or the Screener at `/universe`. Filter companies by verdict, choose a lens, and open a measurement to inspect its formula, period, inputs and source. Follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
+Start at `/`, a landing that shows the verdict tally, rates eight companies or any looked-up ticker, draws each rule's pass and flag lines, and traces Telkom's cash mark back to its Sectors rows. Open Ideas at `/ideas` for the screen's rules and company reasons, then open a company or the Screener at `/universe`. Filter companies by verdict, choose a lens, and open a measurement to see how it is calculated, its period, figures and source date. Follow a holder to its owner page, then compare members of a provider group. The [three-minute demo](docs/demo.md) gives exact clicks and snapshot values.
 
 ## Run locally
 
@@ -37,7 +37,7 @@ npm run validate:universe
 npm run convex:import-universe
 ```
 
-The dry run prints a plan. `--refresh` bypasses the cache; `--max-credits=0` permits cached pages only. Import is an explicit operator action. See the [data contract](docs/universe-data.md) for provenance, nulls, percentile rules and known limits.
+The dry run prints a plan. `--refresh` bypasses the cache; `--max-credits=0` permits cached pages only. Import is an explicit operator action. See the [data contract](docs/universe-data.md) for provenance, nulls, peer rules and known limits.
 
 ## Verify
 

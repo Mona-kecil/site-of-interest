@@ -33,9 +33,9 @@ Capex can arrive with either sign. Reinvestment uses the absolute capex outflow.
 
 Peers are reported, applicable values for the same check and sub-sector, including the subject. For `n` peers, percentile is `(below + 0.5 × (equal − 1)) / (n − 1)`, where below counts strictly smaller values and equal includes the subject. The percentile is null for fewer than five reported peers. Ties share their midrank; there is no direction or rating.
 
-Measured cells show a value and percentile. Measured cells with fewer than five peers show a value and peer count without a percentile. Gap cells show Not reported, Not meaningful or Too little history and the human reason. Excluded checks show Does not apply, in quieter text without a button. Gaps have no peer line. The shared [presentation helper](../src/universe/presentation.mjs) applies these states to screener, company and group values.
+Stored percentiles are not shown. Company pages turn the same peer set into a rank sentence, such as "Ranks 14th of 46 banks with data.", using the better direction in [check-copy.ts](../src/features/universe/check-copy.ts). Gap cells show No data, Not meaningful or Too little history and the plain reason. Excluded checks show Does not apply, in quieter text without a button. Gaps have no rank sentence. The shared [presentation helper](../src/universe/presentation.mjs) applies these states to screener, company and group values.
 
-The company peer strip uses rank positions across reported peers, with ties at their mean rank and a single peer at the center. Lowest and highest label the ends. A diamond outlines the subject; dot titles expose ticker and value. Rank spacing retains distinctions when raw values contain outliers.
+The company peer strip uses rank positions across reported peers, with ties at their mean rank and a single peer at the center. The ends read Worse and Better, or Lower and Higher for checks without a direction. A diamond outlines the subject; dot titles expose ticker and value. Rank spacing retains distinctions when raw values contain outliers.
 
 ## Ownership boundaries
 
