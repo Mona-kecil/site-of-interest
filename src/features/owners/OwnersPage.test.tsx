@@ -117,7 +117,7 @@ describe("owners pages", () => {
       "/owner/danantara%20asset%20management",
     );
     fireEvent.change(screen.getByLabelText("Search owners"), { target: { value: "" } });
-    fireEvent.click(screen.getByRole("tab", { name: "Listed companies that own others" }));
+    fireEvent.click(screen.getByRole("tab", { name: "Listed companies" }));
     expect(within(table).getAllByRole("row")).toHaveLength(2);
     expect(screen.getByRole("link", { name: "ASII" })).toHaveAttribute("href", "/company/ASII");
   });

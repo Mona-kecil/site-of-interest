@@ -123,6 +123,11 @@ test("contains horizontal table scrolling at 390 pixels and exposes gaps on focu
   }));
   expect(widths.page).toBeLessThanOrEqual(widths.viewport);
   expect(widths.table).toBeGreaterThan(widths.container);
+  const sortHeights = await page
+    .locator(".universe-table thead button:visible")
+    .evaluateAll((buttons) => buttons.map((button) => button.getBoundingClientRect().height));
+  expect(sortHeights.length).toBeGreaterThan(0);
+  expect(sortHeights.every((height) => height >= 44)).toBe(true);
   const gap = page.locator(".universe-cell[aria-describedby]").first();
   await gap.focus();
   await expect(gap.locator("..").getByRole("tooltip")).toBeVisible();

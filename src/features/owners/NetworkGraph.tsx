@@ -41,8 +41,61 @@ export function NetworkGraph({
     router.history.push(href);
   };
   const tones = [...new Set(nodes.map(({ tone }) => tone))].filter((tone) => tone !== "more");
+  const [heldBy, holds] = (["up", "down"] as const).map((side) => {
+    const branches = network.branches.filter((branch) => branch.side === side);
+    if (!branches.length) return null;
+    const heading = side === "up" ? "Held by" : "Holds";
+    return (
+      <section key={side} aria-label={heading}>
+        <h3>{heading}</h3>
+        <ul>
+          {branches.map(({ party }) => {
+            const stake =
+              nodes.find(({ id, ring }) => ring === 1 && id === party.id)?.stake ?? null;
+            return (
+              <li key={party.id}>
+                <a href={party.href} onClick={(event) => open(event, party.href)}>
+                  <span>
+                    <strong>{party.label}</strong>
+                    {party.tone !== "more" && party.name !== party.label && (
+                      <small>{party.name}</small>
+                    )}
+                  </span>
+                  {stake !== null && (
+                    <span className="network-relation-stake">{formatValue(stake, "percent")}</span>
+                  )}
+                </a>
+              </li>
+            );
+          })}
+        </ul>
+      </section>
+    );
+  });
   return (
     <figure className="network" data-tour="network">
+      <div className="network-relations">
+        {heldBy}
+        {heldBy && (
+          <span className="network-arrow" aria-hidden="true">
+            ↓
+          </span>
+        )}
+        <a
+          className="network-center"
+          href={network.center.href}
+          onClick={(event) => open(event, network.center.href)}
+        >
+          <strong>{network.center.label}</strong>
+          {network.center.name !== network.center.label && <small>{network.center.name}</small>}
+        </a>
+        {holds && (
+          <span className="network-arrow" aria-hidden="true">
+            ↓
+          </span>
+        )}
+        {holds}
+      </div>
       <div className="network-scroll" ref={scroll} role="region" aria-label={label} tabIndex={0}>
         <svg viewBox={viewBox.join(" ")} width={width} height={height} aria-label={label}>
           {edges.map((edge) => (
