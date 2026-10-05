@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { definitions } from "../src/universe/checks.mjs";
 import { query } from "./_generated/server";
+import { takeBounded } from "./readBounds";
 import { universeCheckInput, universeCheckResult, universeCheckSummary } from "./schema";
 
 // The IDX lists about 960 companies; the cap keeps the screener read bounded.
@@ -38,7 +39,10 @@ export const screen = query({
     }),
   ),
   handler: async (ctx) => {
-    const companies = await ctx.db.query("companies").withIndex("by_symbol").take(maxCompanies);
+    const companies = await takeBounded(
+      ctx.db.query("companies").withIndex("by_symbol"),
+      maxCompanies,
+    );
     return companies.map((company) => ({
       symbol: company.symbol,
       name: company.name,
@@ -65,10 +69,12 @@ export const check = query({
   handler: async (ctx, { symbol, checkId }) => {
     const selectedDefinition = definitions.find(({ id }) => id === checkId);
     if (!selectedDefinition) return null;
-    const rows = await ctx.db
-      .query("checkResults")
-      .withIndex("by_symbol", (index) => index.eq("symbol", symbol.toUpperCase()))
-      .take(definitions.length);
+    const rows = await takeBounded(
+      ctx.db
+        .query("checkResults")
+        .withIndex("by_symbol", (index) => index.eq("symbol", symbol.toUpperCase())),
+      definitions.length,
+    );
     const row = rows.find((result) => result.checkId === checkId);
     if (!row) return null;
     const sources = await Promise.all(

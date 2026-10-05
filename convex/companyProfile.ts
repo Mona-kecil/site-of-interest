@@ -1,6 +1,7 @@
 import { v } from "convex/values";
 import { definitions } from "../src/universe/checks.mjs";
 import { query } from "./_generated/server";
+import { takeBounded } from "./readBounds";
 import schema from "./schema";
 
 // Import validation allows one row per symbol and period: YEARS and QUARTERS in fields.mjs.
@@ -34,26 +35,36 @@ export const get = query({
       .unique();
     if (!company) return null;
     const [years, quarters, holdings, checks, peers] = await Promise.all([
-      ctx.db
-        .query("companyYears")
-        .withIndex("by_symbol_and_year", (index) => index.eq("symbol", company.symbol))
-        .take(limits.years),
-      ctx.db
-        .query("companyQuarters")
-        .withIndex("by_symbol_and_quarter", (index) => index.eq("symbol", company.symbol))
-        .take(limits.quarters),
-      ctx.db
-        .query("holdings")
-        .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol))
-        .take(limits.holdings),
-      ctx.db
-        .query("checkResults")
-        .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol))
-        .take(limits.checks),
-      ctx.db
-        .query("companies")
-        .withIndex("by_sub_sector", (index) => index.eq("subSector", company.subSector))
-        .take(limits.peers),
+      takeBounded(
+        ctx.db
+          .query("companyYears")
+          .withIndex("by_symbol_and_year", (index) => index.eq("symbol", company.symbol)),
+        limits.years,
+      ),
+      takeBounded(
+        ctx.db
+          .query("companyQuarters")
+          .withIndex("by_symbol_and_quarter", (index) => index.eq("symbol", company.symbol)),
+        limits.quarters,
+      ),
+      takeBounded(
+        ctx.db
+          .query("holdings")
+          .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol)),
+        limits.holdings,
+      ),
+      takeBounded(
+        ctx.db
+          .query("checkResults")
+          .withIndex("by_symbol", (index) => index.eq("symbol", company.symbol)),
+        limits.checks,
+      ),
+      takeBounded(
+        ctx.db
+          .query("companies")
+          .withIndex("by_sub_sector", (index) => index.eq("subSector", company.subSector)),
+        limits.peers,
+      ),
     ]);
     const sourceIds = [
       ...new Set([

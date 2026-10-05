@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { ownerKey } from "../src/universe/owners.mjs";
 import { query, type QueryCtx } from "./_generated/server";
 import { businessGroup, ownerHolding, ownerRecord, universeCheckSummary } from "./schema";
+import { takeBounded } from "./readBounds";
 
 const nullableNumber = v.union(v.number(), v.null());
 const nullableText = v.union(v.string(), v.null());
@@ -34,10 +35,10 @@ async function company(ctx: QueryCtx, symbol: string) {
 }
 
 async function companyHoldings(ctx: QueryCtx, symbol: string) {
-  return ctx.db
-    .query("holdings")
-    .withIndex("by_symbol", (index) => index.eq("symbol", symbol))
-    .take(64);
+  return takeBounded(
+    ctx.db.query("holdings").withIndex("by_symbol", (index) => index.eq("symbol", symbol)),
+    64,
+  );
 }
 
 async function entityHolders(ctx: QueryCtx, symbol: string) {
@@ -68,7 +69,7 @@ export const list = query({
   args: {},
   returns: v.array(summary),
   handler: async (ctx) => {
-    const rows = await ctx.db.query("owners").withIndex("by_key").take(5000);
+    const rows = await takeBounded(ctx.db.query("owners").withIndex("by_key"), 5000);
     return rows.map(({ key, name, kind, listedSymbol, holdings, companyCount, totalValue }) => ({
       key,
       name,
@@ -137,7 +138,7 @@ export const groups = query({
   args: {},
   returns: v.array(businessGroup),
   handler: async (ctx) => {
-    const rows = await ctx.db.query("businessGroups").withIndex("by_slug").take(128);
+    const rows = await takeBounded(ctx.db.query("businessGroups").withIndex("by_slug"), 128);
     return rows.map(({ slug, label, symbols, totalMarketCap }) => ({
       slug,
       label,
