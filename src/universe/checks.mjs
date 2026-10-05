@@ -78,7 +78,13 @@ export const CHECKS = Object.freeze([
   {
     id: "cash_conversion", label: "Cash conversion", question: "Does reported profit turn into operating cash?", unit: "multiple", appliesTo: "nonFinancial",
     formula: "sum(operating_cash_flow[2023..2025]) / sum(earnings[2023..2025]); requires all inputs and positive earnings sum",
-    compute: threeYearRatio("operatingCashFlow", "earnings", "Earnings sum"),
+    compute(data, year = 2025) {
+      const years = [year - 2, year - 1, year];
+      return calculate(`FY${year - 2}–FY${year}`,
+        [...years.map((year) => annual("operatingCashFlow", year)), ...years.map((year) => annual("earnings", year))],
+        (values) => divide(sum(values.slice(0, 3)), sum(values.slice(3)), "Earnings sum", true),
+      )(data);
+    },
   },
   {
     id: "fcf_yield", label: "FCF yield", question: "What is free cash flow relative to the current market cap?", unit: "percent", appliesTo: "nonFinancial",
@@ -88,32 +94,39 @@ export const CHECKS = Object.freeze([
   {
     id: "roic", label: "ROIC", question: "What does the business earn on the capital it uses?", unit: "percent", appliesTo: "nonFinancial",
     formula: "ebit[2025] × (1 − t) / (total_debt[2025] + total_equity[2025] − cash_and_equivalents[2025]); t = tax[2025] / earnings_before_tax[2025] when EBT > 0 and 0 ≤ t ≤ 1, otherwise t = 0.22 (Indonesian statutory fallback); requires positive invested capital",
-    compute(data) {
-      const inputs = ["ebit", "totalDebt", "totalEquity", "cashAndEquivalents", "tax", "earningsBeforeTax"].map((key) => input(data, annual(key)));
+    compute(data, year = 2025) {
+      const inputs = ["ebit", "totalDebt", "totalEquity", "cashAndEquivalents", "tax", "earningsBeforeTax"].map((key) => input(data, annual(key, year)));
       const [ebit, debt, equity, cash, tax, ebt] = inputs.map(({ value }) => value);
       const effective = tax !== null && ebt !== null && ebt > 0 ? tax / ebt : null;
       const usesEffective = effective !== null && effective >= 0 && effective <= 1;
       const rate = usesEffective ? effective : 0.22;
       inputs[4].label = `Tax rate used: ${rate} (${usesEffective ? "tax / EBT" : "Indonesian statutory fallback"})`;
       const missing = inputs.slice(0, 4).filter(({ value }) => value === null);
-      if (missing.length) return result("FY2025", null, `Not reported: ${missing.map(({ field }) => field).join(", ")}`, inputs);
+      if (missing.length) return result(`FY${year}`, null, `Not reported: ${missing.map(({ field }) => field).join(", ")}`, inputs);
       const computed = divide(ebit * (1 - rate), debt + equity - cash, "Invested capital", true);
-      return result("FY2025", computed.value, computed.gap, inputs);
+      return result(`FY${year}`, computed.value, computed.gap, inputs);
     },
   },
   {
     id: "roe", label: "ROE", question: "What does it earn on shareholders' equity?", unit: "percent", appliesTo: "all",
     formula: "earnings[2025] / ((total_equity[2024] + total_equity[2025]) / 2)",
-    compute: calculate("FY2025 / average FY2024–FY2025", [annual("earnings"), annual("totalEquity", 2024), annual("totalEquity")], ([earnings, prior, equity]) => divide(earnings, (prior + equity) / 2, "Average equity")),
+    compute(data, year = 2025) {
+      return calculate(`FY${year} / average FY${year - 1}–FY${year}`, [annual("earnings", year), annual("totalEquity", year - 1), annual("totalEquity", year)], ([earnings, prior, equity]) => divide(earnings, (prior + equity) / 2, "Average equity"))(data);
+    },
   },
   {
     id: "interest_coverage", label: "Interest coverage", question: "How many times does operating profit cover interest?", unit: "multiple", appliesTo: "nonFinancial",
-    formula: "Provider-reported interest_coverage_ratio[2025]", compute: reported("interestCoverageRatio"),
+    formula: "Provider-reported interest_coverage_ratio[2025]",
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("interestCoverageRatio", year)], ([value]) => ({ value }))(data);
+    },
   },
   {
     id: "net_debt_to_ebitda", label: "Net debt / EBITDA", question: "How many years of EBITDA would repay net debt?", unit: "multiple", appliesTo: "nonFinancial",
     formula: "(total_debt[2025] − cash_and_equivalents[2025]) / ebitda[2025]; requires positive EBITDA",
-    compute: calculate("FY2025", [annual("totalDebt"), annual("cashAndEquivalents"), annual("ebitda")], ([debt, cash, ebitda]) => divide(debt - cash, ebitda, "EBITDA", true)),
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("totalDebt", year), annual("cashAndEquivalents", year), annual("ebitda", year)], ([debt, cash, ebitda]) => divide(debt - cash, ebitda, "EBITDA", true))(data);
+    },
   },
   {
     id: "current_ratio", label: "Current ratio", question: "Do short-term assets cover short-term obligations?", unit: "multiple", appliesTo: "nonFinancial",
@@ -177,15 +190,23 @@ export const CHECKS = Object.freeze([
   {
     id: "npl_ratio", label: "NPL ratio", question: "What share of loans is non-performing?", unit: "percent", appliesTo: "bank",
     formula: "non_performing_loan[2025] / gross_loan[2025]",
-    compute: calculate("FY2025", [annual("nonPerformingLoan"), annual("grossLoan")], ([npl, loan]) => divide(npl, loan, "Gross loan")),
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("nonPerformingLoan", year), annual("grossLoan", year)], ([npl, loan]) => divide(npl, loan, "Gross loan"))(data);
+    },
   },
   {
     id: "loan_to_deposit", label: "Loan / deposit", question: "How fully are deposits lent out?", unit: "percent", appliesTo: "bank",
-    formula: "Provider-reported loan_to_deposit_ratio[2025]", compute: reported("loanToDepositRatio"),
+    formula: "Provider-reported loan_to_deposit_ratio[2025]",
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("loanToDepositRatio", year)], ([value]) => ({ value }))(data);
+    },
   },
   {
     id: "capital_adequacy", label: "Capital adequacy", question: "How much capital backs risk-weighted assets?", unit: "percent", appliesTo: "bank",
-    formula: "Provider-reported capital_adequacy_ratio[2025]", compute: reported("capitalAdequacyRatio"),
+    formula: "Provider-reported capital_adequacy_ratio[2025]",
+    compute(data, year = 2025) {
+      return calculate(`FY${year}`, [annual("capitalAdequacyRatio", year)], ([value]) => ({ value }))(data);
+    },
   },
   {
     id: "net_interest_margin", label: "Net interest margin", question: "What spread does the bank earn on its assets?", unit: "percent", appliesTo: "bank",
