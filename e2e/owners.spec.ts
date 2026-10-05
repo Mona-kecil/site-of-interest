@@ -235,6 +235,21 @@ test("contains tables and the ownership relation list at 390 pixels", async ({ p
   await expect(page.locator(".network-relations")).toBeHidden();
 });
 
+test("swaps the relation list for the graph above 640 pixels", async ({ page }) => {
+  for (const path of ["/company/BBCA", "/group/hartono", "/owner/astra%20international"]) {
+    await page.setViewportSize({ width: 640, height: 900 });
+    await page.goto(path);
+    const network = page.locator("figure.network");
+    await expect(network.locator(".network-relations")).toBeVisible();
+    await expect(network.locator(".network-scroll")).toBeHidden();
+    await expect(network.locator("figcaption")).toBeHidden();
+    await page.setViewportSize({ width: 641, height: 900 });
+    await expect(network.locator(".network-relations")).toBeHidden();
+    await expect(network.locator(".network-scroll svg")).toBeVisible();
+    await expect(network.locator(".network-legend")).toBeVisible();
+  }
+});
+
 test("caps Bank of Singapore's nine downstream companies and identifies its account role", async ({
   page,
 }) => {
