@@ -11,6 +11,7 @@
 import type * as companyNetwork from "../companyNetwork.js";
 import type * as companyProfile from "../companyProfile.js";
 import type * as owners from "../owners.js";
+import type * as readBounds from "../readBounds.js";
 import type * as universe from "../universe.js";
 
 import type {
@@ -23,6 +24,7 @@ declare const fullApi: ApiFromModules<{
   companyNetwork: typeof companyNetwork;
   companyProfile: typeof companyProfile;
   owners: typeof owners;
+  readBounds: typeof readBounds;
   universe: typeof universe;
 }>;
 
