@@ -1,4 +1,4 @@
-export type TourStop = {
+type TourStop = {
   /** The `data-tour` value of the element this stop rings. */
   target: string;
   /** The page the tour opens when the visitor is somewhere else. */

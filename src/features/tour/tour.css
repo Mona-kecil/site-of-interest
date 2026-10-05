@@ -13,6 +13,14 @@
   transition: background-color 160ms var(--ease-out);
 }
 
+.site-footer .tour-button {
+  margin: 0;
+  padding: 0;
+  box-shadow: none;
+  font-size: inherit;
+  font-weight: 600;
+}
+
 .tour-button:focus-visible {
   outline: 2px solid var(--white);
   outline-offset: 2px;
@@ -173,8 +181,12 @@
 }
 
 @media (hover: hover) and (pointer: fine) {
-  .tour-button:hover {
+  .masthead .tour-button:hover {
     background: oklch(100% 0 0 / 0.1);
+  }
+
+  .site-footer .tour-button:hover {
+    text-decoration: underline;
   }
 
   .tour-close:hover {
@@ -190,13 +202,8 @@
 }
 
 @media (max-width: 640px) {
-  .tour-button {
-    margin-left: auto;
-    padding: 5px 10px;
-    font-size: 13px;
-  }
-
-  .masthead .dateline {
+  /* The masthead row keeps the data date on phones; the footer carries the tour button. */
+  .masthead .tour-button {
     display: none;
   }
 

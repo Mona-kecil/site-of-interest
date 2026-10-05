@@ -45,6 +45,7 @@ export function Tour({ children }: { children: ReactNode }) {
   const [step, setStep] = useState<number | "invite" | null>(() => (seen() ? null : "invite"));
   const ring = useRef<HTMLDivElement>(null);
   const title = useRef<HTMLHeadingElement>(null);
+  const opener = useRef<HTMLElement | null>(null);
 
   const go = (index: number) => {
     markSeen();
@@ -52,9 +53,18 @@ export function Tour({ children }: { children: ReactNode }) {
     if (!stop.shows(pathname)) void router.navigate({ href: stop.path });
     setStep(index);
   };
+  const start = () => {
+    if (typeof step !== "number") opener.current = document.activeElement as HTMLElement | null;
+    go(firstStop(pathname));
+  };
+  // Hand focus back to whatever started the tour, or to the masthead button when that has gone.
   const end = () => {
     markSeen();
     setStep(null);
+    const back = opener.current?.isConnected
+      ? opener.current
+      : document.querySelector<HTMLElement>(".masthead .tour-button");
+    back?.focus({ preventScroll: true });
   };
 
   useEffect(() => {
@@ -102,7 +112,7 @@ export function Tour({ children }: { children: ReactNode }) {
   }, [step, pathname]);
 
   return (
-    <StartTour.Provider value={() => go(firstStop(pathname))}>
+    <StartTour.Provider value={start}>
       {children}
       {step === "invite" && (
         <section className="tour-card" aria-labelledby="tour-title">
@@ -116,7 +126,7 @@ export function Tour({ children }: { children: ReactNode }) {
             <button type="button" className="more" onClick={end}>
               Not now
             </button>
-            <button type="button" className="go" onClick={() => go(firstStop(pathname))}>
+            <button type="button" className="go" onClick={start}>
               Start the tour
             </button>
           </div>

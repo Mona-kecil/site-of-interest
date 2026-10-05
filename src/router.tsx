@@ -59,6 +59,7 @@ function RootLayout() {
             </p>
             <nav aria-label="Footer">
               <Sections />
+              <TourButton />
             </nav>
           </div>
         </footer>
