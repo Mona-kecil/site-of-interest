@@ -42,7 +42,7 @@ export function NetworkGraph({
   };
   const tones = [...new Set(nodes.map(({ tone }) => tone))].filter((tone) => tone !== "more");
   return (
-    <figure className="network">
+    <figure className="network" data-tour="network">
       <div className="network-scroll" ref={scroll} role="region" aria-label={label} tabIndex={0}>
         <svg viewBox={viewBox.join(" ")} width={width} height={height} aria-label={label}>
           {edges.map((edge) => (

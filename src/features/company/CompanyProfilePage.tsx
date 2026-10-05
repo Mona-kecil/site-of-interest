@@ -435,7 +435,11 @@ export function CompanyProfilePage() {
           </div>
         </dl>
       </header>
-      <section className="profile-verdict" aria-labelledby="profile-verdict-title">
+      <section
+        className="profile-verdict"
+        aria-labelledby="profile-verdict-title"
+        data-tour="verdict"
+      >
         <div className="verdict-head">
           <h2 id="profile-verdict-title" className={`stamp ${assessment.verdict}`}>
             {verdictLabels[assessment.verdict]}

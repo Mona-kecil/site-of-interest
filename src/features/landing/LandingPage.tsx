@@ -300,7 +300,7 @@ function Ratings({
   }, [added]);
 
   return (
-    <section className="ratings" aria-labelledby="ratings-title">
+    <section className="ratings" aria-labelledby="ratings-title" data-tour="ratings">
       <div className="chart-head">
         <div className="chart-title">
           <h2 id="ratings-title">The ratings</h2>
