@@ -21,7 +21,7 @@ Every verdict shows its work. Each pillar outcome cites the measurement, the thr
 
 ## Operating Context
 
-- Data comes from a stored Sectors snapshot retrieved on 2 October 2026: FY2025 annual reports and current market data. Navigation does not refresh it.
+- Data comes from a stored Sectors snapshot assembled on 5 October 2026 from pages retrieved 2 to 5 October: FY2025 annual reports and current market data. Navigation does not refresh it.
 - Research path: landing, then Ideas (Worth a look and Red flags for companies with a market cap of at least IDR 1T), then a company's verdict and pillar evidence. The screener covers all 962 companies. Owners and Groups show holders of record.
 - The rules, bounds and verdict order live in `src/features/ideas/ideas-model.ts` and are documented in `docs/product-brief.md`.
 
@@ -32,7 +32,7 @@ Every verdict shows its work. Each pillar outcome cites the measurement, the thr
 - No investment advice, trade recommendations, price targets or claims of beneficial ownership.
 - Verdicts inherit provider errors.
 - Provider group labels stay attributed to Sectors.
-- Missing numbers are skipped and never counted as zero.
+- A missing number can't earn a pass and is never counted as zero.
 - Hackathon deadline: 8 October 2026.
 
 ## Brand Commitments
@@ -42,7 +42,7 @@ Every verdict shows its work. Each pillar outcome cites the measurement, the thr
 
 ## Evidence on Hand
 
-- Real verdict data for all 962 companies. As of the 2 October snapshot, 73 companies of at least IDR 1T are Worth a look. Worked examples: TLKM is Worth a look with all five pillars passing, DCII has a price flag with a current P/E above 50, BBCA has an NPL ratio of 1.65% and its largest holder of record holds 54.94%.
+- Real verdict data for all 962 companies. As of the 5 October snapshot, 78 companies are Worth a look, 69 of them worth at least IDR 1T. Worked examples: TLKM is Worth a look with all five pillars passing, DCII has a price flag with a current P/E above 50, BBCA has an NPL ratio of 1.65% and its largest holder of record holds 54.94%.
 - There are no testimonials, user counts, returns or performance claims, and none may be invented.
 
 ## Product Principles

@@ -56,7 +56,9 @@ export function pillarRecords(
               result: value === null ? null : judge(rule, value),
             };
           });
-          const evidence = readings.flatMap(({ result }) => (result === null ? [] : [{ result }]));
+          const evidence = readings.flatMap(({ key, result }) =>
+            result === null ? [] : [{ key, result }],
+          );
           return { year, outcome: ratePillar(rules, evidence), readings };
         }),
       },

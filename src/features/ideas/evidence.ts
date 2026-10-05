@@ -77,7 +77,7 @@ export function formatReading(key: string, value: number) {
   const unit = MEASURES[key].unit;
   const text =
     unit === "%"
-      ? `${(value * 100).toFixed(1)}%`
+      ? `${(value * 100).toFixed(value !== 0 && Math.abs(value) < 0.0005 ? 2 : 1)}%`
       : unit === "pe"
         ? value >= 1000
           ? Math.round(value).toLocaleString("en-US")

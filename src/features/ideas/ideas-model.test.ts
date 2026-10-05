@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import snapshot from "../../../data/universe/checks.json";
 import companies from "../../../data/universe/companies.json";
+import { formatReading } from "./evidence";
 import { assess, PILLARS, type PillarId } from "./ideas-model";
 
 function assessment(values: Record<string, number | null> = {}, subSector: string | null = null) {
@@ -33,6 +34,44 @@ const passing = {
 };
 
 describe("Ideas assessment", () => {
+  it("keeps Cash mixed when cash conversion is missing and FCF yield passes", () => {
+    expect(pillar({ cash_conversion: null, fcf_yield: 0.1 }, "cash")).toMatchObject({
+      outcome: "mixed",
+      headline: "Nothing flagged, but some figures are missing",
+      missing: [PILLARS[0].rules.nonFinancial[0]],
+    });
+  });
+
+  it("does not pass Price on a negative trailing P/E alone", () => {
+    expect(pillar({ pe_ttm: -47 }, "price").outcome).toBe("mixed");
+  });
+
+  it("describes a bank's passing Balance sheet through loans and capital", () => {
+    expect(
+      pillar(
+        { npl_ratio: 0.03, capital_adequacy: 0.18, loan_to_deposit: 0.95 },
+        "balance",
+        "Banks",
+      ),
+    ).toMatchObject({ outcome: "pass", headline: "Loans and capital look sound" });
+  });
+
+  it.each([
+    [0.04, "Some strain on loans or capital"],
+    [0.06, "Loans or capital under strain"],
+  ])("describes bank Balance sheet strain at NPL %s", (npl_ratio, headline) => {
+    expect(
+      pillar({ npl_ratio, capital_adequacy: 0.18, loan_to_deposit: 0.95 }, "balance", "Banks")
+        .headline,
+    ).toBe(headline);
+  });
+
+  it.each(["Banks", "Insurance"])("describes %s Price without a cash claim", (subSector) => {
+    expect(pillar({ pb_vs_history: 1, pe_vs_history: 1 }, "price", subSector).headline).toBe(
+      "Cheap against its own history",
+    );
+  });
+
   it.each([
     ["cash", "cash_conversion", 0.8, "pass", null],
     ["cash", "cash_conversion", 0.5, "neutral", null],
@@ -88,22 +127,35 @@ describe("Ideas assessment", () => {
       id: "cash",
       outcome: "unknown",
       evidence: [],
+      missing: PILLARS[0].rules.nonFinancial,
+      headline: null,
     });
-    expect(pillar({}, "cash", "Banks")).toEqual({ id: "cash", outcome: "na", evidence: [] });
+    expect(pillar({}, "cash", "Banks")).toEqual({
+      id: "cash",
+      outcome: "na",
+      evidence: [],
+      missing: [],
+      headline: null,
+    });
     expect(pillar({}, "balance", "Insurance").outcome).toBe("na");
     expect(pillar({}, "balance", "Banks").outcome).toBe("unknown");
     expect(assessment().pillars.map(({ id }) => id)).toEqual(PILLARS.map(({ id }) => id));
   });
 
-  it("uses only reported evidence for pass, mixed and fail outcomes", () => {
-    expect(pillar({ cash_conversion: 0.8, fcf_yield: null }, "cash").outcome).toBe("pass");
+  it("requires all pass-line measurements for a pass and retains shortfalls and flags", () => {
+    expect(pillar({ cash_conversion: 0.8, fcf_yield: null }, "cash").outcome).toBe("mixed");
     expect(pillar({ cash_conversion: 0.8, fcf_yield: 0 }, "cash").outcome).toBe("mixed");
+    expect(pillar({ cash_conversion: 0.8, fcf_yield: 0 }, "cash").headline).toBe(
+      "Cash backs only part of the profit",
+    );
     expect(pillar({ cash_conversion: 0.4, fcf_yield: 0.1 }, "cash").outcome).toBe("fail");
   });
 
-  it("passes fail-only rules when their flag bound is not met", () => {
-    expect(pillar({ pe_ttm: 0 }, "price").outcome).toBe("pass");
-    expect(pillar({ free_float: 0.2 }, "owners").outcome).toBe("pass");
+  it("does not pass a pillar on flag-only rules", () => {
+    expect(pillar({ pe_ttm: 0 }, "price").outcome).toBe("mixed");
+    expect(pillar({ free_float: 0.2 }, "owners").outcome).toBe("mixed");
+    expect(pillar({ ...passing, pe_ttm: null }, "price").outcome).toBe("pass");
+    expect(pillar({ ...passing, free_float: null }, "owners").outcome).toBe("pass");
   });
 
   it("assigns flags before considering data coverage", () => {
@@ -152,6 +204,10 @@ describe("Ideas assessment", () => {
   it.each([
     ["TLKM", "idea", null],
     ["BBCA", "idea", null],
+    ["AADI", "mixed", null],
+    ["POWR", "mixed", null],
+    ["TOTL", "mixed", null],
+    ["YUPI", "mixed", null],
     ["DCII", "flags", "price"],
     ["HMSP", "flags", "owners"],
     ["BREN", "flags", "price"],
@@ -165,5 +221,14 @@ describe("Ideas assessment", () => {
     expect(result.verdict).toBe(verdict);
     if (failingPillar)
       expect(result.pillars.find(({ id }) => id === failingPillar)!.outcome).toBe("fail");
+  });
+});
+
+describe("formatReading", () => {
+  it("keeps the sign of a percentage too small for one decimal", () => {
+    expect(formatReading("fcf_yield", -0.00042199714010137567)).toBe("-0.04%");
+    expect(formatReading("fcf_yield", 0.0003)).toBe("0.03%");
+    expect(formatReading("fcf_yield", 0)).toBe("0.0%");
+    expect(formatReading("fcf_yield", -0.042)).toBe("-4.2%");
   });
 });

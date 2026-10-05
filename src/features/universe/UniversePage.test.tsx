@@ -167,9 +167,13 @@ describe("Ideas page", () => {
   it("limits each list to 12, expands it, and retains evidence and the market cap cutoff", () => {
     const checks = Object.entries({
       cash_conversion: 1,
+      fcf_yield: 0.05,
       roic: 0.15,
       net_debt_to_ebitda: 1,
+      interest_coverage: 4,
       pe_vs_history: 0.8,
+      share_dilution: 0.05,
+      dividend_years: 4,
       free_float: 0.3,
     }).map(([checkId, value]) => ({ checkId, value, percentile: null, peerCount: 1, gap: null }));
     const rows: ScreenRow[] = Array.from({ length: 14 }, (_, index) => ({
@@ -184,6 +188,9 @@ describe("Ideas page", () => {
     useQuery.mockReturnValue(rows);
     render(<IdeasPage />);
     const ideas = screen.getByRole("region", { name: "Worth a look · 14" });
+    expect(ideas).toHaveTextContent(
+      "Companies worth at least IDR 1T: 14 of the 15 across the market.",
+    );
     expect(within(ideas).getAllByRole("article")).toHaveLength(12);
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent("IDEA13");
     expect(within(ideas).getAllByRole("article")[0]).toHaveTextContent(
@@ -195,6 +202,9 @@ describe("Ideas page", () => {
     );
     expect(within(ideas).getAllByRole("article")).toHaveLength(14);
     const flags = screen.getByRole("region", { name: "Red flags · 1" });
+    expect(flags).toHaveTextContent(
+      "Companies worth at least IDR 1T: 1 of the 1 across the market.",
+    );
     expect(flags).toHaveTextContent("Priced for perfection");
     expect(flags).toHaveTextContent("Current P/E 100.00× · flagged above 50");
     expect(within(flags).getByRole("link", { name: "FLAG" })).toHaveAttribute(

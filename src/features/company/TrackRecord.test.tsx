@@ -47,7 +47,8 @@ describe("Track record and forecasts", () => {
 
     const gap = within(row("Net debt / EBITDA")).getByText("No data");
     expect(gap.title).toBe("No data for EBITDA 2023.");
-    expect(within(row("Balance sheet")).getAllByText("Passes")).toHaveLength(5);
+    expect(within(row("Balance sheet")).getAllByText("Passes")).toHaveLength(4);
+    expect(within(row("Balance sheet")).getAllByText("Partly passes")).toHaveLength(1);
   });
 
   it("shows analyst estimates apart from the rules and suppresses growth across a loss", () => {
