@@ -8,7 +8,9 @@ dist/
 *.tsbuildinfo
 playwright-report/
 test-results/
-.audit/*.png
+.agents/
+.claude/skills/
+skills-lock.json
 .DS_Store
 .vercel
 .env*
