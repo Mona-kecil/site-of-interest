@@ -91,11 +91,11 @@ export const PILLARS: {
   {
     id: "price",
     title: "Price",
-    question: "Does the price assume perfection?",
+    question: "Is the price too high for what it earns?",
     headlines: {
-      pass: "Cheap against its history and cash",
+      pass: "Cheap for what it earns",
       mixed: "Fairly priced",
-      fail: "Priced for perfection",
+      fail: "Expensive for what it earns",
     },
     rules: {
       nonFinancial: [

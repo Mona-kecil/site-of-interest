@@ -66,7 +66,7 @@ test("opens Ideas with both lists, rules and company reasons", async ({ page }) 
     "· flagged ",
   );
   const dcii = flags.locator('[data-symbol="DCII"]');
-  await expect(dcii).toContainText("Priced for perfection");
+  await expect(dcii).toContainText("Expensive for what it earns");
   await expect(dcii).toContainText("Current P/E 413.61× · flagged above 50");
   await page.getByText("How a stock makes the list", { exact: true }).click();
   await expect(page.locator(".ideas-method")).toContainText(

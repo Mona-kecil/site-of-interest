@@ -13,7 +13,7 @@ web
 
 ## Product Purpose
 
-Site of Interest screens all 962 companies listed on the Indonesia Stock Exchange (IDX) on five fundamentals questions. It checks five pillars: cash before profit, returns on capital, a balance sheet that can take a hit, a price that does not assume perfection, and fair treatment of minority holders. Fixed, published rules turn the measurements into verdicts: Worth a look, Mixed, Red flags and Not enough data. Success means a first-time visitor understands the screen and opens a company's evidence.
+Site of Interest screens all 962 companies listed on the Indonesia Stock Exchange (IDX) on five fundamentals questions. It checks five pillars: cash before profit, returns on capital, a balance sheet that can take a hit, a price that is not too high for what the company earns, and fair treatment of minority holders. Fixed, published rules turn the measurements into verdicts: Worth a look, Mixed, Red flags and Not enough data. Success means a first-time visitor understands the screen and opens a company's evidence.
 
 ## Positioning
 
