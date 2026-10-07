@@ -49,7 +49,7 @@ test("explains a company price flag before the section navigation", async ({ pag
   const verdict = page.getByRole("region", { name: "Red flags", exact: true });
   await expect(verdict).toBeVisible();
   await expect(verdict).toContainText("Price: Flagged");
-  await expect(verdict).toContainText("Priced for perfection");
+  await expect(verdict).toContainText("Expensive for what it earns");
   await expect(verdict).toContainText("Current P/E 413.61× · flagged above 50");
   await verdict.getByRole("link", { name: "See price details" }).click();
   await expect(page).toHaveURL(/#profile-price$/);

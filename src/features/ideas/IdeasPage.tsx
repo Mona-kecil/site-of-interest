@@ -181,8 +181,8 @@ export function IdeasPage() {
           <p>
             Site of Interest screens all {manifest.companyCount} IDX companies on five questions:
             does profit turn into cash, does the business earn well on its capital, can the balance
-            sheet take a hit, does the price assume perfection, and are minority holders treated
-            fairly.
+            sheet take a hit, is the price too high for what it earns, and are minority holders
+            treated fairly.
           </p>
         </div>
       </header>

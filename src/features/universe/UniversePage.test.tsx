@@ -205,7 +205,7 @@ describe("Ideas page", () => {
     expect(flags).toHaveTextContent(
       "Companies worth at least IDR 1T: 1 of the 1 across the market.",
     );
-    expect(flags).toHaveTextContent("Priced for perfection");
+    expect(flags).toHaveTextContent("Expensive for what it earns");
     expect(flags).toHaveTextContent("Current P/E 100.00× · flagged above 50");
     expect(within(flags).getByRole("link", { name: "FLAG" })).toHaveAttribute(
       "href",
